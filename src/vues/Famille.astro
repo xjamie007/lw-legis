@@ -10,6 +10,7 @@ import { seg } from '../lib/routes';
 import Marge from '../components/Marge.astro';
 import Formulaire from '../components/Formulaire.astro';
 import { ed, edFamille } from '../lib/edition';
+import { prefixer } from '../lib/base';
 
 interface Props {
   lang: Lang;
@@ -54,7 +55,7 @@ const sPub = seg('publications', lang);
             <ul class="liste">
               {documents.map((d) => (
                 <li>
-                  <a href={`/${lang}/${sPub}/${txt(d.slug, lang)}/`} {...ed('publications', d.id, 'titre')}>{txt(d.titre, lang)}</a>
+                  <a href={prefixer(`/${lang}/${sPub}/${txt(d.slug, lang)}/`)} {...ed('publications', d.id, 'titre')}>{txt(d.titre, lang)}</a>
                 </li>
               ))}
             </ul>

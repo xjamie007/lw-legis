@@ -18,6 +18,11 @@ import tailwindcss from '@tailwindcss/vite';
  */
 export default defineConfig({
   site: process.env.PUBLIC_SITE_URL || 'https://www.lw-legis.lu',
+  // Unterpfad der Auslieferung. Auf der eigenen Domain liegt die Seite in
+  // der Wurzel; GitHub Pages liefert ein Projekt-Repository unter
+  // /<name>/ aus. Bei '/' ist `src/lib/base.ts` wirkungslos und der Build
+  // ist Zeichen fuer Zeichen derselbe wie ohne diese Zeile.
+  base: process.env.PUBLIC_BASE_PATH || '/',
   output: 'static',
   trailingSlash: 'always',
   build: {

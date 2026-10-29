@@ -16,6 +16,7 @@ import { t, type Cle } from '../lib/i18n';
 import { contenu } from '../lib/content';
 import { seg, type NomSegment } from '../lib/routes';
 import Wappen from './Wappen.astro';
+import { prefixer } from '../lib/base';
 
 interface Props {
   lang: Lang;
@@ -31,7 +32,7 @@ const liensLegaux = contenu.pied
     cle: p.cle as Cle,
     href: (() => {
       const x = seg(p.segment as NomSegment, lang);
-      return x ? `/${lang}/${x}/` : null;
+      return x ? prefixer(`/${lang}/${x}/`) : null;
     })(),
   }))
   .filter((p): p is { cle: Cle; href: string } => p.href !== null);

@@ -12,6 +12,7 @@ import { LANG_BALISE, LANG_NOMS, txt, type Lang } from '../lib/langs';
 import { t } from '../lib/i18n';
 import { contenu, languesDuSite } from '../lib/content';
 import { seg, urlAccueil } from '../lib/routes';
+import { prefixer } from '../lib/base';
 
 const pretes = languesDuSite();
 const s = contenu.settings;
@@ -20,7 +21,7 @@ const chemins = (l: Lang) =>
   (['situations', 'services', 'publications', 'contact'] as const)
     .map((n) => {
       const x = seg(n, l);
-      return x ? { nom: t(l, `nav.${n}` as never), href: `/${l}/${x}/` } : null;
+      return x ? { nom: t(l, `nav.${n}` as never), href: prefixer(`/${l}/${x}/`) } : null;
     })
     .filter((x): x is { nom: string; href: string } => x !== null);
 ---
@@ -32,11 +33,11 @@ const chemins = (l: Lang) =>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Page introuvable — Seite nicht gefunden — Page not found | LW LEGIS</title>
     <meta name="robots" content="noindex, follow" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={prefixer('/favicon.svg')} type="image/svg+xml" />
     <meta name="theme-color" content="#2F5D50" />
     <link
       rel="preload"
-      href="/fonts/literata-roman-latin.woff2"
+      href={prefixer('/fonts/literata-roman-latin.woff2')}
       as="font"
       type="font/woff2"
       crossorigin

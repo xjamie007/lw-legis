@@ -22,6 +22,7 @@ import {
 } from '../lib/content';
 import { seg } from '../lib/routes';
 import { edPage } from '../lib/edition';
+import { prefixer } from '../lib/base';
 
 interface Props {
   lang: Lang;
@@ -35,7 +36,7 @@ const publiees = new Set(situationsPubliees(lang).map((s) => `${s.pays}--${s.pro
 
 const sSit = seg('situations', lang);
 const sSrv = seg('services', lang);
-const base = sSit ? `/${lang}/${sSit}/` : null;
+const base = sSit ? prefixer(`/${lang}/${sSit}/`) : null;
 
 /** Adresse fuer eine Konstellation — echt, wenn fertig, sonst der Ersatz. */
 function adresse(paysId: string, projetId: string) {
@@ -46,7 +47,7 @@ function adresse(paysId: string, projetId: string) {
   }
   const f = familleParId(contenu.projet_vers_famille[projetId] ?? null);
   return {
-    href: f && sSrv ? `/${lang}/${sSrv}/${txt(f.slug, lang)}/` : null,
+    href: f && sSrv ? prefixer(`/${lang}/${sSrv}/${txt(f.slug, lang)}/`) : null,
     fertig: false,
     nom: f ? txt(f.terme, lang) : null,
   };

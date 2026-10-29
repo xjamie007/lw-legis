@@ -16,6 +16,7 @@
 import type { Lang } from '../lib/langs';
 import { txt } from '../lib/langs';
 import { contenu } from '../lib/content';
+import { prefixer } from '../lib/base';
 
 interface Props {
   /** Schlüssel aus content/source/bilder.mjs */
@@ -39,7 +40,7 @@ const vorhanden = Boolean(bild?.datei);
  * auf nicht vorhandene Dateien zeigt, bringt dem Browser 404 statt Bilder.
  */
 const breiten: number[] = bild?.breiten ?? [480, 768, 1200, 1800];
-const basis = bild?.datei ? String(bild.datei).replace(/\.[^.]+$/, '') : '';
+const basis = bild?.datei ? prefixer(String(bild.datei).replace(/\.[^.]+$/, '')) : '';
 const endung = bild?.datei ? String(bild.datei).match(/\.[^.]+$/)?.[0] ?? '.jpg' : '.jpg';
 
 const srcset = (format: string) =>

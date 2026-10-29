@@ -485,6 +485,45 @@ npm run konto -- lorang@… 'Passwort' owner 'Alain Lorang'
 
 Als Variablen (nicht Secrets): `PUBLIC_SITE_URL`, `APERCU_URL`.
 
+Fehlen `CLOUDFLARE_API_TOKEN` und `CLOUDFLARE_ACCOUNT_ID`, bricht nichts
+ab: gebaut und geprüft wird trotzdem, nur das Ausliefern entfällt, und
+die fertige Seite liegt als Artefakt `website` beim jeweiligen Lauf.
+Dasselbe gilt für die nächtliche Sicherung ohne `SUPABASE_DB_URL`.
+
+## Die Vorschau auf GitHub Pages
+
+`.github/workflows/pages.yml` liefert jeden Stand von `main` unter
+
+    https://<konto>.github.io/<repository>/
+
+aus. Das ist eine **Vorschau, nicht die veröffentlichte Seite**: jede
+Seite trägt `noindex`, und `robots.txt` sperrt alles. Eine unfertige
+Fassung darf nicht neben der echten Seite im Index stehen — sie würde mit
+ihr um dieselben Suchbegriffe konkurrieren.
+
+GitHub Pages liefert ein Projekt-Repository unter einem Unterpfad aus,
+nicht in der Wurzel. Dafür gibt es `PUBLIC_BASE_PATH` und
+`src/lib/base.ts`: `prefixer()` setzt den Präfix vor jede Adresse, die
+nicht von Astro selbst gebündelt wird. Bei `/` — also auf der eigenen
+Domain — ist die Funktion wirkungslos und der Build Zeichen für Zeichen
+derselbe. Zwei Prüfungen halten das fest:
+
+* `check-links.mjs` kennt den Präfix und meldet jede Adresse, die ihn
+  verloren hat, als `Link ohne Auslieferungspräfix`;
+* ein eigener Schritt im Ablauf durchsucht das gebaute HTML nach
+  absoluten Adressen ohne Präfix — Schriften und Bilder brechen unter
+  einem Unterpfad als Erstes und zeigen sich in keiner Linkprüfung.
+
+Lokal nachstellen lässt sich das so:
+
+    PUBLIC_BASE_PATH=/lw-legis PUBLIC_NOINDEX=1 npm run build:offline
+    PUBLIC_BASE_PATH=/lw-legis npm run check:links
+
+Was GitHub Pages nicht kann: eigene Kopfzeilen (`_headers` wird nicht
+gelesen, also auch kein `X-Robots-Tag` und keine CSP), Weiterleitungen
+aus `_redirects` und eine Zusage über den Standort der Rechenzentren.
+Für den Betrieb bleibt es deshalb bei Cloudflare Pages.
+
 ## Sicherung zurückspielen
 
 Eine Sicherung, die nie zurückgespielt wurde, ist keine Sicherung. Einmal

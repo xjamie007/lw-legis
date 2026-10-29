@@ -19,6 +19,7 @@ import Depliant from '../components/Depliant.astro';
 import Formulaire from '../components/Formulaire.astro';
 import Bild from '../components/Bild.astro';
 import { ed, edAvocat, edFamille, edPage } from '../lib/edition';
+import { prefixer } from '../lib/base';
 
 interface Props {
   lang: Lang;
@@ -37,7 +38,7 @@ const questions = faqToutes(lang);
 
 const lien = (n: Parameters<typeof seg>[0]) => {
   const x = seg(n, lang);
-  return x ? `/${lang}/${x}/` : null;
+  return x ? prefixer(`/${lang}/${x}/`) : null;
 };
 const versServices = lien('services');
 const versEtude = lien('etude');

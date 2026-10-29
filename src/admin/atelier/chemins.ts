@@ -12,6 +12,7 @@
 import { SEGMENTS, type NomSegment } from '../../lib/routes';
 import { LANGS, LANG_NOMS, type Lang } from '../../lib/langs';
 import type { LangueAdmin } from '../i18n';
+import { prefixer } from '../../lib/base';
 
 type Ligne = Record<string, any>;
 
@@ -284,13 +285,13 @@ const seg = (n: NomSegment, lang: Lang) => SEGMENTS[n][lang] ?? null;
 function adresse(lang: Lang, ...teile: (string | null | undefined)[]) {
   const fehlt = teile.findIndex((t) => !t);
   const gueltig = fehlt === -1 ? teile : teile.slice(0, fehlt);
-  return gueltig.length ? `/${lang}/${gueltig.join('/')}/` : `/${lang}/`;
+  return gueltig.length ? prefixer(`/${lang}/${gueltig.join('/')}/`) : prefixer(`/${lang}/`);
 }
 
 /** Die Seiten, die man oben in der Auswahl direkt ansteuern kann. */
 export function pagesPrincipales(lang: Lang, la: LangueAdmin) {
   const liste: { nom: string; chemin: string }[] = [
-    { nom: nomPage('accueil', la), chemin: `/${lang}/` },
+    { nom: nomPage('accueil', la), chemin: prefixer(`/${lang}/`) },
   ];
   const noms: NomSegment[] = [
     'services',
@@ -305,7 +306,7 @@ export function pagesPrincipales(lang: Lang, la: LangueAdmin) {
   ];
   for (const n of noms) {
     const s = seg(n, lang);
-    if (s) liste.push({ nom: nomPage(n, la), chemin: `/${lang}/${s}/` });
+    if (s) liste.push({ nom: nomPage(n, la), chemin: prefixer(`/${lang}/${s}/`) });
   }
   return liste;
 }
@@ -331,7 +332,7 @@ export function adresseDe(table: string, id: string, chemin: string[], ligne: Li
     case 'settings':
       if (id === 'pages') {
         const page = chemin[1] as NomSegment | 'accueil';
-        if (page === 'accueil' || !(page in SEGMENTS)) return `/${lang}/`;
+        if (page === 'accueil' || !(page in SEGMENTS)) return prefixer(`/${lang}/`);
         return adresse(lang, seg(page as NomSegment, lang));
       }
       return adresse(lang, seg(id === 'avocat' ? 'etude' : 'contact', lang));
@@ -346,9 +347,9 @@ export function adresseDe(table: string, id: string, chemin: string[], ligne: Li
     case 'team':
       return adresse(lang, seg('etude', lang));
     case 'legal_pages':
-      return id in SEGMENTS ? adresse(lang, seg(id as NomSegment, lang)) : `/${lang}/`;
+      return id in SEGMENTS ? adresse(lang, seg(id as NomSegment, lang)) : prefixer(`/${lang}/`);
     default:
-      return `/${lang}/`;
+      return prefixer(`/${lang}/`);
   }
 }
 

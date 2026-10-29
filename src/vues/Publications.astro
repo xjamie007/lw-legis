@@ -23,6 +23,7 @@ import {
 import { seg } from '../lib/routes';
 import Lacune from '../components/Lacune.astro';
 import { ed, edPage } from '../lib/edition';
+import { prefixer } from '../lib/base';
 
 interface Props {
   lang: Lang;
@@ -34,7 +35,7 @@ const { lang, theme = null } = Astro.props;
 const page = contenu.pages.publications;
 const sPub = seg('publications', lang);
 const sTheme = seg('theme', lang);
-const base = sPub ? `/${lang}/${sPub}/` : null;
+const base = sPub ? prefixer(`/${lang}/${sPub}/`) : null;
 
 const tous = publicationsPubliees(lang);
 const documents: Publication[] = theme ? tous.filter((p) => p.themes.includes(theme.id)) : tous;
