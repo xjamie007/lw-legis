@@ -27,7 +27,7 @@ jobs:
     env:
       HAT_DATENBANK: ${{ secrets.SUPABASE_DB_URL != '' && secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Hinweis — keine Datenbank hinterlegt
         if: env.HAT_DATENBANK != 'true'
