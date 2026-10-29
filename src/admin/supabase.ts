@@ -13,12 +13,21 @@
  */
 import { createClient } from '@supabase/supabase-js';
 
-const url = import.meta.env.PUBLIC_SUPABASE_URL;
-const cle = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+/**
+ * Leer zaehlt wie nicht gesetzt.
+ *
+ * In GitHub Actions wird ein fehlendes Secret als LEERE Zeichenkette
+ * eingesetzt, nicht als `undefined` — `??` greift dann nicht, und
+ * `createClient('')` wirft beim Laden des Moduls. Die Folge war eine
+ * vollstaendig weisse Seite unter /admin statt der Meldung, dass die
+ * Verbindung nicht eingerichtet ist. Deshalb `||` und nicht `??`.
+ */
+const url = import.meta.env.PUBLIC_SUPABASE_URL || '';
+const cle = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
 
 export const configuré = Boolean(url && cle);
 
-export const supabase = createClient(url ?? 'http://localhost', cle ?? 'anon', {
+export const supabase = createClient(url || 'http://localhost', cle || 'anon', {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
@@ -29,7 +38,7 @@ export const supabase = createClient(url ?? 'http://localhost', cle ?? 'anon', {
 });
 
 /** Zeigt die Seite auf die oertliche Supabase-Instanz (Probedaten)? */
-export const estLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/.test(url ?? '');
+export const estLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/.test(url);
 
 /**
  * Verlangt die Anmeldung einen zweiten Faktor?
