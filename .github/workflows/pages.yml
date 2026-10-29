@@ -1,0 +1,112 @@
+# ===========================================================================
+# LW LEGIS — Vorschau auf GitHub Pages
+# ---------------------------------------------------------------------------
+# Liefert den jeweils aktuellen Stand unter
+#   https://<konto>.github.io/<repository>/
+# aus, damit die Seite ohne eigenes Hosting anzusehen ist.
+#
+# DIES IST NICHT DIE VEROEFFENTLICHTE SEITE. Sie traegt auf jeder Seite
+# noindex und sperrt in robots.txt alles — eine unfertige Fassung darf
+# nicht neben der echten Seite im Index stehen und mit ihr um dieselben
+# Suchbegriffe konkurrieren. Das endgueltige Ziel ist Cloudflare Pages
+# (siehe deploy.yml): EU-Rechenzentren, eigene Kopfzeilen, eigene Domain.
+#
+# GitHub Pages liefert ein Projekt-Repository unter einem Unterpfad aus.
+# Den Praefix gibt `configure-pages` als `base_path` aus; Astro und
+# `src/lib/base.ts` setzen ihn vor jede Adresse. Die Linkpruefung kennt
+# ihn ebenfalls und meldet jede Adresse, die ihn verloren hat.
+# ===========================================================================
+name: Vorschau auf GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  # Nicht abbrechen: eine halb ausgelieferte Seite ist schlimmer als eine,
+  # die eine Minute aelter ist.
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  bauen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Pages einrichten
+        id: pages
+        uses: actions/configure-pages@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Abhängigkeiten installieren
+        run: npm ci
+
+      - name: Inhalte aus Supabase holen
+        env:
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        # Ohne Zugangsdaten wird aus content/snapshot.json gebaut.
+        run: node scripts/fetch-content.mjs
+
+      - name: Farbkontraste prüfen
+        run: node scripts/check-contrast.mjs
+
+      - name: Inhalte prüfen
+        run: node scripts/check-content.mjs
+
+      - name: Bauen
+        env:
+          PUBLIC_SITE_URL: ${{ steps.pages.outputs.origin }}
+          PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          PUBLIC_NOINDEX: '1'
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+        run: npx astro build && node scripts/postbuild.mjs
+
+      - name: Links prüfen
+        env:
+          PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: node scripts/check-links.mjs
+
+      - name: Gegenprobe — keine Adresse ohne Präfix
+        env:
+          PRAEFIX: ${{ steps.pages.outputs.base_path }}
+        # Die Linkpruefung sieht nur Adressen, die auf eine Seite zeigen
+        # sollen. Schriften, Bilder und Symbole gehen ihr durch — und
+        # genau die brechen unter einem Unterpfad als Erstes.
+        run: |
+          set -euo pipefail
+          OHNE=$(grep -rhoE '(href|src|data|poster)="/[^"]*"' dist --include='*.html' \
+                 | grep -vE "=\"${PRAEFIX}/" || true)
+          if [ -n "$OHNE" ]; then
+            echo "Adressen ohne Präfix ${PRAEFIX}:"
+            echo "$OHNE" | sort -u
+            exit 1
+          fi
+          echo "Alle absoluten Adressen tragen ${PRAEFIX}."
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  ausliefern:
+    needs: bauen
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.auslieferung.outputs.page_url }}
+    steps:
+      - name: Auf GitHub Pages ausliefern
+        id: auslieferung
+        uses: actions/deploy-pages@v5

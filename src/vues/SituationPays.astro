@@ -15,6 +15,7 @@ import {
   type OptionAxe,
 } from '../lib/content';
 import { seg } from '../lib/routes';
+import { prefixer } from '../lib/base';
 
 interface Props {
   lang: Lang;
@@ -31,7 +32,7 @@ const publiees = new Set(
 
 const sSit = seg('situations', lang);
 const sSrv = seg('services', lang);
-const base = sSit ? `/${lang}/${sSit}/` : null;
+const base = sSit ? prefixer(`/${lang}/${sSit}/`) : null;
 
 const phrase = {
   fr: (p: string, v: string) => `Vous êtes ${p} et vous souhaitez, au Luxembourg, ${v}.`,
@@ -57,7 +58,7 @@ const phrase = {
             const href = fertig && base
               ? `${base}${txt(pays.slug, lang)}/${txt(pr.slug, lang)}/`
               : f && sSrv
-                ? `/${lang}/${sSrv}/${txt(f.slug, lang)}/`
+                ? prefixer(`/${lang}/${sSrv}/${txt(f.slug, lang)}/`)
                 : null;
             return (
               <li class="vorhaben__element rang">

@@ -39,6 +39,25 @@ const fichiers = await parcourir(DIST);
 const pages = fichiers.filter((f) => f.endsWith('.html'));
 
 /** Welche Adressen gibt es? */
+/**
+ * Unterpfad der Auslieferung — '' in der Wurzel, sonst z. B. '/lw-legis'.
+ * Im gebauten HTML tragen alle internen Adressen diesen Praefix; `dist/`
+ * selbst kennt ihn nicht. Beides muss hier zusammengefuehrt werden.
+ */
+const BASE = (process.env.PUBLIC_BASE_PATH || '/').replace(/\/+$/, '');
+
+/**
+ * Nimmt den Praefix wieder ab. Fehlt er, ist der Link kaputt — er zeigt
+ * an der ausgelieferten Seite vorbei. Diese Pruefung ist der eigentliche
+ * Zweck der Funktion: genau diesen Fehler macht man beim Umstellen.
+ */
+function sansBase(adresse) {
+  if (!BASE) return adresse;
+  if (adresse === BASE) return '/';
+  if (adresse.startsWith(`${BASE}/`)) return adresse.slice(BASE.length);
+  return null;
+}
+
 const adressesConnues = new Set();
 for (const f of fichiers) {
   const rel = '/' + relative(DIST, f).replace(/\\/g, '/');
@@ -90,7 +109,12 @@ for (const f of pages) {
       continue;
     }
 
-    const [chemin, ancre] = href.split('#');
+    const [cheminBrut, ancre] = href.split('#');
+    const chemin = sansBase(cheminBrut);
+    if (chemin === null) {
+      signaler(f, 'Link ohne Auslieferungspräfix', href);
+      continue;
+    }
     const cible = chemin.endsWith('/') ? chemin : `${chemin}/`;
     const existe =
       adressesConnues.has(chemin) ||
@@ -112,7 +136,11 @@ for (const f of pages) {
   for (const m of html.matchAll(/<link\b[^>]*rel="alternate"[^>]*href="([^"]+)"/g)) {
     try {
       const u = new URL(m[1]);
-      const cible = u.pathname;
+      const cible = sansBase(u.pathname);
+      if (cible === null) {
+        signaler(f, 'hreflang ohne Auslieferungspräfix', u.pathname);
+        continue;
+      }
       if (!adressesConnues.has(cible) && !adressesConnues.has(`${cible}index.html`)) {
         signaler(f, 'hreflang zeigt ins Leere', cible);
       }
@@ -169,7 +197,11 @@ if (!sitemap) {
   const xml = await readFile(sitemap, 'utf8');
   const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
   for (const loc of locs) {
-    const chemin = new URL(loc).pathname;
+    const chemin = sansBase(new URL(loc).pathname);
+    if (chemin === null) {
+      signaler('sitemap.xml', 'Eintrag ohne Auslieferungspräfix', loc);
+      continue;
+    }
     if (!adressesConnues.has(chemin) && !adressesConnues.has(`${chemin}index.html`)) {
       problemes.push({ fichier: '/sitemap.xml', type: 'Adresse gibt es nicht', detail: chemin });
     }
@@ -186,11 +218,16 @@ if (!robots) {
   problemes.push({ fichier: '/robots.txt', type: 'fehlt', detail: '' });
 } else {
   const txt = await readFile(robots, 'utf8');
-  if (!/Disallow:\s*\/admin/.test(txt)) {
-    problemes.push({ fichier: '/robots.txt', type: '/admin nicht ausgeschlossen', detail: '' });
-  }
-  if (!/Sitemap:/.test(txt)) {
-    problemes.push({ fichier: '/robots.txt', type: 'kein Sitemap-Verweis', detail: '' });
+  // Eine Vorschau sperrt alles. Dann sind Adminausschluss und
+  // Sitemap-Verweis nicht nur entbehrlich, sondern falsch.
+  const allesGesperrt = /^\s*Disallow:\s*\/\s*$/m.test(txt);
+  if (!allesGesperrt) {
+    if (!new RegExp(`Disallow:\\s*${BASE}/admin`).test(txt)) {
+      problemes.push({ fichier: '/robots.txt', type: '/admin nicht ausgeschlossen', detail: '' });
+    }
+    if (!/Sitemap:/.test(txt)) {
+      problemes.push({ fichier: '/robots.txt', type: 'kein Sitemap-Verweis', detail: '' });
+    }
   }
 }
 

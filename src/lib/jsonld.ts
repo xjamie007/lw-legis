@@ -21,6 +21,7 @@
 import { contenu, estRefOuverte } from './content';
 import { absolu, SITE } from './seo';
 import { LANG_BALISE, type Lang, type Multi } from './langs';
+import { BASE, prefixer } from './base';
 
 type Noeud = Record<string, unknown>;
 
@@ -67,11 +68,11 @@ function horaires(): Noeud[] | undefined {
 }
 
 export function idKanzlei(): string {
-  return `${SITE}/#etude`;
+  return `${SITE}${BASE}/#etude`;
 }
 
 export function idPersonne(): string {
-  return `${SITE}/#alain-lorang`;
+  return `${SITE}${BASE}/#alain-lorang`;
 }
 
 /** Die Kanzlei als LegalService. */
@@ -80,7 +81,7 @@ export function legalService(lang: Lang, languesDisponibles: Lang[]): Noeud {
     '@type': 'LegalService',
     '@id': idKanzlei(),
     name: s.nom,
-    url: absolu(`/${lang}/`),
+    url: absolu(prefixer(`/${lang}/`)),
     address: adressePostale(),
     telephone: s.telephone.central,
     email: s.courriel,
@@ -184,7 +185,7 @@ export function fildAriane(elements: { nom: string; url: string }[]): Noeud | nu
 export function webSite(lang: Lang, url: string): Noeud {
   return {
     '@type': 'WebSite',
-    '@id': `${SITE}/#site-${lang}`,
+    '@id': `${SITE}${BASE}/#site-${lang}`,
     name: s.nom,
     url: absolu(url),
     inLanguage: LANG_BALISE[lang],

@@ -50,6 +50,7 @@ import {
   type Cle,
 } from './chemins';
 import { annulerModification, chargerModifications, type Modification } from './modifications';
+import { prefixer } from '../../lib/base';
 
 type Ligne = Record<string, any>;
 type CleT = Parameters<typeof traduire>[1];
@@ -565,9 +566,9 @@ export default function Atelier({
   function changerLangue(l: Lang) {
     const alt = doc()?.querySelector(`link[rel="alternate"][hreflang="${l}"]`)?.getAttribute('href');
     try {
-      aller(alt ? new URL(alt, window.location.href).pathname : `/${l}/`);
+      aller(alt ? new URL(alt, window.location.href).pathname : prefixer(`/${l}/`));
     } catch {
-      aller(`/${l}/`);
+      aller(prefixer(`/${l}/`));
     }
   }
 

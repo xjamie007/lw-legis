@@ -28,6 +28,7 @@ import { txt } from '../lib/langs';
 import { paysOptions, projetOptions, situationsPubliees, familleParId } from '../lib/content';
 import { seg, url } from '../lib/routes';
 import Bild from './Bild.astro';
+import { prefixer } from '../lib/base';
 
 interface Props {
   lang: Lang;
@@ -39,7 +40,7 @@ const projets = projetOptions(lang);
 
 const segSituations = seg('situations', lang);
 const segServices = seg('services', lang);
-const apercu = segSituations ? `/${lang}/${segSituations}/` : null;
+const apercu = segSituations ? prefixer(`/${lang}/${segSituations}/`) : null;
 
 /** Welche Konstellationen sind in dieser Sprache fertig? */
 const publiees = new Set(situationsPubliees(lang).map((s) => `${s.pays}--${s.projet}`));

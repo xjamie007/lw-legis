@@ -1,4 +1,5 @@
 ---
+import { prefixer } from '../lib/base';
 /**
  * src/components/Wappen.astro — Das Wappen der Kanzlei.
  *
@@ -37,7 +38,7 @@ const {
 
 /** Seitenverhaeltnis der freigestellten Datei: 694 × 240. */
 const masse = groesse === 'klein' ? { w: 156, h: 54 } : { w: 232, h: 80 };
-const datei = dunkel ? '/bilder/wappen-hell.png' : '/bilder/wappen.png';
+const datei = prefixer(dunkel ? '/bilder/wappen-hell.png' : '/bilder/wappen.png');
 ---
 
 <img

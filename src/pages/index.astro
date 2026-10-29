@@ -15,8 +15,9 @@
 import { LANG_DEFAUT, LANGS, LANG_NOMS } from '../lib/langs';
 import { languesDuSite } from '../lib/content';
 import { absolu } from '../lib/seo';
+import { prefixer } from '../lib/base';
 
-const cible = `/${LANG_DEFAUT}/`;
+const cible = prefixer(`/${LANG_DEFAUT}/`);
 const pretes = languesDuSite();
 ---
 
@@ -30,7 +31,7 @@ const pretes = languesDuSite();
     <link rel="canonical" href={absolu(cible)} />
     {
       LANGS.filter((l) => pretes.includes(l)).map((l) => (
-        <link rel="alternate" hreflang={l} href={absolu(`/${l}/`)} />
+        <link rel="alternate" hreflang={l} href={absolu(prefixer(`/${l}/`))} />
       ))
     }
     <link rel="alternate" hreflang="x-default" href={absolu(cible)} />
@@ -48,7 +49,7 @@ const pretes = languesDuSite();
       {
         LANGS.filter((l) => pretes.includes(l)).map((l) => (
           <li>
-            <a href={`/${l}/`} hreflang={l}>
+            <a href={prefixer(`/${l}/`)} hreflang={l}>
               {LANG_NOMS[l]}
             </a>
           </li>

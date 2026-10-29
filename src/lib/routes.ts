@@ -12,6 +12,7 @@
  * Alle Adressen enden auf einen Schraegstrich (astro.config: trailingSlash).
  */
 import { LANGS, type Lang, type Multi } from './langs';
+import { prefixer } from './base';
 
 /** Ein Pfadsegment je Sprache. `null` = fuer diese Sprache noch nicht geliefert. */
 export type Segment = Multi;
@@ -57,8 +58,8 @@ export function seg(nom: NomSegment, lang: Lang): string | null {
  */
 export function url(lang: Lang, ...parties: (string | null | undefined)[]): string | null {
   if (parties.some((p) => p === null || p === undefined || p === '')) return null;
-  const chemin = parties.filter(Boolean).join('/');
-  return chemin ? `/${lang}/${chemin}/` : `/${lang}/`;
+  const reste = parties.filter(Boolean).join('/');
+  return prefixer(reste ? `/${lang}/${reste}/` : `/${lang}/`);
 }
 
 /** Adresse aus benannten Segmenten. */
@@ -68,7 +69,7 @@ export function urlSeg(lang: Lang, ...noms: NomSegment[]): string | null {
 
 /** Startseite einer Sprache. */
 export function urlAccueil(lang: Lang): string {
-  return `/${lang}/`;
+  return prefixer(`/${lang}/`);
 }
 
 /** Die Sprachen, in denen ein Pfad aus diesen Segmenten ueberhaupt existiert. */

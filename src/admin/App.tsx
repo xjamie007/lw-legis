@@ -25,6 +25,7 @@ import type { Lang } from '../lib/langs';
 import Connexion from './composants/Connexion';
 import Feuille from './composants/Feuille';
 import Atelier from './atelier/Atelier';
+import { prefixer } from '../lib/base';
 
 interface Props {
   /** Zeitpunkt, aus dem die Website zuletzt gebaut wurde. */
@@ -37,10 +38,10 @@ interface Props {
 function pageDeDepart(langues: Lang[]): string {
   const seite = new URLSearchParams(window.location.search).get('seite');
   // Nur Pfade dieser Website, keine fremde Adresse.
-  if (seite?.startsWith('/') && !seite.startsWith('//') && !seite.startsWith('/admin')) {
+  if (seite?.startsWith('/') && !seite.startsWith('//') && !seite.includes('/admin/')) {
     return seite;
   }
-  return `/${langues[0] ?? 'fr'}/`;
+  return prefixer(`/${langues[0] ?? 'fr'}/`);
 }
 
 export default function App({ stand, langues }: Props) {

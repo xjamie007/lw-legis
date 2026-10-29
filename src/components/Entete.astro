@@ -17,6 +17,7 @@ import { t, type Cle } from '../lib/i18n';
 import { contenu, languesDuSite } from '../lib/content';
 import { seg, urlAccueil, type NomSegment } from '../lib/routes';
 import Wappen from './Wappen.astro';
+import { prefixer } from '../lib/base';
 
 interface Props {
   lang: Lang;
@@ -35,7 +36,7 @@ const liens = contenu.navigation
     cle: n.cle as Cle,
     href: (() => {
       const s = seg(n.segment as NomSegment, lang);
-      return s ? `/${lang}/${s}/` : null;
+      return s ? prefixer(`/${lang}/${s}/`) : null;
     })(),
   }))
   .filter((n): n is { cle: Cle; href: string } => n.href !== null);

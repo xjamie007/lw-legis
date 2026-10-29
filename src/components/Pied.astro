@@ -16,6 +16,7 @@ import { t, type Cle } from '../lib/i18n';
 import { contenu } from '../lib/content';
 import { seg, type NomSegment } from '../lib/routes';
 import Wappen from './Wappen.astro';
+import { prefixer } from '../lib/base';
 
 interface Props {
   lang: Lang;
@@ -33,7 +34,7 @@ const liensLegaux = contenu.pied
     cle: p.cle as Cle,
     href: (() => {
       const x = seg(p.segment as NomSegment, lang);
-      return x ? `/${lang}/${x}/` : null;
+      return x ? prefixer(`/${lang}/${x}/`) : null;
     })(),
   }))
   .filter((p): p is { cle: Cle; href: string } => p.href !== null);
@@ -90,7 +91,7 @@ const annee = new Date().getFullYear();
       © {annee} {s.nom}. {t(lang, 'pied.droits')}.
       {/* Unauffaellig wie bei Krombach und DRP: fuehrt in den
           Redaktionsbereich, der dieselbe Seite zum Bearbeiten oeffnet. */}
-      <a class="k-login" href={`/admin/?seite=${encodeURIComponent(chemin)}`} rel="nofollow">Login</a>
+      <a class="k-login" href={`${prefixer('/admin/')}?seite=${encodeURIComponent(chemin)}`} rel="nofollow">Login</a>
     </p>
   </div>
 </footer>

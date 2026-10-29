@@ -12,6 +12,7 @@ import { contenu, familles } from '../lib/content';
 import { seg } from '../lib/routes';
 import Marge from '../components/Marge.astro';
 import { edFamille, edPage } from '../lib/edition';
+import { prefixer } from '../lib/base';
 
 interface Props {
   lang: Lang;
@@ -34,7 +35,7 @@ const sSrv = seg('services', lang);
           nos.map((f) => (
             <>
               <dt class="definitions__terme">
-                <a href={sSrv ? `/${lang}/${sSrv}/${txt(f.slug, lang)}/` : '#'} {...edFamille(f.id, 'terme')}>
+                <a href={sSrv ? prefixer(`/${lang}/${sSrv}/${txt(f.slug, lang)}/`) : '#'} {...edFamille(f.id, 'terme')}>
                   {txt(f.terme, lang)}
                 </a>
               </dt>

@@ -15,6 +15,7 @@ import { LANGS, txt, type Lang } from './langs';
 import { t } from './i18n';
 import { seg, urlAccueil } from './routes';
 import { couper } from './seo';
+import { prefixer } from './base';
 import {
   contenu,
   familles,
@@ -113,7 +114,7 @@ function routesDe(lang: Lang): Route[] {
   // --- Situationsmatrix ----------------------------------------------------
   const sSit = S('situations');
   if (sSit) {
-    const base = `/${lang}/${sSit}/`;
+    const base = prefixer(`/${lang}/${sSit}/`);
     const m = metaDe('situations', lang);
     const filBase: Etape[] = [accueil, { nom: m.titre, url: base }];
     pousser({
@@ -186,7 +187,7 @@ function routesDe(lang: Lang): Route[] {
   // --- Taetigkeitsgebiete ---------------------------------------------------
   const sSrv = S('services');
   if (sSrv) {
-    const base = `/${lang}/${sSrv}/`;
+    const base = prefixer(`/${lang}/${sSrv}/`);
     const m = metaDe('services', lang);
     const filBase: Etape[] = [accueil, { nom: m.titre, url: base }];
     pousser({
@@ -220,7 +221,7 @@ function routesDe(lang: Lang): Route[] {
   // --- Die Kanzlei ----------------------------------------------------------
   const sEtu = S('etude');
   if (sEtu) {
-    const chemin = `/${lang}/${sEtu}/`;
+    const chemin = prefixer(`/${lang}/${sEtu}/`);
     const m = metaDe('etude', lang);
     pousser({
       cle: 'etude',
@@ -236,7 +237,7 @@ function routesDe(lang: Lang): Route[] {
   // --- Fonds documentaire ---------------------------------------------------
   const sPub = S('publications');
   if (sPub) {
-    const base = `/${lang}/${sPub}/`;
+    const base = prefixer(`/${lang}/${sPub}/`);
     const m = metaDe('publications', lang);
     const filBase: Etape[] = [accueil, { nom: m.titre, url: base }];
     pousser({
@@ -304,7 +305,7 @@ function routesDe(lang: Lang): Route[] {
   for (const s of simples) {
     const x = S(s.nomSegment);
     if (!x) continue;
-    const chemin = `/${lang}/${x}/`;
+    const chemin = prefixer(`/${lang}/${x}/`);
     const m = metaDe(s.cle, lang);
     pousser({
       cle: s.cle,

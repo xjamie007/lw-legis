@@ -20,6 +20,7 @@ import { t } from '../lib/i18n';
 import { contenu, familles } from '../lib/content';
 import { seg } from '../lib/routes';
 import { edFamille } from '../lib/edition';
+import { prefixer } from '../lib/base';
 
 interface Props {
   lang: Lang;
@@ -37,7 +38,7 @@ const avocat = contenu.avocat;
       {
         nos.map((f) => (
           <li class="leiste__element">
-            <a class="leiste__lien" href={sSrv ? `/${lang}/${sSrv}/${txt(f.slug, lang)}/` : '#'}>
+            <a class="leiste__lien" href={sSrv ? prefixer(`/${lang}/${sSrv}/${txt(f.slug, lang)}/`) : '#'}>
               <span class="leiste__terme" {...edFamille(f.id, 'terme')}>{txt(f.terme, lang)}</span>
               <span class="leiste__kurz" {...edFamille(f.id, 'kurz')}>{txt(f.kurz, lang)}</span>
             </a>

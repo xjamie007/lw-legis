@@ -32,6 +32,7 @@ import { languesDuSite, contenu, familles, faqPubliee, publicationsPubliees } fr
 import { txt, type Lang } from '../../lib/langs';
 import { seg } from '../../lib/routes';
 import * as ld from '../../lib/jsonld';
+import { prefixer } from '../../lib/base';
 
 export const getStaticPaths = (() => {
   return toutesLesRoutes().map((r) => ({
@@ -65,7 +66,7 @@ if (route.type === 'accueil') {
   const sSrv = seg('services', lang);
   if (sSrv) {
     for (const f of familles(lang)) {
-      noeuds.push(ld.service(f, lang, `/${lang}/${sSrv}/${txt(f.slug, lang)}/`));
+      noeuds.push(ld.service(f, lang, prefixer(`/${lang}/${sSrv}/${txt(f.slug, lang)}/`)));
     }
   }
 }
@@ -83,7 +84,7 @@ if (route.type === 'publications') {
   const sPub = seg('publications', lang);
   if (sPub) {
     for (const p of publicationsPubliees(lang).slice(0, 20)) {
-      noeuds.push(ld.article(p, lang, `/${lang}/${sPub}/${txt(p.slug, lang)}/`));
+      noeuds.push(ld.article(p, lang, prefixer(`/${lang}/${sPub}/${txt(p.slug, lang)}/`)));
     }
   }
 }
