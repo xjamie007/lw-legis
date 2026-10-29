@@ -1,0 +1,151 @@
+---
+/**
+ * src/vues/Contact.astro — Kontaktseite.
+ *
+ * Die Anschrift steht hier exakt so wie in der Fusszeile, im Impressum
+ * und in den strukturierten Daten. Die Postfachanschrift steht getrennt
+ * davon und wird nie mit der Besucheradresse in einem Block vermischt.
+ */
+import type { Lang } from '../lib/langs';
+import { txt } from '../lib/langs';
+import { t } from '../lib/i18n';
+import { contenu, estRefOuverte } from '../lib/content';
+import Lacune from '../components/Lacune.astro';
+import Formulaire from '../components/Formulaire.astro';
+import { edPage } from '../lib/edition';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const page = contenu.pages.contact;
+const s = contenu.settings;
+
+/** Oeffnungszeiten nur ausgeben, wenn sie bestaetigt sind. */
+const horairesBestaetigt = !estRefOuverte(s.horaires?.statut);
+const jours: Record<string, Record<Lang, string>> = {
+  Mo: { fr: 'lundi', de: 'Montag', en: 'Monday', lb: 'Méindeg' },
+  Fr: { fr: 'vendredi', de: 'Freitag', en: 'Friday', lb: 'Freideg' },
+};
+---
+
+<article class="section">
+  <div class="enveloppe">
+    <div class="colonne">
+      <h1 class="titre-2" data-revele="titre" {...edPage('contact.titre')}>{txt(page.titre, lang)}</h1>
+      <p class="chapeau" data-revele="texte" {...edPage('contact.chapeau')}>{txt(page.chapeau, lang)}</p>
+
+      <div class="coordonnees" data-revele="liste">
+        <div class="coordonnees__bloc">
+          <h2 class="coordonnees__titre">{t(lang, 'contact.adresse')}</h2>
+          <address class="coordonnees__valeur">
+            {s.nom}<br />
+            {s.adresse.rue}<br />
+            {s.adresse.code_postal}&nbsp;{s.adresse.ville}<br />
+            {txt(s.adresse.pays, lang)}
+          </address>
+          <p class="coordonnees__note">
+            {s.postfach.boite}, {s.postfach.ville}
+            {estRefOuverte(s.postfach.code_postal) && (
+              <>
+                {' '}
+                <Lacune id="bp_code_postal" lang={lang} />
+              </>
+            )}
+          </p>
+        </div>
+
+        <div class="coordonnees__bloc">
+          <h2 class="coordonnees__titre">{t(lang, 'contact.telephone')}</h2>
+          <p class="coordonnees__valeur">
+            <a href={`tel:${s.telephone.central_lien}`}>{s.telephone.central}</a>
+          </p>
+          <h2 class="coordonnees__titre coordonnees__titre--espace">
+            {t(lang, 'contact.courriel')}
+          </h2>
+          <p class="coordonnees__valeur">
+            <a href={`mailto:${s.courriel}`}>{s.courriel}</a>
+          </p>
+        </div>
+
+        <div class="coordonnees__bloc">
+          <h2 class="coordonnees__titre">{t(lang, 'contact.horaires')}</h2>
+          {
+            horairesBestaetigt ? (
+              <p class="coordonnees__valeur">
+                {txt(jours.Mo, lang)}–{txt(jours.Fr, lang)}{' '}
+                {s.horaires.valeurs[0].ouvre}–{s.horaires.valeurs[0].ferme}
+              </p>
+            ) : (
+              <p class="coordonnees__valeur">
+                <Lacune id="horaires" lang={lang} />
+              </p>
+            )
+          }
+
+          <h2 class="coordonnees__titre coordonnees__titre--espace">
+            {t(lang, 'contact.acces')}
+          </h2>
+          <p class="coordonnees__valeur">
+            <Lacune id="acces" lang={lang} />
+          </p>
+
+          <h2 class="coordonnees__titre coordonnees__titre--espace">
+            {t(lang, 'contact.stationnement')}
+          </h2>
+          <p class="coordonnees__valeur">
+            <Lacune id="acces" lang={lang} />
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<section class="section section--craie" aria-labelledby="titre-formulaire-contact">
+  <div class="enveloppe">
+    <div class="colonne">
+      <h2 class="titre-2" id="titre-formulaire-contact">{t(lang, 'formulaire.titre')}</h2>
+      <Formulaire lang={lang} niveau={3} id="formulaire-contact" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .coordonnees {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-top: 2.5rem;
+    max-width: var(--mesure);
+  }
+  .coordonnees__titre {
+    font-family: var(--font-commande);
+    font-size: var(--text-marge);
+    font-weight: 500;
+    color: var(--color-pierre);
+    margin-bottom: 0.35rem;
+  }
+  .coordonnees__titre--espace {
+    margin-top: 1.25rem;
+  }
+  .coordonnees__valeur {
+    font-family: var(--font-commande);
+    font-size: var(--text-commande);
+    font-style: normal;
+    line-height: 1.6;
+  }
+  .coordonnees__note {
+    font-family: var(--font-commande);
+    font-size: var(--text-marge);
+    color: var(--color-pierre);
+    margin-top: 0.75rem;
+  }
+  @media (min-width: 45rem) {
+    .coordonnees {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2.5rem 3rem;
+    }
+  }
+</style>

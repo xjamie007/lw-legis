@@ -1,0 +1,71 @@
+# ===========================================================================
+# LW LEGIS — Vorschau
+# ---------------------------------------------------------------------------
+# Baut aus den ENTWUERFEN, nicht aus dem Veroeffentlichten, und liefert das
+# Ergebnis unter einer nicht erratbaren Adresse aus.
+#
+# Die Vorschau traegt X-Robots-Tag: noindex (siehe _headers) und ist mit
+# Cloudflare Access geschuetzt. Sie darf nicht in den Index geraten —
+# sonst konkurriert sie mit der echten Seite.
+# ===========================================================================
+name: Vorschau
+
+on:
+  repository_dispatch:
+    types: [apercu]
+  workflow_dispatch:
+
+concurrency:
+  group: vorschau
+  cancel-in-progress: true
+
+jobs:
+  vorschau:
+    runs-on: ubuntu-latest
+    env:
+      HAT_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+
+      - name: Inhalte holen — auch die Entwürfe
+        env:
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          # Damit baut `fetch-content.mjs` die Entwürfe als veröffentlicht.
+          APERCU: '1'
+        run: node scripts/fetch-content.mjs
+
+      - name: Bauen
+        env:
+          PUBLIC_SITE_URL: ${{ vars.APERCU_URL }}
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+        run: npx astro build && node scripts/postbuild.mjs
+
+      - name: Alles auf noindex setzen
+        # Eine Vorschau darf unter keinen Umständen indexiert werden.
+        run: |
+          printf '/*\n  X-Robots-Tag: noindex, nofollow\n' > dist/_headers
+          printf 'User-agent: *\nDisallow: /\n' > dist/robots.txt
+          rm -f dist/sitemap.xml
+
+      - name: Vorschau ausliefern
+        if: env.HAT_CLOUDFLARE == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=lw-legis --branch=vorschau
+
+      - name: Vorschau aufbewahren, wenn nicht ausgeliefert wird
+        if: env.HAT_CLOUDFLARE != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: vorschau
+          path: dist
+          retention-days: 14

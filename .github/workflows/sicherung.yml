@@ -1,0 +1,110 @@
+# ===========================================================================
+# LW LEGIS — Tägliche Sicherung der Datenbank
+# ---------------------------------------------------------------------------
+# Legt jede Nacht einen Abzug in den Storage-Bucket `sicherungen` und
+# loescht Abzuege, die aelter als 30 Tage sind. Ausserdem werden
+# abgelaufene Anfragen entfernt — die Frist steht in der
+# Datenschutzerklaerung und muss auch eingehalten werden.
+#
+# Eine Sicherung, die nie zurueckgespielt wurde, ist keine Sicherung.
+# Wie das geht, steht in der README unter „Sicherung zurückspielen“.
+# ===========================================================================
+name: Sicherung
+
+on:
+  schedule:
+    # 03:17 UTC — bewusst nicht zur vollen Stunde, da drängeln sich alle.
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  sichern:
+    runs-on: ubuntu-latest
+    # Ohne hinterlegte Datenbank gibt es nichts zu sichern. Dann meldet
+    # der Lauf das im Klartext und endet gruen — ein naechtlicher Job, der
+    # jede Nacht rot fehlschlaegt, wird nach einer Woche ignoriert, und
+    # dann faellt die echte Stoerung auch nicht mehr auf.
+    env:
+      HAT_DATENBANK: ${{ secrets.SUPABASE_DB_URL != '' && secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Hinweis — keine Datenbank hinterlegt
+        if: env.HAT_DATENBANK != 'true'
+        run: |
+          echo "Keine Sicherung: SUPABASE_DB_URL und SUPABASE_SERVICE_ROLE_KEY"
+          echo "sind nicht als Repository-Secrets hinterlegt."
+
+      - name: Supabase CLI
+        if: env.HAT_DATENBANK == 'true'
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Abzug ziehen
+        if: env.HAT_DATENBANK == 'true'
+        env:
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          DATUM=$(date -u +%Y-%m-%d)
+          supabase db dump \
+            --db-url "${{ secrets.SUPABASE_DB_URL }}" \
+            --data-only \
+            -f "sicherung-${DATUM}.sql"
+          gzip "sicherung-${DATUM}.sql"
+          ls -la sicherung-*.sql.gz
+
+      - name: In den Bucket legen
+        if: env.HAT_DATENBANK == 'true'
+        env:
+          URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          DATUM=$(date -u +%Y-%m-%d)
+          curl --fail -sS -X POST \
+            "$URL/storage/v1/object/sicherungen/sicherung-${DATUM}.sql.gz" \
+            -H "Authorization: Bearer $KEY" \
+            -H "Content-Type: application/gzip" \
+            --data-binary "@sicherung-${DATUM}.sql.gz"
+          echo "Sicherung abgelegt: sicherung-${DATUM}.sql.gz"
+
+      - name: Abgelaufene Anfragen löschen
+        if: env.HAT_DATENBANK == 'true'
+        env:
+          URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          curl --fail -sS -X POST "$URL/rest/v1/rpc/purger_anfragen" \
+            -H "apikey: $KEY" -H "Authorization: Bearer $KEY" \
+            -H "Content-Type: application/json" -d '{}'
+
+      - name: Sicherungen älter als 30 Tage entfernen
+        if: env.HAT_DATENBANK == 'true'
+        env:
+          URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          GRENZE=$(date -u -d '30 days ago' +%Y-%m-%d)
+          LISTE=$(curl --fail -sS -X POST "$URL/storage/v1/object/list/sicherungen" \
+            -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+            -d '{"prefix":"","limit":200}')
+          echo "$LISTE" | node -e '
+            let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{
+              const grenze = process.argv[1];
+              const alt = JSON.parse(d)
+                .map(o=>o.name)
+                .filter(n=>{const m=n.match(/sicherung-(\d{4}-\d{2}-\d{2})/); return m && m[1] < grenze;});
+              console.log(JSON.stringify(alt));
+            });' "$GRENZE" > alt.json
+          ANZAHL=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("alt.json","utf8")).length)')
+          if [ "$ANZAHL" -gt 0 ]; then
+            curl --fail -sS -X DELETE "$URL/storage/v1/object/sicherungen" \
+              -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+              -d "{\"prefixes\": $(cat alt.json)}"
+            echo "$ANZAHL alte Sicherung(en) entfernt."
+          else
+            echo "Nichts zu entfernen."
+          fi

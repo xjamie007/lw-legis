@@ -1,0 +1,85 @@
+# ===========================================================================
+# LW LEGIS — örtliche Supabase-Umgebung
+# ---------------------------------------------------------------------------
+# Für `supabase start`. Damit läuft die ganze Datenbank samt Anmeldung und
+# Dateiablage auf diesem Rechner — ohne Konto, ohne Internet, ohne Kosten.
+# Zum Ausprobieren des Redaktionsbereichs ist das der schnellste Weg.
+#
+# Die Ports weichen bewusst von den Standardwerten (54321 ff.) ab: Auf
+# diesem Rechner läuft bereits ein anderes Supabase-Projekt. Zwei Projekte
+# auf denselben Ports vertragen sich nicht.
+# ===========================================================================
+
+project_id = "lw-legis"
+
+[api]
+enabled = true
+port = 54421
+schemas = ["public", "storage", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54422
+shadow_port = 54420
+major_version = 17
+
+[studio]
+# Studio ist die Weboberflaeche von Supabase. Fuer den Redaktionsbereich
+# wird sie nicht gebraucht; sie hilft nur beim Hineinschauen in die
+# Tabellen. Ausgeschaltet, weil auf diesem Rechner bereits ein zweiter
+# Supabase-Stack laeuft und beide zusammen Docker ueberfordern.
+# Zum Einschalten: enabled = true.
+enabled = false
+port = 54423
+api_url = "http://127.0.0.1"
+
+# Postfach für die Entwicklung: Alle Mails, die Supabase verschickt —
+# Einladungen, Bestätigungen — landen hier statt im echten Netz.
+[inbucket]
+enabled = true
+port = 54424
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+site_url = "http://localhost:4321"
+additional_redirect_urls = ["http://localhost:4321"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+# KEINE öffentliche Registrierung. Konten entstehen nur per Einladung.
+enable_signup = false
+
+[auth.email]
+# ACHTUNG: `enable_signup = false` schaltet hier nicht nur die
+# Registrierung ab, sondern den E-Mail-Anbieter insgesamt — auch das
+# Anmelden. GoTrue antwortet dann mit „Email logins are disabled“.
+# Die oeffentliche Registrierung sperrt stattdessen `enable_signup` unter
+# [auth] weiter oben; Konten legt ausschliesslich der Inhaber an.
+enable_signup = true
+# Oertlich gibt es keinen Postversand, deshalb keine Bestaetigungsmails.
+# Im Betrieb gehoert das auf true.
+enable_confirmations = false
+
+# Der zweite Faktor. Im Betrieb kommt ohne ihn niemand in den
+# Redaktionsbereich. Gegen diese örtliche Instanz verlangt die Oberfläche
+# ihn nicht (siehe facteurObligatoire in src/admin/supabase.ts).
+[auth.mfa]
+max_enrolled_factors = 10
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+[analytics]
+enabled = false
+
+# Realtime schiebt Datenbankaenderungen ueber WebSocket an den Browser.
+# Diese Seite benutzt das nicht — sie wird statisch gebaut, und der
+# Redaktionsbereich liest auf Anfrage. Ausgeschaltet spart es einen
+# Container.
+[realtime]
+enabled = false

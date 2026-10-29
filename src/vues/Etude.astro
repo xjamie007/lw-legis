@@ -1,0 +1,194 @@
+---
+/**
+ * src/vues/Etude.astro — Die Kanzlei.
+ *
+ * Werdegang, Aemter, Netzwerke und die Erklaerung von `intuitu personae`.
+ * Keine Referenzen-Sektion: das Berufsgeheimnis und die Standeswerbe-
+ * regeln verbieten es in aller Regel, Mandanten zu nennen. An ihre Stelle
+ * treten die Vertretungsmandate und die Netzwerke — belegte Anerkennung
+ * durch Dritte statt Kundenstimmen.
+ */
+import type { Lang } from '../lib/langs';
+import { txt } from '../lib/langs';
+import { t } from '../lib/i18n';
+import { contenu, equipePubliee } from '../lib/content';
+import Marge from '../components/Marge.astro';
+import Lacune from '../components/Lacune.astro';
+import Bild from '../components/Bild.astro';
+import { ed, edAvocat, edPage } from '../lib/edition';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const page = contenu.pages.etude;
+const a = contenu.avocat;
+const s = contenu.settings;
+const equipe = equipePubliee(lang);
+---
+
+<article class="section">
+  <div class="enveloppe">
+    <div class="colonne">
+      <h1 class="titre-2" data-revele="titre" {...edPage('etude.titre')}>{txt(page.titre, lang)}</h1>
+      <p class="chapeau" data-revele="texte" {...edPage('etude.chapeau')}>{txt(page.chapeau, lang)}</p>
+
+      {/* --- intuitu personae ------------------------------------------- */}
+      <h2 class="titre-3 rubrique" {...edPage('etude.intuitu.titre')}>{txt(page.intuitu.titre, lang)}</h2>
+      <p class="corps" set:html={txt(page.intuitu.texte, lang)} {...edPage('etude.intuitu.texte', true)} />
+      <Marge
+        terme={txt(page.intuitu.marge.terme, lang)}
+        edTerme={edPage('etude.intuitu.marge.terme')}
+        edTexte={edPage('etude.intuitu.marge.texte')}
+      >
+        {txt(page.intuitu.marge.texte, lang)}
+      </Marge>
+
+      {/* --- Werdegang ---------------------------------------------------- */}
+      <h2 class="titre-3 rubrique" data-revele="titre">
+        {a.civilite} {a.nom_complet}
+      </h2>
+      <p class="corps discret">
+        <span {...edAvocat('titre')}>{txt(a.titre, lang)}</span> · {t(lang, 'commun.depuis')} {a.barreau_depuis}
+      </p>
+
+      {/* Das Porträt steht hier größer als auf der Startseite: das hier
+          ist die Seite über ihn, nicht die Seite über die Kanzlei. */}
+      <div class="portrait" data-revele="bild">
+        <Bild platz="portrait" lang={lang} sizes="(min-width: 62rem) 26rem, 100vw" />
+      </div>
+
+      <h3 class="titre-parcours">{t(lang, 'etude.parcours')}</h3>
+      <dl class="parcours" data-revele="definitions">
+        {
+          a.parcours.map((e: { annee: string; texte: Record<string, string> }, i: number) => (
+            <>
+              <dt class="parcours__annee">{e.annee}</dt>
+              <dd class="parcours__texte" {...edAvocat(`parcours.${i}.texte`)}>{txt(e.texte, lang)}</dd>
+            </>
+          ))
+        }
+      </dl>
+
+      <h3 class="titre-parcours">{t(lang, 'etude.fonctions')}</h3>
+      <ul class="liste">
+        {a.fonctions.map((f: { texte: Record<string, string> }, i: number) => (
+          <li {...edAvocat(`fonctions.${i}.texte`)}>{txt(f.texte, lang)}</li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</article>
+
+{/* --- Netzwerke ------------------------------------------------------- */}
+<section class="section section--craie" aria-labelledby="titre-reseaux">
+  <div class="enveloppe">
+    <div class="colonne">
+      <h2 class="titre-2" id="titre-reseaux" data-revele="titre" {...edPage('etude.reseaux.titre')}>{txt(page.reseaux.titre, lang)}</h2>
+      <p class="chapeau discret" {...edPage('etude.reseaux.chapeau')}>{txt(page.reseaux.chapeau, lang)}</p>
+      <dl class="definitions" data-revele="definitions">
+        {
+          s.reseaux.map((r: { id: string; nom: string; role: Record<string, string> }, i: number) => (
+            <>
+              <dt class="definitions__terme">{r.nom}</dt>
+              <dd class="definitions__texte" {...ed('settings', 'stammdaten', `valeur.reseaux.${i}.role`)}>
+                {txt(r.role, lang)}
+              </dd>
+            </>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</section>
+
+{/* --- Team ------------------------------------------------------------- */}
+<section class="section" aria-labelledby="titre-equipe">
+  <div class="enveloppe">
+    <div class="colonne">
+      <h2 class="titre-2" id="titre-equipe" {...edPage('etude.equipe.titre')}>{txt(page.equipe.titre, lang)}</h2>
+      {
+        equipe.length > 0 ? (
+          <ul class="equipe" data-revele="liste">
+            {equipe.map((m) => (
+              <li class="equipe__membre">
+                <p class="equipe__nom" {...ed('team', m.id, 'nom')}>{m.nom}</p>
+                <p class="equipe__fonction" {...ed('team', m.id, 'fonction')}>{txt(m.fonction, lang)}</p>
+                {m.barreau_depuis && (
+                  <p class="equipe__detail">
+                    {t(lang, 'commun.depuis')} {m.barreau_depuis}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="note">
+            <Lacune id="equipe" lang={lang} />
+          </p>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .rubrique {
+    margin-top: 2.5rem;
+  }
+  .portrait {
+    margin-top: 1.5rem;
+    max-width: 26rem;
+  }
+  .titre-parcours {
+    font-family: var(--font-commande);
+    font-size: var(--text-commande);
+    font-weight: 500;
+    color: var(--color-pierre);
+    margin-top: 2rem;
+    margin-bottom: 0.6rem;
+  }
+  .parcours {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    gap: 0.4rem 1.5rem;
+    margin: 0;
+    max-width: var(--mesure);
+  }
+  .parcours__annee {
+    font-family: var(--font-commande);
+    font-size: var(--text-marge);
+    color: var(--color-laiton-texte);
+    padding-top: 0.3rem;
+  }
+  .parcours__texte {
+    margin: 0;
+  }
+  .definitions__definition {
+    color: var(--color-pierre);
+  }
+  .equipe {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.75rem;
+  }
+  .equipe__nom {
+    font-family: var(--font-lecture);
+    font-size: var(--text-h3);
+    font-weight: 600;
+  }
+  .equipe__fonction,
+  .equipe__detail {
+    font-family: var(--font-commande);
+    font-size: var(--text-commande);
+    color: var(--color-pierre);
+  }
+  @media (min-width: 45rem) {
+    .equipe {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,79 @@
+---
+/**
+ * src/components/FilAriane.astro — Brotkrumen.
+ *
+ * Auf allen Unterseiten, nicht auf der Startseite. Der letzte Eintrag ist
+ * kein Link und traegt aria-current.
+ */
+import type { Lang } from '../lib/langs';
+import { t } from '../lib/i18n';
+
+export interface Etape {
+  nom: string;
+  url: string;
+}
+
+interface Props {
+  lang: Lang;
+  etapes: Etape[];
+}
+const { lang, etapes } = Astro.props;
+---
+
+{
+  etapes.length > 1 && (
+    <nav class="fil sans-impression" aria-label={t(lang, 'nav.fil')}>
+      <div class="enveloppe">
+        <ol class="fil__liste">
+          {etapes.map((e, i) => {
+            const dernier = i === etapes.length - 1;
+            return (
+              <li class="fil__element">
+                {dernier ? (
+                  <span aria-current="page">{e.nom}</span>
+                ) : (
+                  <a href={e.url}>{e.nom}</a>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+    </nav>
+  )
+}
+
+<style>
+  .fil {
+    padding-block: 1rem 0;
+  }
+  .fil__liste {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-commande);
+    font-size: var(--text-marge);
+    color: var(--color-pierre);
+  }
+  /* Der Trenner ist ein Schraegstrich, kein Mittelpunkt und kein Pfeil. */
+  .fil__element + .fil__element::before {
+    content: '/';
+    margin-right: 0.5rem;
+    color: color-mix(in srgb, var(--color-pierre) 55%, transparent);
+  }
+  .fil__element a {
+    color: var(--color-pierre);
+    text-decoration: none;
+  }
+  .fil__element a:hover {
+    color: var(--color-frontiere-tief);
+    text-decoration: underline;
+  }
+  .fil__element [aria-current='page'] {
+    color: var(--color-encre);
+  }
+</style>

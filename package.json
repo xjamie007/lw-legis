@@ -1,0 +1,53 @@
+{
+  "name": "lw-legis",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Website der Étude d'Avocats LW LEGIS, Luxembourg",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "node scripts/fetch-content.mjs && node scripts/check-content.mjs && astro build && node scripts/postbuild.mjs",
+    "build:offline": "node scripts/check-content.mjs && astro build && node scripts/postbuild.mjs",
+    "preview": "astro preview",
+    "astro": "astro",
+    "fonts": "node scripts/fetch-fonts.mjs",
+    "content:pull": "node scripts/fetch-content.mjs",
+    "content:check": "node scripts/check-content.mjs",
+    "content:seed": "node scripts/seed-from-snapshot.mjs",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "check:all": "node scripts/check-contrast.mjs && node scripts/check-content.mjs && node scripts/check-links.mjs",
+    "typecheck": "astro check",
+    "content:offen": "node scripts/offene-punkte.mjs",
+    "bilder": "node scripts/bilder-aufbereiten.mjs",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "konto": "node scripts/erstes-konto.mjs"
+  },
+  "dependencies": {
+    "@astrojs/react": "^6.0.6",
+    "@astrojs/sitemap": "^3.7.4",
+    "@supabase/supabase-js": "^2.116.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.3.3",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "sharp": "^0.34.4",
+    "supabase": "^2.117.0",
+    "typescript": "^5.9.3"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}

@@ -1,0 +1,19 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+
+# Geheimnisse — niemals ins Repository
+.env
+.env.local
+.env.*.local
+.vercel
+.netlify
+.wrangler/
+
+# Schriftdateien werden per `npm run fonts` geholt und MUESSEN committet
+# werden (Selbsthosting). Nichts hier ausschliessen.
+
+# Supabase CLI
+supabase/.temp/
+supabase/.branches/

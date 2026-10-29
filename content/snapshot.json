@@ -1,0 +1,4406 @@
+{
+  "meta": {
+    "genere_le": "2026-09-22T16:38:35.622Z",
+    "source": "supabase",
+    "version": 1
+  },
+  "ouvertes": {
+    "rechtsform": {
+      "statut": "fehlt",
+      "bloquant": true,
+      "domaine": "Impressum",
+      "titre": "Rechtsform der Kanzlei",
+      "question": "In welcher Rechtsform wird die Étude geführt (Einzelanwalt, société civile, S.à r.l. …)? Der vollständige, genaue Firmenname gehört ins Impressum.",
+      "etiquette": {
+        "fr": "forme juridique",
+        "de": "Rechtsform",
+        "en": "legal form",
+        "lb": null
+      }
+    },
+    "rcs": {
+      "statut": "fehlt",
+      "bloquant": true,
+      "domaine": "Impressum",
+      "titre": "RCS-Nummer",
+      "question": "Wie lautet die Nummer im Registre de Commerce et des Sociétés? Bei einem Einzelanwalt existiert unter Umständen keine — dann bitte ausdrücklich bestätigen, dass keine vorhanden ist.",
+      "etiquette": {
+        "fr": "numéro RCS",
+        "de": "RCS-Nummer",
+        "en": "RCS number",
+        "lb": null
+      }
+    },
+    "tva": {
+      "statut": "fehlt",
+      "bloquant": true,
+      "domaine": "Impressum",
+      "titre": "Mehrwertsteuernummer",
+      "question": "Wie lautet die luxemburgische MwSt-Nummer (LU…)?",
+      "etiquette": {
+        "fr": "numéro de TVA",
+        "de": "MwSt-Nummer",
+        "en": "VAT number",
+        "lb": null
+      }
+    },
+    "assurance": {
+      "statut": "fehlt",
+      "bloquant": true,
+      "domaine": "Impressum",
+      "titre": "Berufshaftpflichtversicherung",
+      "question": "Welcher Versicherer, welche Policennummer, welcher räumliche Geltungsbereich? Diese Angabe gehört nach der Dienstleistungsrichtlinie ins Impressum.",
+      "etiquette": {
+        "fr": "assurance responsabilité civile professionnelle",
+        "de": "Berufshaftpflichtversicherung",
+        "en": "professional indemnity insurance",
+        "lb": null
+      }
+    },
+    "autorisation": {
+      "statut": "fehlt",
+      "bloquant": false,
+      "domaine": "Impressum",
+      "titre": "Gewerbegenehmigung",
+      "question": "Besteht eine autorisation d’établissement, und falls ja, mit welcher Nummer? Falls für die Anwaltstätigkeit nicht einschlägig, bitte kurz bestätigen.",
+      "etiquette": {
+        "fr": "autorisation d’établissement",
+        "de": "Gewerbegenehmigung",
+        "en": "business licence",
+        "lb": null
+      }
+    },
+    "ordre_formulierung": {
+      "statut": "unbestaetigt",
+      "bloquant": true,
+      "domaine": "Impressum",
+      "titre": "Bezeichnung der Aufsichtsbehörde",
+      "question": "Ist „Ordre des Avocats du Barreau de Luxembourg“ die Formulierung, die das Standesrecht verlangt? Bitte die exakte Bezeichnung und die anwendbaren Berufsregeln samt Fundstelle bestätigen.",
+      "etiquette": {
+        "fr": "autorité de tutelle",
+        "de": "Aufsichtsbehörde",
+        "en": "regulator",
+        "lb": null
+      }
+    },
+    "bp_code_postal": {
+      "statut": "fehlt",
+      "bloquant": false,
+      "domaine": "Kontaktdaten",
+      "titre": "Postleitzahl des Postfachs",
+      "question": "Zu welcher Postleitzahl gehört die B.P. 1734? Die alte Seite nennt einmal „L-1734“, das ist offenkundig die Postfachnummer, nicht die Postleitzahl.",
+      "etiquette": {
+        "fr": "code postal de la B.P.",
+        "de": "Postleitzahl des Postfachs",
+        "en": "PO box postcode",
+        "lb": null
+      }
+    },
+    "horaires": {
+      "statut": "unbestaetigt",
+      "bloquant": true,
+      "domaine": "Kontaktdaten",
+      "titre": "Öffnungszeiten",
+      "question": "Stimmen Montag bis Freitag 08:00–18:00, Samstag und Sonntag geschlossen? Die Angabe stammt aus dem Google-Profil, nicht von der Kanzlei. Sie steht auf der Kontaktseite und zusätzlich in den strukturierten Daten und muss deshalb stimmen.",
+      "etiquette": {
+        "fr": "heures d’ouverture",
+        "de": "Öffnungszeiten",
+        "en": "opening hours",
+        "lb": null
+      }
+    },
+    "acces": {
+      "statut": "fehlt",
+      "bloquant": false,
+      "domaine": "Kontaktdaten",
+      "titre": "Anfahrt und Parken",
+      "question": "Wie kommt man am besten zur Kanzlei — Bus, Bahn, Auto? Wo kann man parken, und kostet das etwas? Für Mandanten aus Frankreich, Belgien und Deutschland, die mit dem Auto kommen, ist das eine der praktisch wichtigsten Angaben der ganzen Seite.",
+      "etiquette": {
+        "fr": "accès et stationnement",
+        "de": "Anfahrt und Parken",
+        "en": "getting here and parking",
+        "lb": null
+      }
+    },
+    "delai_reponse": {
+      "statut": "fehlt",
+      "bloquant": true,
+      "domaine": "Formular",
+      "titre": "Antwortfrist auf Anfragen",
+      "question": "Innerhalb welcher Frist antwortet die Kanzlei auf eine Anfrage über das Formular? Diese Zusage erscheint in den häufigen Fragen UND in der Bestätigung nach dem Absenden. Sie muss eingehalten werden — lieber großzügig ansetzen.",
+      "etiquette": {
+        "fr": "délai de réponse",
+        "de": "Antwortfrist",
+        "en": "response time",
+        "lb": null
+      }
+    },
+    "langues_parlees": {
+      "statut": "unbestaetigt",
+      "bloquant": true,
+      "domaine": "Kanzlei",
+      "titre": "Gesprochene Sprachen",
+      "question": "Belegt sind Französisch und Englisch. Werden Mandate auch auf Deutsch und auf Luxemburgisch geführt? Davon hängt ab, ob die deutsche und die luxemburgische Sprachfassung überhaupt sinnvoll sind.",
+      "etiquette": {
+        "fr": "langues de travail",
+        "de": "Arbeitssprachen",
+        "en": "working languages",
+        "lb": null
+      }
+    },
+    "destinataire_formulaire": {
+      "statut": "fehlt",
+      "bloquant": true,
+      "domaine": "Formular",
+      "titre": "Empfängeradresse des Formulars",
+      "question": "An welches Postfach sollen Anfragen gehen? Voreingestellt ist contact@cabinet-avocats-lorang.com. Sinnvoll wäre eine eigene Adresse, damit Anfragen nicht in der allgemeinen Post untergehen.",
+      "etiquette": {
+        "fr": "destinataire",
+        "de": "Empfänger",
+        "en": "recipient",
+        "lb": null
+      }
+    },
+    "honoraire_entretien": {
+      "statut": "fehlt",
+      "bloquant": true,
+      "domaine": "Honorare",
+      "titre": "Preis des Erstgesprächs",
+      "question": "Was kostet ein Erstgespräch, und wie lange dauert es? Falls es kostenlos ist, bitte auch das ausdrücklich sagen — das ist ein starkes Argument.",
+      "etiquette": {
+        "fr": "premier entretien",
+        "de": "Erstgespräch",
+        "en": "first consultation",
+        "lb": null
+      }
+    },
+    "honoraire_horaire": {
+      "statut": "fehlt",
+      "bloquant": true,
+      "domaine": "Honorare",
+      "titre": "Stundensatz",
+      "question": "Wie hoch ist der Stundensatz, netto und brutto? Gibt es unterschiedliche Sätze nach Bearbeiter oder nach Sachgebiet?",
+      "etiquette": {
+        "fr": "taux horaire",
+        "de": "Stundensatz",
+        "en": "hourly rate",
+        "lb": null
+      }
+    },
+    "honoraire_forfaits": {
+      "statut": "fehlt",
+      "bloquant": true,
+      "domaine": "Honorare",
+      "titre": "Pauschalen",
+      "question": "Für welche Leistungen gibt es Pauschalen, und wie hoch sind sie? Genannt waren Gesellschaftsgründung und Markenanmeldung.",
+      "etiquette": {
+        "fr": "forfaits",
+        "de": "Pauschalen",
+        "en": "fixed fees",
+        "lb": null
+      }
+    },
+    "honoraire_rythme": {
+      "statut": "fehlt",
+      "bloquant": true,
+      "domaine": "Honorare",
+      "titre": "Abrechnungsrhythmus",
+      "question": "Wann wird abgerechnet — monatlich, quartalsweise, bei Abschluss? Wird ein Vorschuss verlangt, und in welcher Höhe?",
+      "etiquette": {
+        "fr": "rythme de facturation",
+        "de": "Abrechnungsrhythmus",
+        "en": "billing cycle",
+        "lb": null
+      }
+    },
+    "equipe": {
+      "statut": "unbestaetigt",
+      "bloquant": false,
+      "domaine": "Kanzlei",
+      "titre": "Das Team",
+      "question": "Die englische Fassung der alten Seite nennt zehn Mitarbeiter. Stimmt das noch? Für jede Person werden gebraucht: Name, Funktion, Jahr der Zulassung, Arbeitssprachen und ein Foto. Bis dahin bleibt die Team-Sektion leer — sie ist technisch fertig.",
+      "etiquette": {
+        "fr": "équipe",
+        "de": "Team",
+        "en": "team",
+        "lb": null
+      }
+    },
+    "documents_texte": {
+      "statut": "fehlt",
+      "bloquant": false,
+      "domaine": "Dokumente",
+      "titre": "Volltexte der 29 Dokumente",
+      "question": "Von den zehn Fachdossiers und neunzehn Konferenzunterlagen liegen die Titel vor, nicht aber die Texte und die PDF-Dateien. Beides wird für die lesbare HTML-Fassung gebraucht, die den eigentlichen Wert der Bibliothek ausmacht.",
+      "etiquette": {
+        "fr": "texte du document",
+        "de": "Volltext",
+        "en": "full text",
+        "lb": null
+      }
+    },
+    "documents_rechtsstand": {
+      "statut": "fehlt",
+      "bloquant": false,
+      "domaine": "Dokumente",
+      "titre": "Rechtsstand je Dokument",
+      "question": "Zu welchem Datum gibt jedes Dokument den Rechtsstand wieder? Datiert ist bisher nur conference-07-2025.pdf. Ohne diese Angabe wird ein Dokument nicht veröffentlicht — ein Steuerpapier von 2009 ohne Datum schadet mehr, als es nützt.",
+      "etiquette": {
+        "fr": "état du droit",
+        "de": "Rechtsstand",
+        "en": "law as at",
+        "lb": null
+      }
+    },
+    "situations_contenu": {
+      "statut": "fehlt",
+      "bloquant": false,
+      "domaine": "Situationsmatrix",
+      "titre": "Rechtsinhalte der Konstellationen",
+      "question": "Jede der 42 Konstellationen braucht drei Abschnitte vom Anwalt: was in Luxemburg gilt, was die Kanzlei übernimmt, welche Unterlagen gebraucht werden. Das ist Rechtsinhalt und wird nicht erfunden. Die Seiten sind angelegt und im Adminbereich ausfüllbar; veröffentlicht wird eine Konstellation erst, wenn die drei Abschnitte stehen.",
+      "etiquette": {
+        "fr": "contenu juridique",
+        "de": "Rechtsinhalt",
+        "en": "legal content",
+        "lb": null
+      }
+    },
+    "luxembourgeois": {
+      "statut": "fehlt",
+      "bloquant": false,
+      "domaine": "Sprachen",
+      "titre": "Luxemburgische Sprachfassung",
+      "question": "Die luxemburgische Fassung wird von einem Muttersprachler gebraucht: Oberflächentexte, Seiteninhalte, URL-Segmente und Suchbegriffe. Maschinell erzeugt wird sie nicht. Solange sie fehlt, wird /lb/ nicht gebaut und taucht weder in der Sitemap noch in den hreflang-Angaben auf.",
+      "etiquette": {
+        "fr": "version luxembourgeoise",
+        "de": "luxemburgische Fassung",
+        "en": "Luxembourgish version",
+        "lb": null
+      }
+    },
+    "temoignages": {
+      "statut": "unbestaetigt",
+      "bloquant": false,
+      "domaine": "Standesrecht",
+      "titre": "Zulässigkeit von Mandantenstimmen",
+      "question": "Lässt das Standesrecht des Barreau de Luxembourg Mandantenstimmen und Sternebewertungen auf der Website zu? Bis das geklärt ist, enthält die Seite keine Testimonials, keine Bewertungen und keine AggregateRating-Auszeichnung.",
+      "etiquette": {
+        "fr": "témoignages",
+        "de": "Mandantenstimmen",
+        "en": "testimonials",
+        "lb": null
+      }
+    },
+    "conditions_generales": {
+      "statut": "fehlt",
+      "bloquant": true,
+      "domaine": "Rechtstexte",
+      "titre": "Allgemeine Geschäftsbedingungen",
+      "question": "Die alte Seite hatte „Conditions générales“. Der geltende Text wird gebraucht — am besten anwaltlich durchgesehen, weil er auch die Mandatsannahme und die Haftung regelt.",
+      "etiquette": {
+        "fr": "conditions générales",
+        "de": "Geschäftsbedingungen",
+        "en": "terms",
+        "lb": null
+      }
+    },
+    "mediation": {
+      "statut": "fehlt",
+      "bloquant": true,
+      "domaine": "Rechtstexte",
+      "titre": "Schlichtungsstelle für Honorarstreitigkeiten",
+      "question": "Welche Stelle ist bei Streit über Honorare zuständig, und wie wird sie angerufen? Die Verbraucherschlichtungsrichtlinie verlangt diesen Hinweis auf der Website.",
+      "etiquette": {
+        "fr": "médiation",
+        "de": "Schlichtung",
+        "en": "dispute resolution",
+        "lb": null
+      }
+    },
+    "bild_rechte": {
+      "statut": "unbestaetigt",
+      "bloquant": true,
+      "domaine": "Bilder",
+      "titre": "Nutzungsrechte an den Fotografien",
+      "question": "Porträt, Wartebereich und Treppenhaus sind von der bisherigen Website übernommen worden — es sind die Bestände der Kanzlei. Die Aufnahmen stammen aber erkennbar von einem Fotografen, und dass sie auf der alten Seite standen, heißt nicht zwangsläufig, dass sie auch auf einer neuen verwendet werden dürfen: Fotografenverträge sind manchmal auf ein Projekt beschränkt. Bitte den Vertrag oder die Rechnung des Fotografen ansehen, bevor die Seite online geht.",
+      "etiquette": {
+        "fr": "droits sur les photographies",
+        "de": "Bildrechte",
+        "en": "image rights",
+        "lb": null
+      }
+    },
+    "portrait_aufloesung": {
+      "statut": "fehlt",
+      "bloquant": false,
+      "domaine": "Bilder",
+      "titre": "Porträt in besserer Auflösung",
+      "question": "Das übernommene Porträt hat 579 × 626 Pixel. Auf der Seite wird daraus höchstens eine 500 Pixel breite Fassung — auf einem heutigen Telefon oder Notebook ist das sichtbar weich. Die Originaldatei des Fotografen oder eine Neuaufnahme würde den größten Einzelunterschied machen, weil dieses Bild an der prominentesten Stelle der Startseite steht.",
+      "etiquette": {
+        "fr": "portrait en haute définition",
+        "de": "Porträt in hoher Auflösung",
+        "en": "high-resolution portrait",
+        "lb": null
+      }
+    },
+    "wappen_vektor": {
+      "statut": "fehlt",
+      "bloquant": false,
+      "domaine": "Bilder",
+      "titre": "Wappen als Vektordatei",
+      "question": "Das Wappen auf der Seite ist aus einem Foto freigestellt (694 Pixel breit) und dort, wo es steht, scharf genug. Eine Vektordatei — beim Gestalter des Logos oder beim Schildhersteller — wäre in jeder Größe sauber und ließe sich auch für Briefbogen und Stempel verwenden. Kein Hindernis für den Livegang, aber der saubere Zustand.",
+      "etiquette": {
+        "fr": "armoiries vectorielles",
+        "de": "Wappen als Vektor",
+        "en": "vector crest",
+        "lb": null
+      }
+    },
+    "weitere_fotos": {
+      "statut": "unbestaetigt",
+      "bloquant": false,
+      "domaine": "Bilder",
+      "titre": "Weitere Aufnahmen",
+      "question": "Zurzeit zeigt die Seite zwei Innenaufnahmen: den Wartebereich und das Treppenhaus. Eine Aufnahme des Besprechungsraums in Farbe wäre gut — die vorhandene ist schwarzweiß und trägt das Wappen eingebrannt, sie passt nicht zu den beiden anderen. Ebenso eine Aufnahme des Eingangs an der avenue du X Septembre: Für Mandanten, die zum ersten Mal kommen, ist das die praktisch nützlichste Aufnahme überhaupt.",
+      "etiquette": {
+        "fr": "photographies supplémentaires",
+        "de": "weitere Aufnahmen",
+        "en": "further photographs",
+        "lb": null
+      }
+    },
+    "domaine_internet": {
+      "statut": "fehlt",
+      "bloquant": true,
+      "domaine": "Betrieb",
+      "titre": "Domain der neuen Seite",
+      "question": "Unter welcher Adresse geht die neue Seite online? Bleibt cabinet-avocats-lorang.com, oder kommt eine Adresse mit LW LEGIS? Davon hängen die kanonischen URLs, die strukturierten Daten und die Weiterleitungen von der alten Seite ab.",
+      "etiquette": {
+        "fr": "nom de domaine",
+        "de": "Domain",
+        "en": "domain",
+        "lb": null
+      }
+    }
+  },
+  "bilder": {
+    "portrait": {
+      "id": "portrait-lorang",
+      "datei": "/bilder/portrait.jpg",
+      "breiten": [
+        480,
+        500
+      ],
+      "beschreibung": {
+        "fr": "Portrait de Me Alain Lorang",
+        "de": "Porträt von Me Alain Lorang",
+        "en": "Portrait of Me Alain Lorang",
+        "lb": null
+      },
+      "alt": {
+        "fr": "Me Alain Lorang, avocat à la cour : cheveux gris, lunettes rondes, col roulé noir.",
+        "de": "Me Alain Lorang, avocat à la cour: graues Haar, runde Brille, schwarzer Rollkragen.",
+        "en": "Me Alain Lorang, avocat à la cour: grey hair, round glasses, black polo neck.",
+        "lb": null
+      },
+      "seitenverhaeltnis": "4 / 5",
+      "point_x": 50,
+      "point_y": 35
+    },
+    "bureau_1": {
+      "id": "bureau-1",
+      "datei": "/bilder/bureau-1.jpg",
+      "breiten": [
+        480,
+        768,
+        1200,
+        1719
+      ],
+      "beschreibung": {
+        "fr": "Le salon d’attente",
+        "de": "Der Wartebereich",
+        "en": "The waiting room",
+        "lb": null
+      },
+      "alt": {
+        "fr": "Le salon d’attente de l’Étude : fauteuils en cuir clair, table basse, parquet.",
+        "de": "Der Wartebereich der Kanzlei: helle Ledersessel, niedriger Tisch, Parkett.",
+        "en": "The firm’s waiting room: light leather armchairs, low table, parquet floor.",
+        "lb": null
+      },
+      "seitenverhaeltnis": "3 / 2",
+      "point_x": 50,
+      "point_y": 50
+    },
+    "bureau_2": {
+      "id": "bureau-2",
+      "datei": "/bilder/bureau-2.jpg",
+      "breiten": [
+        480,
+        519
+      ],
+      "beschreibung": {
+        "fr": "L’étage, escalier et palier",
+        "de": "Das Obergeschoss, Treppe und Flur",
+        "en": "The upper floor, stairs and landing",
+        "lb": null
+      },
+      "alt": {
+        "fr": "L’escalier et le palier de l’Étude, parquet et boiseries claires.",
+        "de": "Treppe und Flur der Kanzlei, Parkett und helles Holz.",
+        "en": "The stairs and landing of the firm, parquet and light woodwork.",
+        "lb": null
+      },
+      "seitenverhaeltnis": "3 / 4",
+      "point_x": 50,
+      "point_y": 50
+    }
+  },
+  "settings": {
+    "nom": "Étude d’Avocats LW LEGIS",
+    "nom_court": "LW LEGIS",
+    "raison_sociale": {
+      "__ouvert": "rechtsform"
+    },
+    "adresse": {
+      "rue": "41, avenue du X Septembre",
+      "code_postal": "L-2551",
+      "ville": "Luxembourg",
+      "quartier": "Belair",
+      "pays_code": "LU",
+      "pays": {
+        "fr": "Luxembourg",
+        "de": "Luxemburg",
+        "en": "Luxembourg",
+        "lb": null
+      },
+      "une_ligne": "41, avenue du X Septembre, L-2551 Luxembourg",
+      "latitude": 49.6103,
+      "longitude": 6.1147
+    },
+    "postfach": {
+      "boite": "B.P. 1734",
+      "ville": "Luxembourg",
+      "code_postal": {
+        "__ouvert": "bp_code_postal"
+      }
+    },
+    "telephone": {
+      "central": "+352 44 71 76-1",
+      "central_lien": "+3524471761",
+      "direct": "+352 44 71 76-22",
+      "direct_lien": "+35244717622"
+    },
+    "courriel": "contact@cabinet-avocats-lorang.com",
+    "courriel_formulaire": {
+      "__ouvert": "destinataire_formulaire"
+    },
+    "horaires": {
+      "statut": {
+        "__ouvert": "horaires"
+      },
+      "valeurs": [
+        {
+          "jours": [
+            "Mo",
+            "Tu",
+            "We",
+            "Th",
+            "Fr"
+          ],
+          "ouvre": "08:00",
+          "ferme": "18:00"
+        }
+      ],
+      "fermes": [
+        "Sa",
+        "Su"
+      ]
+    },
+    "barreau": {
+      "nom": "Ordre des Avocats du Barreau de Luxembourg",
+      "formulation": {
+        "__ouvert": "ordre_formulierung"
+      },
+      "titre_professionnel": {
+        "fr": "avocat à la cour",
+        "de": "avocat à la cour (Rechtsanwalt)",
+        "en": "avocat à la cour (attorney-at-law)",
+        "lb": null
+      }
+    },
+    "rcs": {
+      "__ouvert": "rcs"
+    },
+    "tva": {
+      "__ouvert": "tva"
+    },
+    "assurance": {
+      "__ouvert": "assurance"
+    },
+    "autorisation": {
+      "__ouvert": "autorisation"
+    },
+    "mediation": {
+      "__ouvert": "mediation"
+    },
+    "langues_de_travail": {
+      "confirmees": [
+        "fr",
+        "en"
+      ],
+      "statut": {
+        "__ouvert": "langues_parlees"
+      }
+    },
+    "territoires": [
+      "LU",
+      "FR",
+      "BE",
+      "DE"
+    ],
+    "reseaux": [
+      {
+        "id": "intrum",
+        "nom": "Intrum Justitia",
+        "role": {
+          "fr": "Représentant officiel au Luxembourg du groupe Intrum Justitia et de sa filiale IJCOF.",
+          "de": "Offizieller Vertreter der Gruppe Intrum Justitia und ihrer Tochter IJCOF in Luxemburg.",
+          "en": "Official Luxembourg representative of the Intrum Justitia group and its subsidiary IJCOF.",
+          "lb": null
+        }
+      },
+      {
+        "id": "advounion",
+        "nom": "ADVOUNION",
+        "role": {
+          "fr": "Membre du réseau international d’avocats ADVOUNION.",
+          "de": "Mitglied des internationalen Anwaltsnetzwerks ADVOUNION.",
+          "en": "Member of the international lawyers’ network ADVOUNION.",
+          "lb": null
+        }
+      },
+      {
+        "id": "lic",
+        "nom": "League International for Creditors (LIC)",
+        "role": {
+          "fr": "Représentant luxembourgeois de la League International for Creditors.",
+          "de": "Luxemburgischer Vertreter der League International for Creditors.",
+          "en": "Luxembourg representative of the League International for Creditors.",
+          "lb": null
+        }
+      },
+      {
+        "id": "viajuris",
+        "nom": "VIAJURIS",
+        "role": {
+          "fr": "Cabinet partenaire, fondé en 1992, présent à Saint-Étienne, Lyon, Le Puy-en-Velay, Paris et Luxembourg, environ quarante collaborateurs.",
+          "de": "Partnerkanzlei, gegründet 1992, mit Standorten in Saint-Étienne, Lyon, Le Puy-en-Velay, Paris und Luxemburg, rund vierzig Mitarbeiter.",
+          "en": "Partner firm, founded in 1992, with offices in Saint-Étienne, Lyon, Le Puy-en-Velay, Paris and Luxembourg, around forty staff.",
+          "lb": null
+        }
+      }
+    ],
+    "profils": {
+      "google": null,
+      "linkedin": null
+    },
+    "domaine": {
+      "__ouvert": "domaine_internet"
+    }
+  },
+  "avocat": {
+    "id": "alain-lorang",
+    "prenom": "Alain",
+    "nom": "Lorang",
+    "nom_complet": "Alain Lorang",
+    "civilite": "Me",
+    "titre": {
+      "fr": "avocat à la cour",
+      "de": "avocat à la cour",
+      "en": "avocat à la cour",
+      "lb": null
+    },
+    "barreau_depuis": 1982,
+    "telephone": "+352 44 71 76-22",
+    "parcours": [
+      {
+        "annee": "1980",
+        "texte": {
+          "fr": "Maîtrise en droit des affaires, Université Paris II Panthéon-Assas.",
+          "de": "Maîtrise en droit des affaires, Université Paris II Panthéon-Assas.",
+          "en": "Maîtrise en droit des affaires, Université Paris II Panthéon-Assas.",
+          "lb": null
+        }
+      },
+      {
+        "annee": "1981",
+        "texte": {
+          "fr": "Diplôme de l’Institut d’Études Politiques de Paris, section économique et financière.",
+          "de": "Diplom des Institut d’Études Politiques de Paris, Section économique et financière.",
+          "en": "Diploma of the Institut d’Études Politiques de Paris, economics and finance section.",
+          "lb": null
+        }
+      },
+      {
+        "annee": "1982",
+        "texte": {
+          "fr": "Inscription au barreau de Luxembourg.",
+          "de": "Zulassung am Barreau de Luxembourg.",
+          "en": "Admitted to the Luxembourg bar.",
+          "lb": null
+        }
+      },
+      {
+        "annee": "1985",
+        "texte": {
+          "fr": "Certificat en droit fiscal, ministère luxembourgeois de l’Éducation nationale.",
+          "de": "Zertifikat Steuerrecht, luxemburgisches Bildungsministerium.",
+          "en": "Certificate in tax law, Luxembourg Ministry of Education.",
+          "lb": null
+        }
+      },
+      {
+        "annee": "1990",
+        "texte": {
+          "fr": "Certificat du Centre de Formation Professionnelle des Avocats d’Alsace, 13 novembre 1990.",
+          "de": "Zertifikat des Centre de Formation Professionnelle des Avocats d’Alsace, 13. November 1990.",
+          "en": "Certificate of the Centre de Formation Professionnelle des Avocats d’Alsace, 13 November 1990.",
+          "lb": null
+        }
+      }
+    ],
+    "fonctions": [
+      {
+        "texte": {
+          "fr": "Expert judiciaire assermenté près la Cour d’Appel de Luxembourg.",
+          "de": "Vereidigter Gerichtssachverständiger bei der Cour d’Appel de Luxembourg.",
+          "en": "Sworn judicial expert at the Luxembourg Court of Appeal.",
+          "lb": null
+        }
+      },
+      {
+        "texte": {
+          "fr": "Ancien secrétaire du Conseil de l’Ordre des Avocats.",
+          "de": "Ehemaliger Sekretär des Conseil de l’Ordre des Avocats.",
+          "en": "Former secretary of the Conseil de l’Ordre des Avocats.",
+          "lb": null
+        }
+      },
+      {
+        "texte": {
+          "fr": "Membre du conseil d’administration et trésorier de l’Observatoire du droit européen (ELA Luxembourg asbl).",
+          "de": "Vorstandsmitglied und Schatzmeister des Observatoire du droit européen (ELA Luxembourg asbl).",
+          "en": "Board member and treasurer of the Observatoire du droit européen (ELA Luxembourg asbl).",
+          "lb": null
+        }
+      }
+    ]
+  },
+  "navigation": [
+    {
+      "id": "situations",
+      "cle": "nav.situations",
+      "segment": "situations",
+      "ordre": 1,
+      "visible": true
+    },
+    {
+      "id": "services",
+      "cle": "nav.services",
+      "segment": "services",
+      "ordre": 2,
+      "visible": true
+    },
+    {
+      "id": "publications",
+      "cle": "nav.publications",
+      "segment": "publications",
+      "ordre": 3,
+      "visible": true
+    },
+    {
+      "id": "etude",
+      "cle": "nav.etude",
+      "segment": "etude",
+      "ordre": 4,
+      "visible": true
+    },
+    {
+      "id": "honoraires",
+      "cle": "nav.honoraires",
+      "segment": "honoraires",
+      "ordre": 5,
+      "visible": true
+    },
+    {
+      "id": "contact",
+      "cle": "nav.contact",
+      "segment": "contact",
+      "ordre": 6,
+      "visible": true
+    }
+  ],
+  "pied": [
+    {
+      "id": "mentions",
+      "cle": "pied.mentions",
+      "segment": "mentions",
+      "ordre": 1,
+      "visible": true
+    },
+    {
+      "id": "donnees",
+      "cle": "pied.donnees",
+      "segment": "donnees",
+      "ordre": 2,
+      "visible": true
+    },
+    {
+      "id": "conditions",
+      "cle": "pied.conditions",
+      "segment": "conditions",
+      "ordre": 3,
+      "visible": true
+    }
+  ],
+  "sections_accueil": [
+    {
+      "id": "hero",
+      "ordre": 1,
+      "visible": true,
+      "verrouille": true
+    },
+    {
+      "id": "services",
+      "ordre": 2,
+      "visible": true,
+      "verrouille": false
+    },
+    {
+      "id": "avocat",
+      "ordre": 3,
+      "visible": true,
+      "verrouille": false
+    },
+    {
+      "id": "bureau",
+      "ordre": 4,
+      "visible": true,
+      "verrouille": false
+    },
+    {
+      "id": "publications",
+      "ordre": 5,
+      "visible": true,
+      "verrouille": false
+    },
+    {
+      "id": "honoraires",
+      "ordre": 6,
+      "visible": true,
+      "verrouille": false
+    },
+    {
+      "id": "faq",
+      "ordre": 7,
+      "visible": true,
+      "verrouille": false
+    },
+    {
+      "id": "contact",
+      "ordre": 8,
+      "visible": true,
+      "verrouille": true
+    }
+  ],
+  "pages": {
+    "accueil": {
+      "id": "accueil",
+      "sections": {
+        "services": {
+          "titre": {
+            "fr": "Ce que nous faisons",
+            "de": "Was wir tun",
+            "en": "What we do",
+            "lb": null
+          },
+          "chapeau": {
+            "fr": "Quatre domaines, où presque chaque question franchit une frontière.",
+            "de": "Vier Felder, in denen fast jede Frage über eine Grenze läuft.",
+            "en": "Four fields, in which almost every question crosses a border.",
+            "lb": null
+          }
+        },
+        "avocat": {
+          "titre": {
+            "fr": "Qui répond",
+            "de": "Wer antwortet",
+            "en": "Who answers",
+            "lb": null
+          },
+          "texte": {
+            "fr": "Alain Lorang est inscrit au barreau de Luxembourg depuis 1982. Il est expert judiciaire assermenté près la Cour d’Appel et a été secrétaire du Conseil de l’Ordre des Avocats. L’Étude reste volontairement petite : celui qui appelle parle à l’avocat qui suit le dossier.",
+            "de": "Alain Lorang ist seit 1982 am Barreau de Luxembourg zugelassen. Er ist vereidigter Sachverständiger bei der Cour d’Appel und war Sekretär des Conseil de l’Ordre des Avocats. Die Kanzlei bleibt bewusst klein: Wer anruft, spricht mit dem Anwalt, der den Fall führt.",
+            "en": "Alain Lorang has been admitted to the Luxembourg bar since 1982. He is a sworn judicial expert at the Court of Appeal and served as secretary of the Conseil de l’Ordre des Avocats. The firm stays deliberately small: whoever calls speaks to the lawyer who runs the case.",
+            "lb": null
+          },
+          "marge": {
+            "terme": {
+              "fr": "Au barreau depuis",
+              "de": "Am Barreau seit",
+              "en": "At the bar since",
+              "lb": null
+            },
+            "texte": {
+              "fr": "1982",
+              "de": "1982",
+              "en": "1982",
+              "lb": null
+            }
+          },
+          "lien": {
+            "fr": "En savoir plus sur l’Étude",
+            "de": "Mehr über die Kanzlei",
+            "en": "More about the firm",
+            "lb": null
+          },
+          "appel": {
+            "fr": "Appelez-le directement",
+            "de": "Rufen Sie ihn direkt an",
+            "en": "Call him directly",
+            "lb": null
+          }
+        },
+        "bureau": {
+          "titre": {
+            "fr": "Où nous recevons",
+            "de": "Wo wir empfangen",
+            "en": "Where we receive you",
+            "lb": null
+          },
+          "chapeau": {
+            "fr": "Avenue du X Septembre, à Belair. Un étage, des boiseries claires, et une salle où l’on peut étaler des plans sur la table.",
+            "de": "Avenue du X Septembre, in Belair. Eine Etage, helles Holz, und ein Raum, in dem man Pläne auf dem Tisch ausbreiten kann.",
+            "en": "Avenue du X Septembre, in Belair. One floor, light woodwork, and a room where you can spread plans out on the table.",
+            "lb": null
+          }
+        },
+        "publications": {
+          "titre": {
+            "fr": "Fonds documentaire",
+            "de": "Dokumente",
+            "en": "Library",
+            "lb": null
+          },
+          "chapeau": {
+            "fr": "Vingt-neuf textes : dix dossiers juridiques et dix-neuf supports de conférence, écrits sur deux décennies. Chacun se lit ici, en entier, sans téléchargement.",
+            "de": "Neunundzwanzig Texte: zehn Fachdossiers und neunzehn Konferenzunterlagen, über zwei Jahrzehnte geschrieben. Jeder lässt sich hier lesen, vollständig, ohne Download.",
+            "en": "Twenty-nine texts: ten legal briefings and nineteen conference papers, written over two decades. Each one can be read here in full, without downloading anything.",
+            "lb": null
+          },
+          "lien": {
+            "fr": "Ouvrir le fonds documentaire",
+            "de": "Zu den Dokumenten",
+            "en": "Open the library",
+            "lb": null
+          }
+        },
+        "honoraires": {
+          "titre": {
+            "fr": "Comment nous facturons",
+            "de": "Wie wir abrechnen",
+            "en": "How we charge",
+            "lb": null
+          },
+          "chapeau": {
+            "fr": "Vous savez avant le premier rendez-vous ce que la suite coûte. Rien ne commence sans convention écrite.",
+            "de": "Sie wissen vor dem ersten Termin, was das Weitere kostet. Nichts beginnt ohne schriftliche Vereinbarung.",
+            "en": "You know before the first appointment what the next steps cost. Nothing begins without a written agreement.",
+            "lb": null
+          },
+          "lien": {
+            "fr": "Voir les honoraires en détail",
+            "de": "Honorare im Einzelnen",
+            "en": "See fees in detail",
+            "lb": null
+          }
+        },
+        "contact": {
+          "titre": {
+            "fr": "Contact",
+            "de": "Kontakt",
+            "en": "Contact",
+            "lb": null
+          },
+          "chapeau": {
+            "fr": "Décrivez votre situation en quelques lignes. Nous répondons nous-mêmes, pas par un standard.",
+            "de": "Beschreiben Sie Ihre Lage in ein paar Zeilen. Wir antworten selbst, nicht über eine Zentrale.",
+            "en": "Describe your situation in a few lines. We answer ourselves, not through a switchboard.",
+            "lb": null
+          }
+        }
+      }
+    },
+    "etude": {
+      "id": "etude",
+      "titre": {
+        "fr": "L’Étude",
+        "de": "Die Kanzlei",
+        "en": "The firm",
+        "lb": null
+      },
+      "chapeau": {
+        "fr": "LW LEGIS est l’extrémité luxembourgeoise d’une ligne qui commence ailleurs. Presque chaque dossier arrive d’un autre pays et doit y retourner.",
+        "de": "LW LEGIS ist das luxemburgische Ende einer Linie, die woanders anfängt. Fast jedes Mandat kommt aus einem anderen Land und muss dorthin zurück.",
+        "en": "LW LEGIS is the Luxembourg end of a line that begins somewhere else. Almost every matter arrives from another country and has to go back there.",
+        "lb": null
+      },
+      "intuitu": {
+        "titre": {
+          "fr": "Une structure à taille humaine",
+          "de": "Eine Kanzlei in überschaubarer Größe",
+          "en": "A firm of manageable size",
+          "lb": null
+        },
+        "texte": {
+          "fr": "L’Étude n’est pas une law factory et ne veut pas le devenir. La relation avec le client est nouée <span class=\"locution\">intuitu personae</span> — en considération de la personne : le client choisit un avocat, pas une enseigne, et cet avocat reste le sien du premier appel jusqu’à la fin du dossier. Concrètement, cela veut dire que le dossier ne change pas de main entre le rendez-vous et l’audience, et que la personne qui décroche connaît l’affaire.",
+          "de": "Die Kanzlei ist keine „law factory“ und will keine werden. Die Beziehung zum Mandanten wird <span class=\"locution\">intuitu personae</span> geschlossen — mit Rücksicht auf die Person: Der Mandant wählt einen Anwalt, kein Firmenschild, und dieser Anwalt bleibt seiner, vom ersten Anruf bis zum Ende der Sache. Praktisch heißt das, dass die Akte zwischen Besprechung und Verhandlung nicht die Hand wechselt und dass derjenige, der abhebt, den Fall kennt.",
+          "en": "The firm is not a law factory and does not want to become one. The relationship with the client is formed <span class=\"locution\">intuitu personae</span> — with regard to the person: the client chooses a lawyer, not a brand, and that lawyer stays theirs from the first call to the end of the matter. In practice this means the file does not change hands between the meeting and the hearing, and that whoever picks up the telephone knows the case.",
+          "lb": null
+        },
+        "marge": {
+          "terme": {
+            "fr": "intuitu personae",
+            "de": "intuitu personae",
+            "en": "intuitu personae",
+            "lb": null
+          },
+          "texte": {
+            "fr": "Latin : en considération de la personne.",
+            "de": "Lateinisch: mit Rücksicht auf die Person.",
+            "en": "Latin: in consideration of the person.",
+            "lb": null
+          }
+        }
+      },
+      "reseaux": {
+        "titre": {
+          "fr": "Réseaux",
+          "de": "Netzwerke",
+          "en": "Networks",
+          "lb": null
+        },
+        "chapeau": {
+          "fr": "Le secret professionnel interdit de nommer des clients. Ce qui peut être montré, ce sont les mandats de représentation et les réseaux — une reconnaissance par des tiers, vérifiable.",
+          "de": "Das Berufsgeheimnis verbietet es, Mandanten zu nennen. Zeigen lassen sich die Vertretungsmandate und die Netzwerke — belegte Anerkennung durch Dritte.",
+          "en": "Professional secrecy forbids naming clients. What can be shown are the representation mandates and the networks — third-party recognition that can be checked.",
+          "lb": null
+        }
+      },
+      "equipe": {
+        "titre": {
+          "fr": "L’équipe",
+          "de": "Das Team",
+          "en": "The team",
+          "lb": null
+        },
+        "texte": {
+          "fr": null,
+          "de": null,
+          "en": null,
+          "lb": null
+        },
+        "ouvert": "equipe"
+      }
+    },
+    "honoraires": {
+      "id": "honoraires",
+      "titre": {
+        "fr": "Honoraires",
+        "de": "Honorare",
+        "en": "Fees",
+        "lb": null
+      },
+      "chapeau": {
+        "fr": "Ce qu’un dossier coûte se discute avant qu’il commence, pas à la fin. Voici les chiffres et le déroulement.",
+        "de": "Was eine Sache kostet, wird besprochen, bevor sie beginnt, nicht am Ende. Hier stehen die Zahlen und der Ablauf.",
+        "en": "What a matter costs is discussed before it starts, not at the end. Here are the figures and the sequence.",
+        "lb": null
+      },
+      "postes": [
+        {
+          "id": "premier_entretien",
+          "ouvert": "honoraire_entretien"
+        },
+        {
+          "id": "taux_horaire",
+          "ouvert": "honoraire_horaire"
+        },
+        {
+          "id": "forfaits",
+          "ouvert": "honoraire_forfaits"
+        },
+        {
+          "id": "rythme",
+          "ouvert": "honoraire_rythme"
+        }
+      ],
+      "deroulement": {
+        "titre": {
+          "fr": "Le déroulement d’une demande",
+          "de": "Der Ablauf einer Anfrage",
+          "en": "How an enquiry proceeds",
+          "lb": null
+        },
+        "etapes": [
+          {
+            "fr": "Vous décrivez votre situation, par le formulaire ou par téléphone. C’est gratuit et cela n’engage à rien.",
+            "de": "Sie schildern Ihre Lage, über das Formular oder am Telefon. Das ist kostenlos und verpflichtet zu nichts.",
+            "en": "You describe your situation, by the form or by telephone. This is free and commits you to nothing.",
+            "lb": null
+          },
+          {
+            "fr": "Nous vérifions qu’aucun conflit d’intérêts ne s’oppose au dossier et si nous sommes les bons pour le traiter. Si nous ne le sommes pas, nous le disons.",
+            "de": "Wir prüfen, ob ein Interessenkonflikt entgegensteht und ob wir die Richtigen für die Sache sind. Sind wir es nicht, sagen wir das.",
+            "en": "We check that no conflict of interest stands in the way and whether we are the right people for the matter. If we are not, we say so.",
+            "lb": null
+          },
+          {
+            "fr": "Vous recevez une convention d’honoraires écrite : ce qui est fait, à quel prix, et ce qui n’est pas compris.",
+            "de": "Sie erhalten eine schriftliche Honorarvereinbarung: was getan wird, zu welchem Preis, und was nicht enthalten ist.",
+            "en": "You receive a written fee agreement: what will be done, at what price, and what is not included.",
+            "lb": null
+          },
+          {
+            "fr": "Le mandat ne commence qu’avec votre signature. Avant elle, rien n’est facturé.",
+            "de": "Das Mandat beginnt erst mit Ihrer Unterschrift. Davor wird nichts berechnet.",
+            "en": "The engagement begins only with your signature. Before that, nothing is billed.",
+            "lb": null
+          }
+        ]
+      },
+      "note_transparence": {
+        "fr": "Si une estimation doit être revue en cours de dossier, vous en êtes informé avant que le travail correspondant soit engagé — pas sur la facture.",
+        "de": "Muss eine Schätzung im Lauf der Sache nach oben korrigiert werden, erfahren Sie das, bevor die entsprechende Arbeit beginnt — nicht erst auf der Rechnung.",
+        "en": "If an estimate has to be revised during a matter, you hear about it before the work in question begins — not on the invoice.",
+        "lb": null
+      }
+    },
+    "contact": {
+      "id": "contact",
+      "titre": {
+        "fr": "Contact",
+        "de": "Kontakt",
+        "en": "Contact",
+        "lb": null
+      },
+      "chapeau": {
+        "fr": "L’Étude se trouve à Belair, à Luxembourg-Ville, avenue du X Septembre.",
+        "de": "Die Kanzlei liegt in Belair, in Luxemburg-Stadt, an der avenue du X Septembre.",
+        "en": "The firm is in Belair, in Luxembourg City, on the avenue du X Septembre.",
+        "lb": null
+      },
+      "acces": {
+        "fr": null,
+        "de": null,
+        "en": null,
+        "lb": null
+      },
+      "stationnement": {
+        "fr": null,
+        "de": null,
+        "en": null,
+        "lb": null
+      },
+      "ouvert_acces": "horaires"
+    },
+    "situations": {
+      "id": "situations",
+      "titre": {
+        "fr": "Votre situation",
+        "de": "Ihre Situation",
+        "en": "Your situation",
+        "lb": null
+      },
+      "chapeau": {
+        "fr": "Ce qui décide d’un dossier luxembourgeois, ce n’est pas seulement ce que vous voulez faire, mais aussi d’où vous venez : la convention fiscale applicable, le droit successoral compétent et les formalités changent avec le pays de résidence. Choisissez les deux et lisez la réponse à cette combinaison précise.",
+        "de": "Über eine luxemburgische Sache entscheidet nicht nur, was Sie vorhaben, sondern auch, woher Sie kommen: Das anwendbare Doppelbesteuerungsabkommen, das zuständige Erbrecht und die Formalitäten ändern sich mit dem Wohnsitzland. Wählen Sie beides und lesen Sie die Antwort auf genau diese Kombination.",
+        "en": "What decides a Luxembourg matter is not only what you want to do, but also where you come from: the applicable tax treaty, the competent succession law and the formalities all change with the country of residence. Choose both and read the answer to that precise combination.",
+        "lb": null
+      },
+      "note_etat": {
+        "fr": "Les combinaisons sont rédigées une par une par l’avocat. Celles qui ne le sont pas encore renvoient au domaine d’activité correspondant, qui répond déjà à l’essentiel.",
+        "de": "Die Konstellationen werden vom Anwalt einzeln ausgearbeitet. Was noch nicht ausgearbeitet ist, führt auf das zugehörige Tätigkeitsgebiet, das das Wesentliche bereits beantwortet.",
+        "en": "The combinations are written up one by one by the lawyer. Those not yet written point to the corresponding practice area, which already answers the essentials.",
+        "lb": null
+      }
+    },
+    "services": {
+      "id": "services",
+      "titre": {
+        "fr": "Domaines d’activité",
+        "de": "Tätigkeitsgebiete",
+        "en": "Practice areas",
+        "lb": null
+      },
+      "chapeau": {
+        "fr": "Quatre domaines, où presque chaque question franchit une frontière.",
+        "de": "Vier Felder, in denen fast jede Frage über eine Grenze läuft.",
+        "en": "Four fields, in which almost every question crosses a border.",
+        "lb": null
+      }
+    },
+    "publications": {
+      "id": "publications",
+      "titre": {
+        "fr": "Fonds documentaire",
+        "de": "Dokumente",
+        "en": "Library",
+        "lb": null
+      },
+      "chapeau": {
+        "fr": "Dix dossiers juridiques et dix-neuf supports de conférence, tenus par Me Alain Lorang sur deux décennies. Chaque texte se lit ici en entier ; le PDF est disponible à côté quand il existe.",
+        "de": "Zehn Fachdossiers und neunzehn Konferenzunterlagen, von Me Alain Lorang über zwei Jahrzehnte gehalten. Jeder Text lässt sich hier vollständig lesen; das PDF steht daneben, wo es vorliegt.",
+        "en": "Ten legal briefings and nineteen conference papers, given by Me Alain Lorang over two decades. Every text can be read here in full; the PDF sits alongside it where one exists.",
+        "lb": null
+      }
+    },
+    "recu": {
+      "id": "recu",
+      "titre": {
+        "fr": "Votre demande est arrivée",
+        "de": "Ihre Anfrage ist angekommen",
+        "en": "Your enquiry has arrived",
+        "lb": null
+      },
+      "texte": {
+        "fr": "Votre message a été transmis directement à l’Étude, à Luxembourg-Belair. Il est lu par un avocat, non par un secrétariat automatique.",
+        "de": "Ihre Nachricht ist unmittelbar bei der Kanzlei in Luxemburg-Belair eingegangen. Sie wird von einem Anwalt gelesen, nicht von einem automatischen Sekretariat.",
+        "en": "Your message has gone straight to the firm in Luxembourg-Belair. It is read by a lawyer, not by an automated office.",
+        "lb": null
+      },
+      "delai": {
+        "__ouvert": "delai_reponse"
+      },
+      "ensuite": {
+        "fr": "Si votre affaire est urgente, téléphonez plutôt que d’attendre : le numéro figure en haut de chaque page.",
+        "de": "Ist Ihre Sache eilig, rufen Sie lieber an, statt zu warten: Die Nummer steht oben auf jeder Seite.",
+        "en": "If your matter is urgent, telephone rather than wait: the number is at the top of every page.",
+        "lb": null
+      }
+    }
+  },
+  "familles": [
+    {
+      "id": "immobilier-patrimoine",
+      "ordre": 1,
+      "slug": {
+        "de": "immobilien-und-vermoegen",
+        "en": "property-and-assets",
+        "fr": "immobilier-et-patrimoine"
+      },
+      "terme": {
+        "de": "Immobilien und Vermögen",
+        "en": "Property and assets",
+        "fr": "Immobilier et patrimoine"
+      },
+      "definition": {
+        "de": "Eine Immobilie in Luxemburg kaufen, halten, vermieten und weitergeben, wenn man anderswo wohnt.",
+        "en": "Buying, holding, letting and passing on property in Luxembourg while living elsewhere.",
+        "fr": "Acheter, détenir, louer et transmettre un bien au Luxembourg quand on habite ailleurs."
+      },
+      "texte": {
+        "de": "Wir begleiten den Kauf vom Vorvertrag bis zur notariellen Urkunde und prüfen vor der Unterschrift, was die gewählte Haltestruktur später an Steuern kostet. Für Vermieter setzen wir die Mietverträge auf, begleiten Mietanpassungen und führen die Verfahren vor dem Friedensgericht.",
+        "en": "We accompany a purchase from the preliminary contract to the notarial deed, and we check before signature what the chosen ownership structure will cost in tax later on. For landlords we draft the leases, handle rent reviews and conduct proceedings before the magistrate’s court.",
+        "fr": "Nous accompagnons l’achat depuis le compromis jusqu’à l’acte notarié, et nous vérifions avant la signature ce que la structure de détention coûtera plus tard en impôts. Pour les bailleurs, nous rédigeons les baux, encadrons les révisions de loyer et menons les procédures devant le juge de paix."
+      },
+      "kurz": {
+        "de": "Kaufen, halten, vermieten",
+        "en": "Buying, holding, letting",
+        "fr": "Acheter, détenir, louer"
+      },
+      "marge": {
+        "terme": {
+          "de": "Nichtansässige",
+          "en": "Non-residents",
+          "fr": "Non-résidents"
+        },
+        "texte": {
+          "de": "Die häufigste Frage der Kanzlei.",
+          "en": "The firm’s most frequent question.",
+          "fr": "La question la plus fréquente de l’Étude."
+        }
+      },
+      "matieres": [
+        {
+          "de": "Immobilien- und Vermögensrecht",
+          "en": "Property and asset law",
+          "fr": "Droit immobilier et patrimonial",
+          "lb": null
+        },
+        {
+          "de": "Immobilieninvestition und Immobilienbesteuerung",
+          "en": "Property investment and property taxation",
+          "fr": "Investissement immobilier et fiscalité immobilière",
+          "lb": null
+        },
+        {
+          "de": "Miet- und Pachtrecht",
+          "en": "Residential and agricultural leases",
+          "fr": "Baux à loyer et baux à ferme",
+          "lb": null
+        },
+        {
+          "de": "Family-Office-Betreuung",
+          "en": "Family office support",
+          "fr": "Accompagnement de family office",
+          "lb": null
+        }
+      ]
+    },
+    {
+      "id": "societes-fiscalite",
+      "ordre": 2,
+      "slug": {
+        "de": "gesellschaften-und-steuern",
+        "en": "companies-and-tax",
+        "fr": "societes-et-fiscalite"
+      },
+      "terme": {
+        "de": "Gesellschaften und Steuern",
+        "en": "Companies and tax",
+        "fr": "Sociétés et fiscalité"
+      },
+      "definition": {
+        "de": "Eine luxemburgische Gesellschaft gründen, domizilieren und führen — und wissen, was sie in Ihrem Land auslöst.",
+        "en": "Setting up, domiciling and running a Luxembourg company, and knowing what it triggers in your own country.",
+        "fr": "Constituer, domicilier et faire vivre une société luxembourgeoise, et savoir ce qu’elle déclenche dans votre pays."
+      },
+      "texte": {
+        "de": "Wir gründen luxemburgische Gesellschaften, darunter SOPARFI und Gesellschaften zur Verwaltung von Familienvermögen, übernehmen die Domizilierung und halten die laufenden Pflichten ein: Versammlungen, Abschlüsse, Register der wirtschaftlich Berechtigten. Vorher sehen wir uns das Doppelbesteuerungsabkommen zwischen Luxemburg und Ihrem Wohnsitzstaat an, denn darüber entscheidet sich das Ergebnis — nicht über die Wahl der Rechtsform.",
+        "en": "We incorporate Luxembourg companies, including SOPARFIs and family wealth management companies, handle domiciliation and keep up the running obligations: meetings, accounts, register of beneficial owners. Beforehand we look at the double tax treaty between Luxembourg and your country of residence, because that is what decides the outcome — not the choice of corporate form.",
+        "fr": "Nous constituons des sociétés luxembourgeoises, notamment des SOPARFI et des sociétés de gestion de patrimoine familial, assurons la domiciliation et tenons les obligations courantes : assemblées, comptes, registre des bénéficiaires effectifs. En amont, nous examinons la convention fiscale applicable entre le Luxembourg et votre pays de résidence, parce que c’est elle, et non le choix de la forme sociale, qui décide du résultat."
+      },
+      "kurz": {
+        "de": "Gründen, domizilieren, versteuern",
+        "en": "Forming, domiciling, taxing",
+        "fr": "Créer, domicilier, imposer"
+      },
+      "marge": {
+        "terme": {
+          "de": "SOPARFI · SPF",
+          "en": "SOPARFI · SPF",
+          "fr": "SOPARFI · SPF"
+        },
+        "texte": {
+          "de": "Zwei Fachdossiers der Bibliothek behandeln diese Formen.",
+          "en": "Two briefings in the library deal with these forms.",
+          "fr": "Deux dossiers du fonds documentaire portent sur ces formes."
+        }
+      },
+      "matieres": [
+        {
+          "de": "Luxemburgisches Gesellschaftsrecht",
+          "en": "Luxembourg company law",
+          "fr": "Droit des sociétés luxembourgeois",
+          "lb": null
+        },
+        {
+          "de": "Gesellschaftsgründung",
+          "en": "Company formation",
+          "fr": "Constitution de sociétés",
+          "lb": null
+        },
+        {
+          "de": "Domizilierung von Gesellschaften",
+          "en": "Company domiciliation",
+          "fr": "Domiciliation de sociétés",
+          "lb": null
+        },
+        {
+          "de": "Internationales Steuerrecht",
+          "en": "International taxation",
+          "fr": "Fiscalité internationale",
+          "lb": null
+        },
+        {
+          "de": "Fusionen und Übernahmen",
+          "en": "Mergers and acquisitions",
+          "fr": "Fusions et acquisitions",
+          "lb": null
+        },
+        {
+          "de": "Bank- und Finanzrecht",
+          "en": "Banking and finance law",
+          "fr": "Droit bancaire et financier",
+          "lb": null
+        }
+      ]
+    },
+    {
+      "id": "successions",
+      "ordre": 3,
+      "slug": {
+        "de": "erbfolge",
+        "en": "inheritance",
+        "fr": "successions"
+      },
+      "terme": {
+        "de": "Erbfolge",
+        "en": "Inheritance",
+        "fr": "Successions"
+      },
+      "definition": {
+        "de": "Einen Erbfall regeln, der Luxemburg und mindestens ein weiteres Land berührt.",
+        "en": "Settling an estate that touches Luxembourg and at least one other country.",
+        "fr": "Régler une succession qui touche le Luxembourg et au moins un autre pays."
+      },
+      "texte": {
+        "de": "Wir klären, welches Recht auf den Erbfall anwendbar ist, tragen die Personenstandsurkunden aus mehreren Ländern zusammen und führen die Auseinandersetzung — auch dann, wenn die Erben sich nicht einig sind. Gehört eine luxemburgische Immobilie zu einem im Ausland eröffneten Nachlass, halten wir die Verbindung zum dortigen Notar und Anwalt.",
+        "en": "We establish which law applies to the estate, gather civil status records from several countries and carry the division through, including where the heirs disagree. Where Luxembourg property forms part of an estate opened abroad, we keep the link to the notary and lawyer in the other country.",
+        "fr": "Nous déterminons quelle loi s’applique à la succession, réunissons les pièces d’état civil de plusieurs pays et conduisons le partage, y compris lorsque les héritiers ne s’entendent pas. Quand un bien immobilier luxembourgeois entre dans une succession ouverte à l’étranger, nous faisons le lien avec le notaire et l’avocat de l’autre pays."
+      },
+      "kurz": {
+        "de": "Nachlass über Grenzen",
+        "en": "Cross-border estates",
+        "fr": "Successions transfrontalières"
+      },
+      "marge": {
+        "terme": {
+          "de": "Mindestens zwei Länder",
+          "en": "At least two countries",
+          "fr": "Deux pays au moins"
+        },
+        "texte": {
+          "de": "Fast jedes Mandat der Kanzlei.",
+          "en": "Almost every matter the firm handles.",
+          "fr": "Presque chaque dossier de l’Étude."
+        }
+      },
+      "matieres": [
+        {
+          "de": "Internationales Erbrecht",
+          "en": "International succession",
+          "fr": "Successions internationales",
+          "lb": null
+        },
+        {
+          "de": "Luxemburgisches Erbrecht",
+          "en": "Luxembourg succession law",
+          "fr": "Successions luxembourgeoises",
+          "lb": null
+        }
+      ]
+    },
+    {
+      "id": "creances-droits",
+      "ordre": 4,
+      "slug": {
+        "de": "forderungen-und-rechte",
+        "en": "claims-and-rights",
+        "fr": "creances-et-droits"
+      },
+      "terme": {
+        "de": "Forderungen und Rechte",
+        "en": "Claims and rights",
+        "fr": "Créances et droits"
+      },
+      "definition": {
+        "de": "Hereinholen, was Ihnen zusteht, und schützen, was Ihnen gehört.",
+        "en": "Recovering what you are owed, and protecting what is yours.",
+        "fr": "Faire rentrer ce qui vous est dû, et protéger ce qui vous appartient."
+      },
+      "texte": {
+        "de": "Wir treiben Forderungen luxemburgischer Gläubiger gegen Schuldner im Ausland ein — außergerichtlich, und wenn nötig vor Gericht. Die Kanzlei vertritt Intrum Justitia und die League International for Creditors in Luxemburg und meldet Marken und Patente für Benelux und Europa an.",
+        "en": "We recover the claims of Luxembourg creditors against debtors established abroad — out of court, and before the courts where necessary. The firm represents Intrum Justitia and the League International for Creditors in Luxembourg, and files trademarks and patents for Benelux and for Europe.",
+        "fr": "Nous recouvrons les créances de créanciers luxembourgeois auprès de débiteurs établis à l’étranger — à l’amiable, et devant les tribunaux lorsqu’il le faut. L’Étude représente au Luxembourg le groupe Intrum Justitia et la League International for Creditors, et dépose marques et brevets pour le Benelux et pour l’Europe."
+      },
+      "kurz": {
+        "de": "Eintreiben, schützen",
+        "en": "Recovering, protecting",
+        "fr": "Recouvrer, protéger"
+      },
+      "marge": {
+        "terme": {
+          "de": "Intrum Justitia · LIC",
+          "en": "Intrum Justitia · LIC",
+          "fr": "Intrum Justitia · LIC"
+        },
+        "texte": {
+          "de": "Vertretungsmandate in Luxemburg.",
+          "en": "Representation mandates in Luxembourg.",
+          "fr": "Mandats de représentation au Luxembourg."
+        }
+      },
+      "matieres": [
+        {
+          "de": "Forderungseinzug, außergerichtlich und gerichtlich",
+          "en": "Debt recovery, out of court and judicial",
+          "fr": "Recouvrement de créances, amiable et judiciaire",
+          "lb": null
+        },
+        {
+          "de": "Marken- und Patentanmeldung, Benelux und Europa",
+          "en": "Trademark and patent filing, Benelux and Europe",
+          "fr": "Dépôt de marques et de brevets, Benelux et Europe",
+          "lb": null
+        },
+        {
+          "de": "Geistiges und gewerbliches Eigentum",
+          "en": "Intellectual and industrial property",
+          "fr": "Propriété intellectuelle et industrielle",
+          "lb": null
+        },
+        {
+          "de": "Versicherungs- und Entschädigungsrecht",
+          "en": "Insurance and compensation law",
+          "fr": "Droit des assurances et de l’indemnisation",
+          "lb": null
+        },
+        {
+          "de": "Zivil- und Handelsrecht",
+          "en": "Civil and commercial law",
+          "fr": "Droit civil et commercial",
+          "lb": null
+        },
+        {
+          "de": "Haftungsrecht",
+          "en": "Liability law",
+          "fr": "Droit de la responsabilité",
+          "lb": null
+        }
+      ]
+    }
+  ],
+  "projet_vers_famille": {
+    "immobilier": "immobilier-patrimoine",
+    "societe": "societes-fiscalite",
+    "succession": "successions",
+    "creance": "creances-droits",
+    "marque": "creances-droits",
+    "fiscalite": "societes-fiscalite",
+    "litige": "creances-droits"
+  },
+  "situation_options": {
+    "pays": [
+      {
+        "id": "france",
+        "axe": "pays",
+        "slug": {
+          "de": "frankreich",
+          "en": "france",
+          "fr": "france"
+        },
+        "etiquette": {
+          "de": "Frankreich",
+          "en": "France",
+          "fr": "France"
+        },
+        "dans_la_phrase": {
+          "de": "in Frankreich",
+          "en": "in France",
+          "fr": "en France"
+        },
+        "code": "FR",
+        "themes": [],
+        "ordre": 1,
+        "visible": true,
+        "updated_at": "2026-09-22T16:36:59.909008+00:00",
+        "updated_by": null
+      },
+      {
+        "id": "belgique",
+        "axe": "pays",
+        "slug": {
+          "de": "belgien",
+          "en": "belgium",
+          "fr": "belgique"
+        },
+        "etiquette": {
+          "de": "Belgien",
+          "en": "Belgium",
+          "fr": "Belgique"
+        },
+        "dans_la_phrase": {
+          "de": "in Belgien",
+          "en": "in Belgium",
+          "fr": "en Belgique"
+        },
+        "code": "BE",
+        "themes": [],
+        "ordre": 2,
+        "visible": true,
+        "updated_at": "2026-09-22T16:36:59.909008+00:00",
+        "updated_by": null
+      },
+      {
+        "id": "allemagne",
+        "axe": "pays",
+        "slug": {
+          "de": "deutschland",
+          "en": "germany",
+          "fr": "allemagne"
+        },
+        "etiquette": {
+          "de": "Deutschland",
+          "en": "Germany",
+          "fr": "Allemagne"
+        },
+        "dans_la_phrase": {
+          "de": "in Deutschland",
+          "en": "in Germany",
+          "fr": "en Allemagne"
+        },
+        "code": "DE",
+        "themes": [],
+        "ordre": 3,
+        "visible": true,
+        "updated_at": "2026-09-22T16:36:59.909008+00:00",
+        "updated_by": null
+      },
+      {
+        "id": "luxembourg",
+        "axe": "pays",
+        "slug": {
+          "de": "luxemburg",
+          "en": "luxembourg",
+          "fr": "luxembourg"
+        },
+        "etiquette": {
+          "de": "Luxemburg (ansässig)",
+          "en": "Luxembourg (resident)",
+          "fr": "Luxembourg (résident)"
+        },
+        "dans_la_phrase": {
+          "de": "in Luxemburg ansässig",
+          "en": "resident in Luxembourg",
+          "fr": "résident luxembourgeois"
+        },
+        "code": "LU",
+        "themes": [],
+        "ordre": 4,
+        "visible": true,
+        "updated_at": "2026-09-22T16:36:59.909008+00:00",
+        "updated_by": null
+      },
+      {
+        "id": "ue",
+        "axe": "pays",
+        "slug": {
+          "de": "eu-ausland",
+          "en": "european-union",
+          "fr": "union-europeenne"
+        },
+        "etiquette": {
+          "de": "Übriges EU-Ausland",
+          "en": "Another EU country",
+          "fr": "Autre pays de l’Union européenne"
+        },
+        "dans_la_phrase": {
+          "de": "in einem anderen EU-Land",
+          "en": "in another EU country",
+          "fr": "dans un autre pays de l’Union européenne"
+        },
+        "code": "EU",
+        "themes": [],
+        "ordre": 5,
+        "visible": true,
+        "updated_at": "2026-09-22T16:36:59.909008+00:00",
+        "updated_by": null
+      },
+      {
+        "id": "hors-ue",
+        "axe": "pays",
+        "slug": {
+          "de": "ausserhalb-der-eu",
+          "en": "outside-the-eu",
+          "fr": "hors-union-europeenne"
+        },
+        "etiquette": {
+          "de": "Außerhalb der EU",
+          "en": "Outside the European Union",
+          "fr": "Hors Union européenne"
+        },
+        "dans_la_phrase": {
+          "de": "außerhalb der EU",
+          "en": "outside the European Union",
+          "fr": "hors de l’Union européenne"
+        },
+        "code": "XX",
+        "themes": [],
+        "ordre": 6,
+        "visible": true,
+        "updated_at": "2026-09-22T16:36:59.909008+00:00",
+        "updated_by": null
+      }
+    ],
+    "projets": [
+      {
+        "id": "immobilier",
+        "axe": "projet",
+        "slug": {
+          "de": "immobilie-kaufen",
+          "en": "buying-property",
+          "fr": "acheter-un-bien-immobilier"
+        },
+        "etiquette": {
+          "de": "Eine Immobilie kaufen oder halten",
+          "en": "Buy or hold property",
+          "fr": "Acheter ou détenir un bien immobilier"
+        },
+        "dans_la_phrase": {
+          "de": "eine Immobilie kaufen oder halten",
+          "en": "buy or hold property",
+          "fr": "acheter ou détenir un bien immobilier"
+        },
+        "code": null,
+        "themes": [
+          "immobilier",
+          "fiscalite"
+        ],
+        "ordre": 1,
+        "visible": true,
+        "updated_at": "2026-09-22T16:36:59.909008+00:00",
+        "updated_by": null
+      },
+      {
+        "id": "societe",
+        "axe": "projet",
+        "slug": {
+          "de": "gesellschaft-gruenden",
+          "en": "setting-up-a-company",
+          "fr": "creer-une-societe"
+        },
+        "etiquette": {
+          "de": "Eine Gesellschaft gründen oder verwalten",
+          "en": "Set up or run a company",
+          "fr": "Créer ou gérer une société"
+        },
+        "dans_la_phrase": {
+          "de": "eine Gesellschaft gründen oder verwalten",
+          "en": "set up or run a company",
+          "fr": "créer ou gérer une société"
+        },
+        "code": null,
+        "themes": [
+          "societes",
+          "fiscalite"
+        ],
+        "ordre": 2,
+        "visible": true,
+        "updated_at": "2026-09-22T16:36:59.909008+00:00",
+        "updated_by": null
+      },
+      {
+        "id": "succession",
+        "axe": "projet",
+        "slug": {
+          "de": "erbfall-regeln",
+          "en": "settling-an-estate",
+          "fr": "regler-une-succession"
+        },
+        "etiquette": {
+          "de": "Einen Erbfall regeln",
+          "en": "Settle an estate",
+          "fr": "Régler une succession"
+        },
+        "dans_la_phrase": {
+          "de": "einen Erbfall regeln",
+          "en": "settle an estate",
+          "fr": "régler une succession"
+        },
+        "code": null,
+        "themes": [
+          "successions"
+        ],
+        "ordre": 3,
+        "visible": true,
+        "updated_at": "2026-09-22T16:36:59.909008+00:00",
+        "updated_by": null
+      },
+      {
+        "id": "creance",
+        "axe": "projet",
+        "slug": {
+          "de": "forderung-eintreiben",
+          "en": "recovering-a-debt",
+          "fr": "recouvrer-une-creance"
+        },
+        "etiquette": {
+          "de": "Eine Forderung eintreiben",
+          "en": "Recover a debt",
+          "fr": "Recouvrer une créance"
+        },
+        "dans_la_phrase": {
+          "de": "eine Forderung eintreiben",
+          "en": "recover a debt",
+          "fr": "recouvrer une créance"
+        },
+        "code": null,
+        "themes": [
+          "recouvrement"
+        ],
+        "ordre": 4,
+        "visible": true,
+        "updated_at": "2026-09-22T16:36:59.909008+00:00",
+        "updated_by": null
+      },
+      {
+        "id": "marque",
+        "axe": "projet",
+        "slug": {
+          "de": "marke-schuetzen",
+          "en": "protecting-a-trademark",
+          "fr": "proteger-une-marque"
+        },
+        "etiquette": {
+          "de": "Eine Marke oder ein Patent schützen",
+          "en": "Protect a trademark or patent",
+          "fr": "Protéger une marque ou un brevet"
+        },
+        "dans_la_phrase": {
+          "de": "eine Marke oder ein Patent schützen",
+          "en": "protect a trademark or patent",
+          "fr": "protéger une marque ou un brevet"
+        },
+        "code": null,
+        "themes": [
+          "propriete-intellectuelle"
+        ],
+        "ordre": 5,
+        "visible": true,
+        "updated_at": "2026-09-22T16:36:59.909008+00:00",
+        "updated_by": null
+      },
+      {
+        "id": "fiscalite",
+        "axe": "projet",
+        "slug": {
+          "de": "steuerliche-lage-klaeren",
+          "en": "clarifying-your-tax-position",
+          "fr": "clarifier-sa-situation-fiscale"
+        },
+        "etiquette": {
+          "de": "Die steuerliche Lage klären",
+          "en": "Clarify your tax position",
+          "fr": "Clarifier votre situation fiscale"
+        },
+        "dans_la_phrase": {
+          "de": "Ihre steuerliche Lage klären",
+          "en": "clarify your tax position",
+          "fr": "clarifier votre situation fiscale"
+        },
+        "code": null,
+        "themes": [
+          "fiscalite"
+        ],
+        "ordre": 6,
+        "visible": true,
+        "updated_at": "2026-09-22T16:36:59.909008+00:00",
+        "updated_by": null
+      },
+      {
+        "id": "litige",
+        "axe": "projet",
+        "slug": {
+          "de": "rechtsstreit-fuehren",
+          "en": "pursuing-a-dispute",
+          "fr": "conduire-un-litige"
+        },
+        "etiquette": {
+          "de": "Einen Rechtsstreit führen",
+          "en": "Pursue a dispute",
+          "fr": "Conduire un litige"
+        },
+        "dans_la_phrase": {
+          "de": "einen Rechtsstreit führen",
+          "en": "pursue a dispute",
+          "fr": "conduire un litige"
+        },
+        "code": null,
+        "themes": [
+          "contentieux"
+        ],
+        "ordre": 7,
+        "visible": true,
+        "updated_at": "2026-09-22T16:36:59.909008+00:00",
+        "updated_by": null
+      }
+    ]
+  },
+  "situations": [
+    {
+      "id": "france--immobilier",
+      "pays": "france",
+      "projet": "immobilier",
+      "titre": {
+        "de": "Sie sind in Frankreich und möchten in Luxemburg eine Immobilie kaufen oder halten.",
+        "en": "You are in France and you want to buy or hold property in Luxembourg.",
+        "fr": "Vous êtes en France et vous souhaitez, au Luxembourg, acheter ou détenir un bien immobilier."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "immobilier",
+        "fiscalite"
+      ],
+      "famille": "immobilier-patrimoine",
+      "ordre": 11,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "france--societe",
+      "pays": "france",
+      "projet": "societe",
+      "titre": {
+        "de": "Sie sind in Frankreich und möchten in Luxemburg eine Gesellschaft gründen oder verwalten.",
+        "en": "You are in France and you want to set up or run a company in Luxembourg.",
+        "fr": "Vous êtes en France et vous souhaitez, au Luxembourg, créer ou gérer une société."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "societes",
+        "fiscalite"
+      ],
+      "famille": "societes-fiscalite",
+      "ordre": 12,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "france--succession",
+      "pays": "france",
+      "projet": "succession",
+      "titre": {
+        "de": "Sie sind in Frankreich und möchten in Luxemburg einen Erbfall regeln.",
+        "en": "You are in France and you want to settle an estate in Luxembourg.",
+        "fr": "Vous êtes en France et vous souhaitez, au Luxembourg, régler une succession."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "successions"
+      ],
+      "famille": "successions",
+      "ordre": 13,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "france--creance",
+      "pays": "france",
+      "projet": "creance",
+      "titre": {
+        "de": "Sie sind in Frankreich und möchten in Luxemburg eine Forderung eintreiben.",
+        "en": "You are in France and you want to recover a debt in Luxembourg.",
+        "fr": "Vous êtes en France et vous souhaitez, au Luxembourg, recouvrer une créance."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "recouvrement"
+      ],
+      "famille": "creances-droits",
+      "ordre": 14,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "france--marque",
+      "pays": "france",
+      "projet": "marque",
+      "titre": {
+        "de": "Sie sind in Frankreich und möchten in Luxemburg eine Marke oder ein Patent schützen.",
+        "en": "You are in France and you want to protect a trademark or patent in Luxembourg.",
+        "fr": "Vous êtes en France et vous souhaitez, au Luxembourg, protéger une marque ou un brevet."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "propriete-intellectuelle"
+      ],
+      "famille": "creances-droits",
+      "ordre": 15,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "france--fiscalite",
+      "pays": "france",
+      "projet": "fiscalite",
+      "titre": {
+        "de": "Sie sind in Frankreich und möchten in Luxemburg Ihre steuerliche Lage klären.",
+        "en": "You are in France and you want to clarify your tax position in Luxembourg.",
+        "fr": "Vous êtes en France et vous souhaitez, au Luxembourg, clarifier votre situation fiscale."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "fiscalite"
+      ],
+      "famille": "societes-fiscalite",
+      "ordre": 16,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "france--litige",
+      "pays": "france",
+      "projet": "litige",
+      "titre": {
+        "de": "Sie sind in Frankreich und möchten in Luxemburg einen Rechtsstreit führen.",
+        "en": "You are in France and you want to pursue a dispute in Luxembourg.",
+        "fr": "Vous êtes en France et vous souhaitez, au Luxembourg, conduire un litige."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "contentieux"
+      ],
+      "famille": "creances-droits",
+      "ordre": 17,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "belgique--immobilier",
+      "pays": "belgique",
+      "projet": "immobilier",
+      "titre": {
+        "de": "Sie sind in Belgien und möchten in Luxemburg eine Immobilie kaufen oder halten.",
+        "en": "You are in Belgium and you want to buy or hold property in Luxembourg.",
+        "fr": "Vous êtes en Belgique et vous souhaitez, au Luxembourg, acheter ou détenir un bien immobilier."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "immobilier",
+        "fiscalite"
+      ],
+      "famille": "immobilier-patrimoine",
+      "ordre": 21,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "belgique--societe",
+      "pays": "belgique",
+      "projet": "societe",
+      "titre": {
+        "de": "Sie sind in Belgien und möchten in Luxemburg eine Gesellschaft gründen oder verwalten.",
+        "en": "You are in Belgium and you want to set up or run a company in Luxembourg.",
+        "fr": "Vous êtes en Belgique et vous souhaitez, au Luxembourg, créer ou gérer une société."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "societes",
+        "fiscalite"
+      ],
+      "famille": "societes-fiscalite",
+      "ordre": 22,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "belgique--succession",
+      "pays": "belgique",
+      "projet": "succession",
+      "titre": {
+        "de": "Sie sind in Belgien und möchten in Luxemburg einen Erbfall regeln.",
+        "en": "You are in Belgium and you want to settle an estate in Luxembourg.",
+        "fr": "Vous êtes en Belgique et vous souhaitez, au Luxembourg, régler une succession."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "successions"
+      ],
+      "famille": "successions",
+      "ordre": 23,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "belgique--creance",
+      "pays": "belgique",
+      "projet": "creance",
+      "titre": {
+        "de": "Sie sind in Belgien und möchten in Luxemburg eine Forderung eintreiben.",
+        "en": "You are in Belgium and you want to recover a debt in Luxembourg.",
+        "fr": "Vous êtes en Belgique et vous souhaitez, au Luxembourg, recouvrer une créance."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "recouvrement"
+      ],
+      "famille": "creances-droits",
+      "ordre": 24,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "belgique--marque",
+      "pays": "belgique",
+      "projet": "marque",
+      "titre": {
+        "de": "Sie sind in Belgien und möchten in Luxemburg eine Marke oder ein Patent schützen.",
+        "en": "You are in Belgium and you want to protect a trademark or patent in Luxembourg.",
+        "fr": "Vous êtes en Belgique et vous souhaitez, au Luxembourg, protéger une marque ou un brevet."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "propriete-intellectuelle"
+      ],
+      "famille": "creances-droits",
+      "ordre": 25,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "belgique--fiscalite",
+      "pays": "belgique",
+      "projet": "fiscalite",
+      "titre": {
+        "de": "Sie sind in Belgien und möchten in Luxemburg Ihre steuerliche Lage klären.",
+        "en": "You are in Belgium and you want to clarify your tax position in Luxembourg.",
+        "fr": "Vous êtes en Belgique et vous souhaitez, au Luxembourg, clarifier votre situation fiscale."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "fiscalite"
+      ],
+      "famille": "societes-fiscalite",
+      "ordre": 26,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "belgique--litige",
+      "pays": "belgique",
+      "projet": "litige",
+      "titre": {
+        "de": "Sie sind in Belgien und möchten in Luxemburg einen Rechtsstreit führen.",
+        "en": "You are in Belgium and you want to pursue a dispute in Luxembourg.",
+        "fr": "Vous êtes en Belgique et vous souhaitez, au Luxembourg, conduire un litige."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "contentieux"
+      ],
+      "famille": "creances-droits",
+      "ordre": 27,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "allemagne--immobilier",
+      "pays": "allemagne",
+      "projet": "immobilier",
+      "titre": {
+        "de": "Sie sind in Deutschland und möchten in Luxemburg eine Immobilie kaufen oder halten.",
+        "en": "You are in Germany and you want to buy or hold property in Luxembourg.",
+        "fr": "Vous êtes en Allemagne et vous souhaitez, au Luxembourg, acheter ou détenir un bien immobilier."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "immobilier",
+        "fiscalite"
+      ],
+      "famille": "immobilier-patrimoine",
+      "ordre": 31,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "allemagne--societe",
+      "pays": "allemagne",
+      "projet": "societe",
+      "titre": {
+        "de": "Sie sind in Deutschland und möchten in Luxemburg eine Gesellschaft gründen oder verwalten.",
+        "en": "You are in Germany and you want to set up or run a company in Luxembourg.",
+        "fr": "Vous êtes en Allemagne et vous souhaitez, au Luxembourg, créer ou gérer une société."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "societes",
+        "fiscalite"
+      ],
+      "famille": "societes-fiscalite",
+      "ordre": 32,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "allemagne--succession",
+      "pays": "allemagne",
+      "projet": "succession",
+      "titre": {
+        "de": "Sie sind in Deutschland und möchten in Luxemburg einen Erbfall regeln.",
+        "en": "You are in Germany and you want to settle an estate in Luxembourg.",
+        "fr": "Vous êtes en Allemagne et vous souhaitez, au Luxembourg, régler une succession."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "successions"
+      ],
+      "famille": "successions",
+      "ordre": 33,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "allemagne--creance",
+      "pays": "allemagne",
+      "projet": "creance",
+      "titre": {
+        "de": "Sie sind in Deutschland und möchten in Luxemburg eine Forderung eintreiben.",
+        "en": "You are in Germany and you want to recover a debt in Luxembourg.",
+        "fr": "Vous êtes en Allemagne et vous souhaitez, au Luxembourg, recouvrer une créance."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "recouvrement"
+      ],
+      "famille": "creances-droits",
+      "ordre": 34,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "allemagne--marque",
+      "pays": "allemagne",
+      "projet": "marque",
+      "titre": {
+        "de": "Sie sind in Deutschland und möchten in Luxemburg eine Marke oder ein Patent schützen.",
+        "en": "You are in Germany and you want to protect a trademark or patent in Luxembourg.",
+        "fr": "Vous êtes en Allemagne et vous souhaitez, au Luxembourg, protéger une marque ou un brevet."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "propriete-intellectuelle"
+      ],
+      "famille": "creances-droits",
+      "ordre": 35,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "allemagne--fiscalite",
+      "pays": "allemagne",
+      "projet": "fiscalite",
+      "titre": {
+        "de": "Sie sind in Deutschland und möchten in Luxemburg Ihre steuerliche Lage klären.",
+        "en": "You are in Germany and you want to clarify your tax position in Luxembourg.",
+        "fr": "Vous êtes en Allemagne et vous souhaitez, au Luxembourg, clarifier votre situation fiscale."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "fiscalite"
+      ],
+      "famille": "societes-fiscalite",
+      "ordre": 36,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "allemagne--litige",
+      "pays": "allemagne",
+      "projet": "litige",
+      "titre": {
+        "de": "Sie sind in Deutschland und möchten in Luxemburg einen Rechtsstreit führen.",
+        "en": "You are in Germany and you want to pursue a dispute in Luxembourg.",
+        "fr": "Vous êtes en Allemagne et vous souhaitez, au Luxembourg, conduire un litige."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "contentieux"
+      ],
+      "famille": "creances-droits",
+      "ordre": 37,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "luxembourg--immobilier",
+      "pays": "luxembourg",
+      "projet": "immobilier",
+      "titre": {
+        "de": "Sie sind in Luxemburg ansässig und möchten in Luxemburg eine Immobilie kaufen oder halten.",
+        "en": "You are resident in Luxembourg and you want to buy or hold property in Luxembourg.",
+        "fr": "Vous êtes résident luxembourgeois et vous souhaitez, au Luxembourg, acheter ou détenir un bien immobilier."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "immobilier",
+        "fiscalite"
+      ],
+      "famille": "immobilier-patrimoine",
+      "ordre": 41,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "luxembourg--societe",
+      "pays": "luxembourg",
+      "projet": "societe",
+      "titre": {
+        "de": "Sie sind in Luxemburg ansässig und möchten in Luxemburg eine Gesellschaft gründen oder verwalten.",
+        "en": "You are resident in Luxembourg and you want to set up or run a company in Luxembourg.",
+        "fr": "Vous êtes résident luxembourgeois et vous souhaitez, au Luxembourg, créer ou gérer une société."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "societes",
+        "fiscalite"
+      ],
+      "famille": "societes-fiscalite",
+      "ordre": 42,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "luxembourg--succession",
+      "pays": "luxembourg",
+      "projet": "succession",
+      "titre": {
+        "de": "Sie sind in Luxemburg ansässig und möchten in Luxemburg einen Erbfall regeln.",
+        "en": "You are resident in Luxembourg and you want to settle an estate in Luxembourg.",
+        "fr": "Vous êtes résident luxembourgeois et vous souhaitez, au Luxembourg, régler une succession."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "successions"
+      ],
+      "famille": "successions",
+      "ordre": 43,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "luxembourg--creance",
+      "pays": "luxembourg",
+      "projet": "creance",
+      "titre": {
+        "de": "Sie sind in Luxemburg ansässig und möchten in Luxemburg eine Forderung eintreiben.",
+        "en": "You are resident in Luxembourg and you want to recover a debt in Luxembourg.",
+        "fr": "Vous êtes résident luxembourgeois et vous souhaitez, au Luxembourg, recouvrer une créance."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "recouvrement"
+      ],
+      "famille": "creances-droits",
+      "ordre": 44,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "luxembourg--marque",
+      "pays": "luxembourg",
+      "projet": "marque",
+      "titre": {
+        "de": "Sie sind in Luxemburg ansässig und möchten in Luxemburg eine Marke oder ein Patent schützen.",
+        "en": "You are resident in Luxembourg and you want to protect a trademark or patent in Luxembourg.",
+        "fr": "Vous êtes résident luxembourgeois et vous souhaitez, au Luxembourg, protéger une marque ou un brevet."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "propriete-intellectuelle"
+      ],
+      "famille": "creances-droits",
+      "ordre": 45,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "luxembourg--fiscalite",
+      "pays": "luxembourg",
+      "projet": "fiscalite",
+      "titre": {
+        "de": "Sie sind in Luxemburg ansässig und möchten in Luxemburg Ihre steuerliche Lage klären.",
+        "en": "You are resident in Luxembourg and you want to clarify your tax position in Luxembourg.",
+        "fr": "Vous êtes résident luxembourgeois et vous souhaitez, au Luxembourg, clarifier votre situation fiscale."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "fiscalite"
+      ],
+      "famille": "societes-fiscalite",
+      "ordre": 46,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "luxembourg--litige",
+      "pays": "luxembourg",
+      "projet": "litige",
+      "titre": {
+        "de": "Sie sind in Luxemburg ansässig und möchten in Luxemburg einen Rechtsstreit führen.",
+        "en": "You are resident in Luxembourg and you want to pursue a dispute in Luxembourg.",
+        "fr": "Vous êtes résident luxembourgeois et vous souhaitez, au Luxembourg, conduire un litige."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "contentieux"
+      ],
+      "famille": "creances-droits",
+      "ordre": 47,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "ue--immobilier",
+      "pays": "ue",
+      "projet": "immobilier",
+      "titre": {
+        "de": "Sie sind in einem anderen EU-Land und möchten in Luxemburg eine Immobilie kaufen oder halten.",
+        "en": "You are in another EU country and you want to buy or hold property in Luxembourg.",
+        "fr": "Vous êtes dans un autre pays de l’Union européenne et vous souhaitez, au Luxembourg, acheter ou détenir un bien immobilier."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "immobilier",
+        "fiscalite"
+      ],
+      "famille": "immobilier-patrimoine",
+      "ordre": 51,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "ue--societe",
+      "pays": "ue",
+      "projet": "societe",
+      "titre": {
+        "de": "Sie sind in einem anderen EU-Land und möchten in Luxemburg eine Gesellschaft gründen oder verwalten.",
+        "en": "You are in another EU country and you want to set up or run a company in Luxembourg.",
+        "fr": "Vous êtes dans un autre pays de l’Union européenne et vous souhaitez, au Luxembourg, créer ou gérer une société."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "societes",
+        "fiscalite"
+      ],
+      "famille": "societes-fiscalite",
+      "ordre": 52,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "ue--succession",
+      "pays": "ue",
+      "projet": "succession",
+      "titre": {
+        "de": "Sie sind in einem anderen EU-Land und möchten in Luxemburg einen Erbfall regeln.",
+        "en": "You are in another EU country and you want to settle an estate in Luxembourg.",
+        "fr": "Vous êtes dans un autre pays de l’Union européenne et vous souhaitez, au Luxembourg, régler une succession."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "successions"
+      ],
+      "famille": "successions",
+      "ordre": 53,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "ue--creance",
+      "pays": "ue",
+      "projet": "creance",
+      "titre": {
+        "de": "Sie sind in einem anderen EU-Land und möchten in Luxemburg eine Forderung eintreiben.",
+        "en": "You are in another EU country and you want to recover a debt in Luxembourg.",
+        "fr": "Vous êtes dans un autre pays de l’Union européenne et vous souhaitez, au Luxembourg, recouvrer une créance."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "recouvrement"
+      ],
+      "famille": "creances-droits",
+      "ordre": 54,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "ue--marque",
+      "pays": "ue",
+      "projet": "marque",
+      "titre": {
+        "de": "Sie sind in einem anderen EU-Land und möchten in Luxemburg eine Marke oder ein Patent schützen.",
+        "en": "You are in another EU country and you want to protect a trademark or patent in Luxembourg.",
+        "fr": "Vous êtes dans un autre pays de l’Union européenne et vous souhaitez, au Luxembourg, protéger une marque ou un brevet."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "propriete-intellectuelle"
+      ],
+      "famille": "creances-droits",
+      "ordre": 55,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "ue--fiscalite",
+      "pays": "ue",
+      "projet": "fiscalite",
+      "titre": {
+        "de": "Sie sind in einem anderen EU-Land und möchten in Luxemburg Ihre steuerliche Lage klären.",
+        "en": "You are in another EU country and you want to clarify your tax position in Luxembourg.",
+        "fr": "Vous êtes dans un autre pays de l’Union européenne et vous souhaitez, au Luxembourg, clarifier votre situation fiscale."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "fiscalite"
+      ],
+      "famille": "societes-fiscalite",
+      "ordre": 56,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "ue--litige",
+      "pays": "ue",
+      "projet": "litige",
+      "titre": {
+        "de": "Sie sind in einem anderen EU-Land und möchten in Luxemburg einen Rechtsstreit führen.",
+        "en": "You are in another EU country and you want to pursue a dispute in Luxembourg.",
+        "fr": "Vous êtes dans un autre pays de l’Union européenne et vous souhaitez, au Luxembourg, conduire un litige."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "contentieux"
+      ],
+      "famille": "creances-droits",
+      "ordre": 57,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "hors-ue--immobilier",
+      "pays": "hors-ue",
+      "projet": "immobilier",
+      "titre": {
+        "de": "Sie sind außerhalb der EU und möchten in Luxemburg eine Immobilie kaufen oder halten.",
+        "en": "You are outside the European Union and you want to buy or hold property in Luxembourg.",
+        "fr": "Vous êtes hors de l’Union européenne et vous souhaitez, au Luxembourg, acheter ou détenir un bien immobilier."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "immobilier",
+        "fiscalite"
+      ],
+      "famille": "immobilier-patrimoine",
+      "ordre": 61,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "hors-ue--societe",
+      "pays": "hors-ue",
+      "projet": "societe",
+      "titre": {
+        "de": "Sie sind außerhalb der EU und möchten in Luxemburg eine Gesellschaft gründen oder verwalten.",
+        "en": "You are outside the European Union and you want to set up or run a company in Luxembourg.",
+        "fr": "Vous êtes hors de l’Union européenne et vous souhaitez, au Luxembourg, créer ou gérer une société."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "societes",
+        "fiscalite"
+      ],
+      "famille": "societes-fiscalite",
+      "ordre": 62,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "hors-ue--succession",
+      "pays": "hors-ue",
+      "projet": "succession",
+      "titre": {
+        "de": "Sie sind außerhalb der EU und möchten in Luxemburg einen Erbfall regeln.",
+        "en": "You are outside the European Union and you want to settle an estate in Luxembourg.",
+        "fr": "Vous êtes hors de l’Union européenne et vous souhaitez, au Luxembourg, régler une succession."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "successions"
+      ],
+      "famille": "successions",
+      "ordre": 63,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "hors-ue--creance",
+      "pays": "hors-ue",
+      "projet": "creance",
+      "titre": {
+        "de": "Sie sind außerhalb der EU und möchten in Luxemburg eine Forderung eintreiben.",
+        "en": "You are outside the European Union and you want to recover a debt in Luxembourg.",
+        "fr": "Vous êtes hors de l’Union européenne et vous souhaitez, au Luxembourg, recouvrer une créance."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "recouvrement"
+      ],
+      "famille": "creances-droits",
+      "ordre": 64,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "hors-ue--marque",
+      "pays": "hors-ue",
+      "projet": "marque",
+      "titre": {
+        "de": "Sie sind außerhalb der EU und möchten in Luxemburg eine Marke oder ein Patent schützen.",
+        "en": "You are outside the European Union and you want to protect a trademark or patent in Luxembourg.",
+        "fr": "Vous êtes hors de l’Union européenne et vous souhaitez, au Luxembourg, protéger une marque ou un brevet."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "propriete-intellectuelle"
+      ],
+      "famille": "creances-droits",
+      "ordre": 65,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "hors-ue--fiscalite",
+      "pays": "hors-ue",
+      "projet": "fiscalite",
+      "titre": {
+        "de": "Sie sind außerhalb der EU und möchten in Luxemburg Ihre steuerliche Lage klären.",
+        "en": "You are outside the European Union and you want to clarify your tax position in Luxembourg.",
+        "fr": "Vous êtes hors de l’Union européenne et vous souhaitez, au Luxembourg, clarifier votre situation fiscale."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "fiscalite"
+      ],
+      "famille": "societes-fiscalite",
+      "ordre": 66,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "hors-ue--litige",
+      "pays": "hors-ue",
+      "projet": "litige",
+      "titre": {
+        "de": "Sie sind außerhalb der EU und möchten in Luxemburg einen Rechtsstreit führen.",
+        "en": "You are outside the European Union and you want to pursue a dispute in Luxembourg.",
+        "fr": "Vous êtes hors de l’Union européenne et vous souhaitez, au Luxembourg, conduire un litige."
+      },
+      "worum": {},
+      "cadre": {},
+      "notre_role": {},
+      "vos_pieces": {},
+      "themes": [
+        "contentieux"
+      ],
+      "famille": "creances-droits",
+      "ordre": 67,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    }
+  ],
+  "themes": [
+    {
+      "id": "immobilier",
+      "slug": {
+        "de": "immobilien",
+        "en": "property",
+        "fr": "immobilier"
+      },
+      "etiquette": {
+        "de": "Immobilien",
+        "en": "Property",
+        "fr": "Immobilier"
+      },
+      "ordre": 0,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "societes",
+      "slug": {
+        "de": "gesellschaften",
+        "en": "companies",
+        "fr": "societes"
+      },
+      "etiquette": {
+        "de": "Gesellschaften",
+        "en": "Companies",
+        "fr": "Sociétés"
+      },
+      "ordre": 1,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "fiscalite",
+      "slug": {
+        "de": "steuern",
+        "en": "tax",
+        "fr": "fiscalite"
+      },
+      "etiquette": {
+        "de": "Steuern",
+        "en": "Tax",
+        "fr": "Fiscalité"
+      },
+      "ordre": 2,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "successions",
+      "slug": {
+        "de": "erbfolge",
+        "en": "inheritance",
+        "fr": "successions"
+      },
+      "etiquette": {
+        "de": "Erbfolge",
+        "en": "Inheritance",
+        "fr": "Successions"
+      },
+      "ordre": 3,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "recouvrement",
+      "slug": {
+        "de": "forderungseinzug",
+        "en": "debt-recovery",
+        "fr": "recouvrement"
+      },
+      "etiquette": {
+        "de": "Forderungseinzug",
+        "en": "Debt recovery",
+        "fr": "Recouvrement"
+      },
+      "ordre": 4,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "propriete-intellectuelle",
+      "slug": {
+        "de": "geistiges-eigentum",
+        "en": "intellectual-property",
+        "fr": "propriete-intellectuelle"
+      },
+      "etiquette": {
+        "de": "Geistiges Eigentum",
+        "en": "Intellectual property",
+        "fr": "Propriété intellectuelle"
+      },
+      "ordre": 5,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "blanchiment",
+      "slug": {
+        "de": "geldwaesche",
+        "en": "money-laundering",
+        "fr": "blanchiment"
+      },
+      "etiquette": {
+        "de": "Geldwäschebekämpfung",
+        "en": "Anti-money laundering",
+        "fr": "Lutte anti-blanchiment"
+      },
+      "ordre": 6,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "banque",
+      "slug": {
+        "de": "banken",
+        "en": "banking",
+        "fr": "banque"
+      },
+      "etiquette": {
+        "de": "Bank und Finanz",
+        "en": "Banking and finance",
+        "fr": "Banque et finance"
+      },
+      "ordre": 7,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "assurance",
+      "slug": {
+        "de": "versicherung",
+        "en": "insurance",
+        "fr": "assurance"
+      },
+      "etiquette": {
+        "de": "Versicherung",
+        "en": "Insurance",
+        "fr": "Assurance"
+      },
+      "ordre": 8,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "contentieux",
+      "slug": {
+        "de": "rechtsstreit",
+        "en": "litigation",
+        "fr": "contentieux"
+      },
+      "etiquette": {
+        "de": "Rechtsstreit",
+        "en": "Litigation",
+        "fr": "Contentieux"
+      },
+      "ordre": 9,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    }
+  ],
+  "publications": [
+    {
+      "id": "droit-des-successions",
+      "type": "dossier",
+      "slug": {
+        "de": "das-erbrecht",
+        "en": "the-law-of-succession",
+        "fr": "le-droit-des-successions"
+      },
+      "titre": {
+        "de": "Das Erbrecht",
+        "en": "The law of succession",
+        "fr": "Le droit des successions"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "successions"
+      ],
+      "ordre": 1,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "recouvrement-international",
+      "type": "dossier",
+      "slug": {
+        "de": "internationaler-forderungseinzug",
+        "en": "international-debt-recovery",
+        "fr": "recouvrement-international-de-creances"
+      },
+      "titre": {
+        "de": "Internationaler Forderungseinzug",
+        "en": "International debt recovery",
+        "fr": "Recouvrement international de créances"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "recouvrement"
+      ],
+      "ordre": 2,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "rendement-locatif",
+      "type": "dossier",
+      "slug": {
+        "de": "berechnung-der-mietrendite",
+        "en": "calculating-rental-yield",
+        "fr": "calcul-du-rendement-locatif"
+      },
+      "titre": {
+        "de": "Berechnung der Mietrendite",
+        "en": "Calculating rental yield",
+        "fr": "Calcul du rendement locatif"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "immobilier"
+      ],
+      "ordre": 3,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "constitution-soparfi",
+      "type": "dossier",
+      "slug": {
+        "de": "gruendung-einer-soparfi-societe-de-participations-financieres",
+        "en": "setting-up-a-soparfi-financial-participations-company",
+        "fr": "constitution-d-une-soparfi-societe-de-participations-financieres"
+      },
+      "titre": {
+        "de": "Gründung einer SOPARFI (société de participations financières)",
+        "en": "Setting up a SOPARFI (financial participations company)",
+        "fr": "Constitution d’une SOPARFI (société de participations financières)"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "societes",
+        "fiscalite"
+      ],
+      "ordre": 4,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "spf-patrimoine-familial",
+      "type": "dossier",
+      "slug": {
+        "de": "gesellschaft-zur-verwaltung-von-familienvermoegen-spf",
+        "en": "family-wealth-management-company-spf",
+        "fr": "societe-de-gestion-de-patrimoine-familial-spf"
+      },
+      "titre": {
+        "de": "Gesellschaft zur Verwaltung von Familienvermögen (SPF)",
+        "en": "Family wealth management company (SPF)",
+        "fr": "Société de gestion de patrimoine familial (SPF)"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "societes",
+        "fiscalite"
+      ],
+      "ordre": 5,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "exonerations-propriete-intellectuelle",
+      "type": "dossier",
+      "slug": {
+        "de": "steuerbefreiungen-und-rechte-des-geistigen-eigentums",
+        "en": "tax-exemptions-and-intellectual-property-rights",
+        "fr": "exonerations-fiscales-et-droits-de-propriete-intellectuelle"
+      },
+      "titre": {
+        "de": "Steuerbefreiungen und Rechte des geistigen Eigentums",
+        "en": "Tax exemptions and intellectual property rights",
+        "fr": "Exonérations fiscales et droits de propriété intellectuelle"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "fiscalite",
+        "propriete-intellectuelle"
+      ],
+      "ordre": 6,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "constituer-dossier-recouvrement",
+      "type": "dossier",
+      "slug": {
+        "de": "eine-forderungsakte-aufbauen",
+        "en": "building-a-debt-recovery-file",
+        "fr": "constituer-un-dossier-de-recouvrement-de-creance"
+      },
+      "titre": {
+        "de": "Eine Forderungsakte aufbauen",
+        "en": "Building a debt recovery file",
+        "fr": "Constituer un dossier de recouvrement de créance"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "recouvrement"
+      ],
+      "ordre": 7,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "dossier-recouvrement-mise-en-demeure",
+      "type": "dossier",
+      "slug": {
+        "de": "die-forderungsakte-und-die-mahnung",
+        "en": "the-recovery-file-and-the-formal-notice",
+        "fr": "le-dossier-de-recouvrement-et-la-mise-en-demeure"
+      },
+      "titre": {
+        "de": "Die Forderungsakte und die Mahnung",
+        "en": "The recovery file and the formal notice",
+        "fr": "Le dossier de recouvrement et la mise en demeure"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "recouvrement"
+      ],
+      "ordre": 8,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "conformite-fiscale-blanchiment",
+      "type": "dossier",
+      "slug": {
+        "de": "steuerliche-konformitaet-der-mandanten-und-geldwaesche",
+        "en": "clients-tax-compliance-and-money-laundering",
+        "fr": "conformite-fiscale-des-clients-et-blanchiment"
+      },
+      "titre": {
+        "de": "Steuerliche Konformität der Mandanten und Geldwäsche",
+        "en": "Clients’ tax compliance and money laundering",
+        "fr": "Conformité fiscale des clients et blanchiment"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "blanchiment",
+        "fiscalite"
+      ],
+      "ordre": 9,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "legislation-procedure-anti-blanchiment",
+      "type": "dossier",
+      "slug": {
+        "de": "gesetzgebung-und-verfahren-zur-geldwaeschebekaempfung",
+        "en": "anti-money-laundering-legislation-and-procedure",
+        "fr": "legislation-et-procedure-anti-blanchiment"
+      },
+      "titre": {
+        "de": "Gesetzgebung und Verfahren zur Geldwäschebekämpfung",
+        "en": "Anti-money laundering legislation and procedure",
+        "fr": "Législation et procédure anti-blanchiment"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "blanchiment"
+      ],
+      "ordre": 10,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "investissement-immobilier-luxembourg",
+      "type": "conference",
+      "slug": {
+        "de": "immobilieninvestition-in-luxemburg",
+        "en": "property-investment-in-luxembourg",
+        "fr": "investissement-immobilier-au-luxembourg"
+      },
+      "titre": {
+        "de": "Immobilieninvestition in Luxemburg",
+        "en": "Property investment in Luxembourg",
+        "fr": "Investissement immobilier au Luxembourg"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "immobilier"
+      ],
+      "ordre": 101,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "acquisition-biens-non-residents",
+      "type": "conference",
+      "slug": {
+        "de": "der-erwerb-von-immobilien-in-luxemburg-durch-nichtansaessige",
+        "en": "the-acquisition-of-property-in-luxembourg-by-non-residents",
+        "fr": "l-acquisition-de-biens-immobiliers-au-luxembourg-par-des-non-residents"
+      },
+      "titre": {
+        "de": "Der Erwerb von Immobilien in Luxemburg durch Nichtansässige",
+        "en": "The acquisition of property in Luxembourg by non-residents",
+        "fr": "L’acquisition de biens immobiliers au Luxembourg par des non-résidents"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "immobilier"
+      ],
+      "ordre": 102,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "traitement-fiscal-sci",
+      "type": "conference",
+      "slug": {
+        "de": "steuerliche-behandlung-der-sci",
+        "en": "tax-treatment-of-the-sci",
+        "fr": "traitement-fiscal-de-la-sci"
+      },
+      "titre": {
+        "de": "Steuerliche Behandlung der SCI",
+        "en": "Tax treatment of the SCI",
+        "fr": "Traitement fiscal de la SCI"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "immobilier",
+        "fiscalite"
+      ],
+      "ordre": 103,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "sa-ou-sci",
+      "type": "conference",
+      "slug": {
+        "de": "immobilieninvestition-aktiengesellschaft-oder-societe-civile-immobiliere",
+        "en": "property-investment-public-limited-company-or-societe-civile-immobiliere",
+        "fr": "investissement-immobilier-societe-anonyme-ou-societe-civile-immobiliere"
+      },
+      "titre": {
+        "de": "Immobilieninvestition: Aktiengesellschaft oder société civile immobilière",
+        "en": "Property investment: public limited company or société civile immobilière",
+        "fr": "Investissement immobilier : société anonyme ou société civile immobilière"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "immobilier",
+        "societes"
+      ],
+      "ordre": 104,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "assurance-vie-luxembourg",
+      "type": "conference",
+      "slug": {
+        "de": "lebensversicherung-in-luxemburg",
+        "en": "life-assurance-in-luxembourg",
+        "fr": "assurance-vie-au-luxembourg"
+      },
+      "titre": {
+        "de": "Lebensversicherung in Luxemburg",
+        "en": "Life assurance in Luxembourg",
+        "fr": "Assurance vie au Luxembourg"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "assurance"
+      ],
+      "ordre": 105,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "conseil-fiscal-banques",
+      "type": "conference",
+      "slug": {
+        "de": "steuerberatung-fuer-banken",
+        "en": "tax-advice-for-banks",
+        "fr": "conseil-fiscal-pour-banques"
+      },
+      "titre": {
+        "de": "Steuerberatung für Banken",
+        "en": "Tax advice for banks",
+        "fr": "Conseil fiscal pour banques"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "fiscalite",
+        "banque"
+      ],
+      "ordre": 106,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "constitution-personnes-morales",
+      "type": "conference",
+      "slug": {
+        "de": "gruendung-juristischer-personen-in-luxemburg",
+        "en": "formation-of-legal-entities-in-luxembourg",
+        "fr": "constitution-de-personnes-morales-au-luxembourg"
+      },
+      "titre": {
+        "de": "Gründung juristischer Personen in Luxemburg",
+        "en": "Formation of legal entities in Luxembourg",
+        "fr": "Constitution de personnes morales au Luxembourg"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "societes"
+      ],
+      "ordre": 107,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "convention-franco-luxembourgeoise",
+      "type": "conference",
+      "slug": {
+        "de": "franzoesisch-luxemburgisches-abkommen",
+        "en": "the-france-luxembourg-convention",
+        "fr": "convention-franco-luxembourgeoise"
+      },
+      "titre": {
+        "de": "Französisch-luxemburgisches Abkommen",
+        "en": "The France–Luxembourg convention",
+        "fr": "Convention franco-luxembourgeoise"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "fiscalite"
+      ],
+      "ordre": 108,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "detentions-immobilieres-non-residents",
+      "type": "conference",
+      "slug": {
+        "de": "immobilienbesitz-von-nichtansaessigen",
+        "en": "property-holdings-by-non-residents",
+        "fr": "detentions-immobilieres-par-non-residents"
+      },
+      "titre": {
+        "de": "Immobilienbesitz von Nichtansässigen",
+        "en": "Property holdings by non-residents",
+        "fr": "Détentions immobilières par non-résidents"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "immobilier"
+      ],
+      "ordre": 109,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "echange-information-fiscale",
+      "type": "conference",
+      "slug": {
+        "de": "steuerlicher-informationsaustausch",
+        "en": "exchange-of-tax-information",
+        "fr": "echange-d-information-fiscale"
+      },
+      "titre": {
+        "de": "Steuerlicher Informationsaustausch",
+        "en": "Exchange of tax information",
+        "fr": "Échange d’information fiscale"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "fiscalite"
+      ],
+      "ordre": 110,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "legislation-anti-blanchiment-luxembourg",
+      "type": "conference",
+      "slug": {
+        "de": "geldwaeschegesetzgebung-in-luxemburg",
+        "en": "anti-money-laundering-legislation-in-luxembourg",
+        "fr": "legislation-anti-blanchiment-au-luxembourg"
+      },
+      "titre": {
+        "de": "Geldwäschegesetzgebung in Luxemburg",
+        "en": "Anti-money laundering legislation in Luxembourg",
+        "fr": "Législation anti-blanchiment au Luxembourg"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "blanchiment"
+      ],
+      "ordre": 111,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "obligation-de-conseil",
+      "type": "conference",
+      "slug": {
+        "de": "beratungspflicht-des-berufstraegers",
+        "en": "the-professional-s-duty-to-advise",
+        "fr": "obligation-de-conseil-du-professionnel"
+      },
+      "titre": {
+        "de": "Beratungspflicht des Berufsträgers",
+        "en": "The professional’s duty to advise",
+        "fr": "Obligation de conseil du professionnel"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "contentieux"
+      ],
+      "ordre": 112,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "punissabilite-luxembourg",
+      "type": "conference",
+      "slug": {
+        "de": "die-strafbarkeit-in-luxemburg",
+        "en": "criminal-liability-in-luxembourg",
+        "fr": "la-punissabilite-au-luxembourg"
+      },
+      "titre": {
+        "de": "Die Strafbarkeit in Luxemburg",
+        "en": "Criminal liability in Luxembourg",
+        "fr": "La punissabilité au Luxembourg"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "contentieux"
+      ],
+      "ordre": 113,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "recouvrement-de-creances",
+      "type": "conference",
+      "slug": {
+        "de": "forderungseinzug",
+        "en": "debt-recovery",
+        "fr": "recouvrement-de-creances"
+      },
+      "titre": {
+        "de": "Forderungseinzug",
+        "en": "Debt recovery",
+        "fr": "Recouvrement de créances"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "recouvrement"
+      ],
+      "ordre": 114,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "intermediaires-financiers-apporteurs",
+      "type": "conference",
+      "slug": {
+        "de": "beziehungen-zwischen-finanzintermediaeren-und-vermittlern",
+        "en": "relations-between-financial-intermediaries-and-introducers",
+        "fr": "relations-entre-intermediaires-financiers-et-apporteurs"
+      },
+      "titre": {
+        "de": "Beziehungen zwischen Finanzintermediären und Vermittlern",
+        "en": "Relations between financial intermediaries and introducers",
+        "fr": "Relations entre intermédiaires financiers et apporteurs"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "banque"
+      ],
+      "ordre": 115,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "risques-poursuites-penales",
+      "type": "conference",
+      "slug": {
+        "de": "risiken-der-strafverfolgung",
+        "en": "risks-of-criminal-prosecution",
+        "fr": "risques-de-poursuites-penales"
+      },
+      "titre": {
+        "de": "Risiken der Strafverfolgung",
+        "en": "Risks of criminal prosecution",
+        "fr": "Risques de poursuites pénales"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "contentieux"
+      ],
+      "ordre": 116,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "spf-conference",
+      "type": "conference",
+      "slug": {
+        "de": "gesellschaft-zur-verwaltung-von-familienvermoegen-spf-conference",
+        "en": "family-wealth-management-company-spf-conference",
+        "fr": "societe-de-gestion-de-patrimoine-familiale-spf"
+      },
+      "titre": {
+        "de": "Gesellschaft zur Verwaltung von Familienvermögen (SPF)",
+        "en": "Family wealth management company (SPF)",
+        "fr": "Société de gestion de patrimoine familiale (SPF)"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "societes",
+        "fiscalite"
+      ],
+      "ordre": 117,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "societes-commerciales",
+      "type": "conference",
+      "slug": {
+        "de": "die-handelsgesellschaften",
+        "en": "commercial-companies",
+        "fr": "les-societes-commerciales"
+      },
+      "titre": {
+        "de": "Die Handelsgesellschaften",
+        "en": "Commercial companies",
+        "fr": "Les sociétés commerciales"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "societes"
+      ],
+      "ordre": 118,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    },
+    {
+      "id": "utilisation-personnes-morales",
+      "type": "conference",
+      "slug": {
+        "de": "die-verwendung-juristischer-personen-in-luxemburg",
+        "en": "the-use-of-legal-entities-in-luxembourg",
+        "fr": "l-utilisation-de-personnes-morales-au-luxembourg"
+      },
+      "titre": {
+        "de": "Die Verwendung juristischer Personen in Luxemburg",
+        "en": "The use of legal entities in Luxembourg",
+        "fr": "L’utilisation de personnes morales au Luxembourg"
+      },
+      "resume": {},
+      "corps": {},
+      "etat_du_droit": null,
+      "date_publication": null,
+      "auteur": "Alain Lorang",
+      "langue_originale": "fr",
+      "pdf_chemin": null,
+      "pdf_octets": null,
+      "themes": [
+        "societes"
+      ],
+      "ordre": 119,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null,
+      "pdf": null
+    }
+  ],
+  "team": [],
+  "faq": [
+    {
+      "id": "premier-entretien-prix",
+      "question": {
+        "de": "Was kostet ein Erstgespräch?",
+        "en": "What does a first consultation cost?",
+        "fr": "Combien coûte un premier entretien ?"
+      },
+      "reponse": {},
+      "ordre": 1,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "facturation",
+      "question": {
+        "de": "Wie rechnen Sie ab?",
+        "en": "How do you charge?",
+        "fr": "Comment facturez-vous ?"
+      },
+      "reponse": {},
+      "ordre": 2,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "langues",
+      "question": {
+        "de": "In welchen Sprachen kann ich mit Ihnen sprechen?",
+        "en": "What languages can I speak to you in?",
+        "fr": "Dans quelles langues puis-je vous parler ?"
+      },
+      "reponse": {
+        "de": "Mandate werden auf Französisch und auf Englisch geführt.",
+        "en": "Matters are handled in French and in English.",
+        "fr": "Les dossiers sont traités en français et en anglais."
+      },
+      "ordre": 3,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "achat-non-resident",
+      "question": {
+        "de": "Kann ich als Nichtansässiger in Luxemburg eine Immobilie kaufen?",
+        "en": "Can I buy property in Luxembourg if I do not live there?",
+        "fr": "Puis-je acheter un bien immobilier au Luxembourg si je n’y réside pas ?"
+      },
+      "reponse": {},
+      "ordre": 4,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "duree-constitution-societe",
+      "question": {
+        "de": "Wie lange dauert eine Gesellschaftsgründung in Luxemburg?",
+        "en": "How long does it take to set up a company in Luxembourg?",
+        "fr": "Combien de temps faut-il pour constituer une société au Luxembourg ?"
+      },
+      "reponse": {},
+      "ordre": 5,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "mandats-etranger",
+      "question": {
+        "de": "Übernehmen Sie Mandate aus dem Ausland?",
+        "en": "Do you take on matters from abroad?",
+        "fr": "Acceptez-vous des dossiers venus de l’étranger ?"
+      },
+      "reponse": {
+        "de": "Ja. Das ist der Normalfall der Kanzlei, nicht die Ausnahme. Wir arbeiten regelmäßig mit Anwälten und Notaren anderer Länder zusammen, über das Netzwerk ADVOUNION und mit der Partnerkanzlei VIAJURIS in Saint-Étienne, Lyon, Le Puy-en-Velay und Paris. Beim Forderungseinzug vertritt die Kanzlei in Luxemburg die Gruppe Intrum Justitia sowie die League International for Creditors. Bleibt Ihr gewohnter Berater federführend, übernehmen wir nur den luxemburgischen Teil und geben die Sache an ihn zurück.",
+        "en": "Yes. That is the firm’s ordinary business, not the exception. We work regularly with lawyers and notaries in other countries, through the ADVOUNION network and with the partner firm VIAJURIS in Saint-Étienne, Lyon, Le Puy-en-Velay and Paris. In debt recovery the firm represents the Intrum Justitia group and the League International for Creditors in Luxembourg. If your usual adviser stays in the lead, we take on the Luxembourg part only and hand the matter back.",
+        "fr": "Oui. C’est l’ordinaire de l’Étude, pas l’exception. Nous travaillons régulièrement avec des avocats et des notaires d’autres pays, par le réseau ADVOUNION et avec le cabinet partenaire VIAJURIS, présent à Saint-Étienne, Lyon, Le Puy-en-Velay et Paris. Pour le recouvrement, l’Étude représente au Luxembourg le groupe Intrum Justitia ainsi que la League International for Creditors. Si votre conseil habituel reste en première ligne, nous n’intervenons que sur la partie luxembourgeoise et lui rendons le dossier."
+      },
+      "ordre": 6,
+      "statut": "publie",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "delai-reponse",
+      "question": {
+        "de": "Wie schnell antworten Sie auf eine Anfrage?",
+        "en": "How quickly do you answer an enquiry?",
+        "fr": "En combien de temps répondez-vous à une demande ?"
+      },
+      "reponse": {},
+      "ordre": 7,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    {
+      "id": "premier-rendez-vous-pieces",
+      "question": {
+        "de": "Was soll ich zum ersten Gespräch mitbringen?",
+        "en": "What should I bring to the first meeting?",
+        "fr": "Que dois-je apporter au premier rendez-vous ?"
+      },
+      "reponse": {},
+      "ordre": 8,
+      "statut": "entwurf",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    }
+  ],
+  "legal": {
+    "mentions": {
+      "id": "mentions",
+      "titre": {
+        "de": "Impressum",
+        "en": "Legal notice",
+        "fr": "Mentions légales"
+      },
+      "chapeau": {},
+      "blocs": [
+        {
+          "id": "editeur",
+          "titre": {
+            "de": "Anbieter",
+            "en": "Site owner",
+            "fr": "Éditeur du site",
+            "lb": null
+          },
+          "champs": [
+            "nom",
+            "raison_sociale",
+            "adresse",
+            "telephone",
+            "courriel",
+            "rcs",
+            "tva"
+          ],
+          "source": "settings"
+        },
+        {
+          "id": "profession",
+          "texte": {
+            "de": "Me Alain Lorang übt den Beruf des avocat à la cour aus, ein im Großherzogtum Luxemburg verliehener Titel. Er ist seit 1982 am Barreau de Luxembourg zugelassen.",
+            "en": "Me Alain Lorang practises as an avocat à la cour, a title conferred in the Grand Duchy of Luxembourg. He has been admitted to the Luxembourg bar since 1982.",
+            "fr": "Me Alain Lorang exerce la profession d’avocat à la cour, titre délivré au Grand-Duché de Luxembourg. Il est inscrit au barreau de Luxembourg depuis 1982.",
+            "lb": null
+          },
+          "titre": {
+            "de": "Reglementierter Beruf",
+            "en": "Regulated profession",
+            "fr": "Profession réglementée",
+            "lb": null
+          },
+          "ouvert": "ordre_formulierung"
+        },
+        {
+          "id": "assurance",
+          "titre": {
+            "de": "Berufshaftpflichtversicherung",
+            "en": "Professional indemnity insurance",
+            "fr": "Assurance responsabilité civile professionnelle",
+            "lb": null
+          },
+          "ouvert": "assurance"
+        },
+        {
+          "id": "autorisation",
+          "titre": {
+            "de": "Gewerbegenehmigung",
+            "en": "Business licence",
+            "fr": "Autorisation d’établissement",
+            "lb": null
+          },
+          "ouvert": "autorisation"
+        },
+        {
+          "id": "mediation",
+          "titre": {
+            "de": "Beilegung von Streitigkeiten über Honorare",
+            "en": "Resolution of fee disputes",
+            "fr": "Règlement des litiges relatifs aux honoraires",
+            "lb": null
+          },
+          "ouvert": "mediation"
+        },
+        {
+          "id": "realisation",
+          "texte": {
+            "de": "Website konzipiert und umgesetzt von NAVE, Luxemburg. Hosting in der Europäischen Union. Schriften Literata und Atkinson Hyperlegible Next unter der SIL Open Font License 1.1, auf dem Server dieser Seite gehostet.",
+            "en": "Site designed and built by NAVE, Luxembourg. Hosted in the European Union. Typefaces Literata and Atkinson Hyperlegible Next, under the SIL Open Font License 1.1, served from this site’s own server.",
+            "fr": "Site conçu et réalisé par NAVE, Luxembourg. Hébergement dans l’Union européenne. Polices de caractères Literata et Atkinson Hyperlegible Next, sous licence SIL Open Font License 1.1, hébergées sur le serveur du site.",
+            "lb": null
+          },
+          "titre": {
+            "de": "Konzeption und Umsetzung",
+            "en": "Design and build",
+            "fr": "Conception et réalisation",
+            "lb": null
+          }
+        }
+      ],
+      "corps": {},
+      "statut": "veroeffentlicht",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    "donnees": {
+      "id": "donnees",
+      "titre": {
+        "de": "Datenschutzerklärung",
+        "en": "Privacy policy",
+        "fr": "Protection des données"
+      },
+      "chapeau": {
+        "de": "Diese Seite beschreibt genau, was diese Website mit Ihren Daten tut. Sie ist kurz, weil die Website sehr wenige erhebt.",
+        "en": "This page describes exactly what this site does with your data. It is short because the site collects very little.",
+        "fr": "Cette page décrit exactement ce que ce site fait de vos données. Elle est courte parce que le site en collecte très peu."
+      },
+      "blocs": [
+        {
+          "id": "responsable",
+          "texte": {
+            "de": "Für Fragen zu Ihren Daten schreiben Sie an die vorstehende Adresse oder rufen Sie die Kanzlei an.",
+            "en": "For any question about your data, write to the address above or telephone the firm.",
+            "fr": "Pour toute question relative à vos données, écrivez à l’adresse ci-dessus ou téléphonez à l’Étude.",
+            "lb": null
+          },
+          "titre": {
+            "de": "Verantwortlicher",
+            "en": "Data controller",
+            "fr": "Responsable du traitement",
+            "lb": null
+          },
+          "champs": [
+            "nom",
+            "adresse",
+            "telephone",
+            "courriel"
+          ],
+          "source": "settings"
+        },
+        {
+          "id": "navigation",
+          "texte": {
+            "de": "<p>Auf Ihrem Gerät wird nichts abgelegt. Die öffentliche Seite setzt kein Cookie, weder ein technisches noch ein werbliches, und verwendet keine Reichweitenmessung, kein Analysewerkzeug und keine Schaltfläche eines sozialen Netzwerks.</p><p>Die Seiten sind statische Dateien: Während Ihres Besuchs wird keine Datenbank abgefragt. Die Schriften werden vom Server dieser Seite ausgeliefert und nicht von einem Dienst Dritter — Ihre IP-Adresse wird also an niemanden außer den Hoster übertragen.</p><p>Der Hoster protokolliert, wie jeder Webserver, die eingehenden Anfragen: IP-Adresse, Zeitpunkt, angeforderte Seite, Browsertyp. Diese Protokolle dienen dem Betrieb und der Sicherheit des Dienstes auf Grundlage des berechtigten Interesses (Artikel 6 Absatz 1 Buchstabe f DSGVO) und werden nicht dazu verwendet, Sie zu identifizieren.</p><p>Deshalb gibt es auf dieser Seite kein Cookie-Banner: Es gibt nichts anzunehmen oder abzulehnen.</p>",
+            "en": "<p>Nothing is stored on your device. The public site sets no cookie, neither technical nor advertising, and uses no audience measurement, no analytics tool and no social network button.</p><p>The pages are static files: no database is queried during your visit. The typefaces are served from this site’s own server and not by a third-party service — your IP address is therefore passed to no one but the host.</p><p>The host records, as any web server does, the requests reaching it: IP address, time, page requested, browser type. These logs serve to operate and secure the service, on the basis of legitimate interest (Article 6(1)(f) GDPR), and are not used to identify you.</p><p>That is why there is no cookie banner on this site: there is nothing to accept or refuse.</p>",
+            "fr": "<p>Rien n’est déposé sur votre appareil. Le site public ne place aucun cookie, ni technique ni publicitaire, et n’utilise ni mesure d’audience, ni outil d’analyse, ni bouton de réseau social.</p><p>Les pages sont des fichiers statiques : aucune base de données n’est interrogée pendant votre visite. Les polices de caractères sont servies depuis le serveur de ce site et non par un service tiers — votre adresse IP n’est donc transmise à personne d’autre que l’hébergeur.</p><p>L’hébergeur enregistre, comme tout serveur web, les requêtes qui lui parviennent : adresse IP, date, page demandée, type de navigateur. Ces journaux servent à faire fonctionner le service et à en assurer la sécurité, sur la base de l’intérêt légitime (article 6, paragraphe 1, point f du RGPD), et ne sont pas utilisés pour vous identifier.</p><p>C’est pour cette raison qu’il n’y a pas de bandeau de cookies sur ce site : il n’y a rien à accepter ou à refuser.</p>",
+            "lb": null
+          },
+          "titre": {
+            "de": "Was geschieht, wenn Sie diese Seite lesen",
+            "en": "What happens when you read this site",
+            "fr": "Ce qui se passe quand vous lisez ce site",
+            "lb": null
+          }
+        },
+        {
+          "id": "formulaire",
+          "texte": {
+            "de": "<p><strong>Welche Daten:</strong> Ihr Name, Ihre E-Mail-Adresse, gegebenenfalls Ihre Telefonnummer, Ihr Wohnsitzland, der Gegenstand Ihrer Anfrage, die von Ihnen genannte Frist und der Text Ihrer Nachricht.</p><p><strong>Wozu:</strong> um Ihre Anfrage zu beantworten und gegebenenfalls ein Mandat vorzubereiten. Rechtsgrundlage sind die auf Ihre Anfrage hin getroffenen vorvertraglichen Maßnahmen (Artikel 6 Absatz 1 Buchstabe b DSGVO) und Ihre Einwilligung für die Verarbeitung der Nachricht selbst (Artikel 6 Absatz 1 Buchstabe a).</p><p><strong>Wo:</strong> Die Nachricht wird der Kanzlei per E-Mail zugestellt und in einer Datenbank gespeichert, die in der Europäischen Union, in Deutschland, betrieben wird. Diese Speicherung besteht, damit keine Anfrage verloren geht, falls eine E-Mail als unerwünscht aussortiert wird.</p><p><strong>Wie lange:</strong> Anfragen, aus denen kein Mandat entsteht, werden spätestens zwölf Monate nach dem letzten Austausch gelöscht. Wird ein Mandat erteilt, gelten für die Akte die berufsrechtlichen Aufbewahrungsregeln.</p><p><strong>Das Formular nimmt keine Dateien entgegen.</strong> Unterlagen zu Ihrer Sache fordern wir nach dem ersten Kontakt über einen gesicherten Weg an.</p>",
+            "en": "<p><strong>What data:</strong> your name, your email address, optionally your telephone number, the country where you live, the subject of your enquiry, the deadline you state and the text of your message.</p><p><strong>Why:</strong> to answer your enquiry and, where appropriate, to prepare an engagement. Legal basis: pre-contractual steps taken at your request (Article 6(1)(b) GDPR) and your consent for the processing of the message itself (Article 6(1)(a)).</p><p><strong>Where:</strong> the message is sent to the firm by email and recorded in a database hosted in the European Union, in Germany. That record exists so that no enquiry is lost if an email should be filtered as spam.</p><p><strong>How long:</strong> enquiries that do not lead to an engagement are deleted at the latest twelve months after the last exchange. Where an engagement is given, the file follows the retention rules applicable to the legal profession.</p><p><strong>The form does not accept files.</strong> We ask for the documents in your matter after first contact, through a secure channel.</p>",
+            "fr": "<p><strong>Quelles données :</strong> votre nom, votre adresse courriel, éventuellement votre numéro de téléphone, le pays où vous résidez, l’objet de votre demande, l’échéance que vous indiquez et le texte de votre message.</p><p><strong>Pourquoi :</strong> pour répondre à votre demande et, le cas échéant, préparer un mandat. Base juridique : les mesures précontractuelles prises à votre demande (article 6, paragraphe 1, point b du RGPD) et votre consentement pour le traitement du message lui-même (article 6, paragraphe 1, point a).</p><p><strong>Où :</strong> le message est envoyé à l’Étude par courriel et enregistré dans une base de données hébergée dans l’Union européenne, en Allemagne. Cet enregistrement existe pour qu’aucune demande ne se perde si un courriel devait être filtré comme indésirable.</p><p><strong>Combien de temps :</strong> les demandes qui ne débouchent pas sur un mandat sont effacées au plus tard douze mois après le dernier échange. Si un mandat est confié, le dossier suit les règles de conservation applicables à la profession d’avocat.</p><p><strong>Le formulaire n’accepte pas de fichiers.</strong> Les pièces de votre dossier vous sont demandées après le premier contact, par un canal sécurisé.</p>",
+            "lb": null
+          },
+          "titre": {
+            "de": "Was Sie uns über das Formular senden",
+            "en": "What you send us through the form",
+            "fr": "Ce que vous nous envoyez par le formulaire",
+            "lb": null
+          }
+        },
+        {
+          "id": "sous-traitants",
+          "texte": {
+            "de": "<p>Zwei technische Dienstleister sind beteiligt, beide durch einen Auftragsverarbeitungsvertrag nach Artikel 28 DSGVO gebunden:</p><ul><li>der Hoster der Website, der die Seiten ausliefert und die Serverprotokolle führt;</li><li>der Dienstleister für Datenbank und E-Mail-Versand, dessen Server in der Europäischen Union stehen.</li></ul><p>Es werden keine Daten außerhalb der Europäischen Union übermittelt. Es werden keine Daten verkauft, vermietet oder für Werbung verwendet.</p>",
+            "en": "<p>Two technical providers are involved, both bound by a processing agreement under Article 28 GDPR:</p><ul><li>the site’s host, which serves the pages and keeps the server logs;</li><li>the database and email provider, whose servers are located in the European Union.</li></ul><p>No data is transferred outside the European Union. No data is sold, rented or used for advertising.</p>",
+            "fr": "<p>Deux prestataires techniques interviennent, tous deux liés par un contrat de sous-traitance au sens de l’article 28 du RGPD :</p><ul><li>l’hébergeur du site, qui sert les pages et enregistre les journaux de serveur ;</li><li>le prestataire de base de données et d’envoi de courriel, dont les serveurs se trouvent dans l’Union européenne.</li></ul><p>Aucune donnée n’est transmise en dehors de l’Union européenne. Aucune donnée n’est vendue, louée ou utilisée à des fins publicitaires.</p>",
+            "lb": null
+          },
+          "titre": {
+            "de": "Wer diese Daten sonst noch sieht",
+            "en": "Who else sees this data",
+            "fr": "Qui d’autre voit ces données",
+            "lb": null
+          }
+        },
+        {
+          "id": "droits",
+          "texte": {
+            "de": "<p>Sie können jederzeit Auskunft über Ihre Daten, deren Berichtigung, Löschung, Einschränkung der Verarbeitung sowie Datenübertragbarkeit verlangen. Sie können einer auf berechtigtes Interesse gestützten Verarbeitung widersprechen und eine erteilte Einwilligung jederzeit widerrufen; der Widerruf berührt nicht, was vorher geschehen ist.</p><p>Ein Antrag erfolgt per E-Mail oder per Post an die oben genannte Adresse. Er wird innerhalb eines Monats bearbeitet.</p><p>Wenn Sie der Ansicht sind, dass Ihre Daten unrichtig verarbeitet werden, können Sie sich an die luxemburgische Aufsichtsbehörde wenden: Commission nationale pour la protection des données (CNPD), 15, boulevard du Jazz, L-4370 Belvaux.</p>",
+            "en": "<p>You may at any time ask for access to your data, its correction, its erasure, restriction of its processing and its portability. You may object to processing based on legitimate interest and withdraw a consent at any time; withdrawal does not affect what was done before.</p><p>A request is made by email or by post to the address given above. It is dealt with within one month.</p><p>If you consider that your data is being handled improperly, you may contact the Luxembourg supervisory authority: Commission nationale pour la protection des données (CNPD), 15, boulevard du Jazz, L-4370 Belvaux.</p>",
+            "fr": "<p>Vous pouvez à tout moment demander l’accès à vos données, leur rectification, leur effacement, la limitation de leur traitement, ainsi que leur portabilité. Vous pouvez vous opposer à un traitement fondé sur l’intérêt légitime et retirer à tout moment un consentement donné ; le retrait ne remet pas en cause ce qui a été fait avant.</p><p>Une demande se fait par courriel ou par courrier à l’adresse indiquée plus haut. Elle est traitée dans un délai d’un mois.</p><p>Si vous estimez que vos données sont mal traitées, vous pouvez saisir l’autorité de contrôle luxembourgeoise : Commission nationale pour la protection des données (CNPD), 15, boulevard du Jazz, L-4370 Belvaux.</p>",
+            "lb": null
+          },
+          "titre": {
+            "de": "Ihre Rechte",
+            "en": "Your rights",
+            "fr": "Vos droits",
+            "lb": null
+          }
+        },
+        {
+          "id": "admin",
+          "texte": {
+            "de": "<p>Die Website hat einen geschützten Redaktionsbereich, der der Kanzlei vorbehalten ist und unter <code>/admin</code> erreichbar ist. Das ist die einzige Stelle der Website, die eine Sitzung speichert — ein zwingend erforderliches Anmeldemerkmal, lokal im Browser der angemeldeten Person abgelegt und niemals auf den öffentlichen Seiten gesetzt. Dieser Bereich wird nicht indexiert und ist ohne Konto nicht zugänglich.</p>",
+            "en": "<p>The site has a protected editing area, reserved for the firm, reachable at <code>/admin</code>. It is the only part of the site that keeps a session — a strictly necessary authentication token, stored locally in the browser of the person signed in, and never set on the public pages. That area is not indexed and cannot be reached without an account.</p>",
+            "fr": "<p>Le site dispose d’un espace de rédaction protégé, réservé à l’Étude, accessible sous <code>/admin</code>. C’est le seul endroit du site qui conserve une session — un jeton d’authentification strictement nécessaire, stocké localement dans le navigateur de la personne connectée, et jamais posé sur les pages publiques. Cet espace n’est pas indexé et n’est pas accessible sans compte.</p>",
+            "lb": null
+          },
+          "titre": {
+            "de": "Der Redaktionsbereich",
+            "en": "The editing area",
+            "fr": "L’espace de rédaction",
+            "lb": null
+          }
+        }
+      ],
+      "corps": {},
+      "statut": "veroeffentlicht",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    "conditions": {
+      "id": "conditions",
+      "titre": {
+        "de": "Allgemeine Geschäftsbedingungen",
+        "en": "Terms and conditions",
+        "fr": "Conditions générales"
+      },
+      "chapeau": {},
+      "blocs": [],
+      "corps": {},
+      "statut": "veroeffentlicht",
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    }
+  },
+  "seo": {
+    "accueil": {
+      "id": "accueil",
+      "titre": {
+        "de": "Anwalt in Luxemburg — Immobilien, Gesellschaften, Erbrecht",
+        "en": "Lawyer in Luxembourg — property, companies, inheritance",
+        "fr": "Avocat à Luxembourg — immobilier, sociétés, successions"
+      },
+      "description": {
+        "de": "Kanzlei LW LEGIS, seit 1982 am Barreau de Luxembourg. Immobilien, Gesellschaftsrecht, Steuerrecht und Forderungseinzug. Am Telefon antwortet der Anwalt.",
+        "en": "LW LEGIS, at the Luxembourg bar since 1982. Property, company law, international tax and debt recovery for non-residents. You speak to the lawyer himself.",
+        "fr": "Étude LW LEGIS, au barreau de Luxembourg depuis 1982. Immobilier, droit des sociétés, fiscalité internationale et recouvrement. Réponse directe de l’avocat."
+      },
+      "og_image_id": null,
+      "noindex": false,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    "situations": {
+      "id": "situations",
+      "titre": {
+        "de": "Ihre Situation in Luxemburg — Anwalt für Nichtansässige",
+        "en": "Your situation in Luxembourg — lawyer for non-residents",
+        "fr": "Votre situation au Luxembourg — avocat pour non-résidents"
+      },
+      "description": {
+        "de": "Kaufen, gründen, erben oder eintreiben in Luxemburg — aus Frankreich, Belgien, Deutschland oder anderswo. Wählen Sie Ihr Land und Ihr Vorhaben dazu aus.",
+        "en": "Buying, incorporating, inheriting or recovering in Luxembourg from France, Belgium, Germany or elsewhere. Choose your country and what you want to do.",
+        "fr": "Acheter, créer une société, hériter ou recouvrer au Luxembourg depuis la France, la Belgique, l’Allemagne ou ailleurs. Choisissez votre pays et votre projet."
+      },
+      "og_image_id": null,
+      "noindex": false,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    "services": {
+      "id": "services",
+      "titre": {
+        "de": "Tätigkeitsgebiete — Wirtschaftsanwalt in Luxemburg",
+        "en": "Practice areas — business lawyer in Luxembourg City",
+        "fr": "Domaines d’activité — avocat d’affaires à Luxembourg"
+      },
+      "description": {
+        "de": "Immobilien und Vermögen, Gesellschaften und Steuern, internationales Erbrecht, Forderungseinzug und Marken. Vier Felder, eine Kanzlei in Luxemburg-Belair.",
+        "en": "Property and assets, companies and tax, international succession, debt recovery and trademarks. Four fields, one firm in Luxembourg-Belair since 1982.",
+        "fr": "Immobilier et patrimoine, sociétés et fiscalité, successions internationales, recouvrement de créances et marques. Quatre domaines, une même Étude à Belair."
+      },
+      "og_image_id": null,
+      "noindex": false,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    "etude": {
+      "id": "etude",
+      "titre": {
+        "de": "Die Kanzlei LW LEGIS — Me Alain Lorang, avocat à la cour",
+        "en": "LW LEGIS — Me Alain Lorang, avocat à la cour, 1982",
+        "fr": "L’Étude LW LEGIS — Me Alain Lorang, avocat à la cour"
+      },
+      "description": {
+        "de": "Alain Lorang, seit 1982 am Barreau de Luxembourg, vereidigter Sachverständiger bei der Cour d’Appel. Eine klein gehaltene Kanzlei in Luxemburg-Belair.",
+        "en": "Alain Lorang, at the Luxembourg bar since 1982 and sworn judicial expert at the Court of Appeal. A firm kept deliberately small, in Luxembourg-Belair.",
+        "fr": "Alain Lorang, au barreau de Luxembourg depuis 1982, expert judiciaire près la Cour d’Appel. Une Étude restée volontairement petite, à Luxembourg-Belair."
+      },
+      "og_image_id": null,
+      "noindex": false,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    "publications": {
+      "id": "publications",
+      "titre": {
+        "de": "Dokumente — luxemburgisches Recht erklärt | LW LEGIS",
+        "en": "Library — Luxembourg law explained, in full | LW LEGIS",
+        "fr": "Fonds documentaire — droit luxembourgeois expliqué"
+      },
+      "description": {
+        "de": "Zehn Fachdossiers und neunzehn Konferenzunterlagen zu SOPARFI, SPF, Immobilien, Erbrecht und Forderungseinzug in Luxemburg. Vollständig hier zu lesen.",
+        "en": "Ten legal briefings and nineteen conference papers on SOPARFI, SPF, property, succession and debt recovery in Luxembourg. Readable in full, on the page.",
+        "fr": "Dix dossiers et dix-neuf supports de conférence sur la SOPARFI, la SPF, l’immobilier, les successions et le recouvrement au Luxembourg. À lire en entier."
+      },
+      "og_image_id": null,
+      "noindex": false,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    "honoraires": {
+      "id": "honoraires",
+      "titre": {
+        "de": "Anwaltshonorare in Luxemburg — was ein Mandat kostet",
+        "en": "Lawyer’s fees in Luxembourg — what a matter will cost",
+        "fr": "Honoraires d’avocat à Luxembourg — ce que cela coûte"
+      },
+      "description": {
+        "de": "Erstgespräch, Stundensatz, Pauschalen und Abrechnungsrhythmus. Vor jedem Mandat eine schriftliche Honorarvereinbarung, keine Überraschung auf der Rechnung.",
+        "en": "First consultation, hourly rate, fixed fees and billing cycle. A written fee agreement before any engagement, and no surprises at all on the final invoice.",
+        "fr": "Premier entretien, taux horaire, forfaits et rythme de facturation. Une convention d’honoraires écrite avant tout mandat, sans surprise sur la facture."
+      },
+      "og_image_id": null,
+      "noindex": false,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    "contact": {
+      "id": "contact",
+      "titre": {
+        "de": "Kontakt — Anwalt in Luxemburg-Belair, X Septembre 41",
+        "en": "Contact — lawyer in Luxembourg-Belair, X Septembre",
+        "fr": "Contact — avocat à Luxembourg-Belair, X Septembre 41"
+      },
+      "description": {
+        "de": "Kanzlei LW LEGIS, 41 avenue du X Septembre in Luxemburg-Belair. Telefon, E-Mail und Formular. Schildern Sie Ihre Lage, ein Anwalt antwortet persönlich.",
+        "en": "LW LEGIS, 41 avenue du X Septembre in Luxembourg-Belair. Telephone, email and a contact form. Describe your situation and a lawyer will reply himself.",
+        "fr": "Étude LW LEGIS, 41 avenue du X Septembre à Luxembourg-Belair. Téléphone, courriel et formulaire. Décrivez votre situation, un avocat vous répondra lui-même."
+      },
+      "og_image_id": null,
+      "noindex": false,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    "mentions": {
+      "id": "mentions",
+      "titre": {
+        "de": "Impressum — Étude d’Avocats LW LEGIS, Luxemburg-Belair",
+        "en": "Legal notice — Étude d’Avocats LW LEGIS, Luxembourg",
+        "fr": "Mentions légales — Étude d’Avocats LW LEGIS, Luxembourg"
+      },
+      "description": {
+        "de": "Anbieterangaben, reglementierter Beruf, Versicherung und Aufsichtsbehörde der Étude d’Avocats LW LEGIS, 41 avenue du X Septembre, L-2551 Luxemburg-Belair.",
+        "en": "Site owner, regulated profession, insurance and supervisory authority of the Étude d’Avocats LW LEGIS, 41 avenue du X Septembre, L-2551 Luxembourg-Belair.",
+        "fr": "Éditeur, profession réglementée, assurance et autorité de tutelle de l’Étude d’Avocats LW LEGIS, 41 avenue du X Septembre, L-2551 Luxembourg, à Belair."
+      },
+      "og_image_id": null,
+      "noindex": false,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    "donnees": {
+      "id": "donnees",
+      "titre": {
+        "de": "Datenschutz — diese Seite setzt kein einziges Cookie",
+        "en": "Privacy policy — this site does not set any cookie",
+        "fr": "Protection des données — ce site ne pose pas de cookie"
+      },
+      "description": {
+        "de": "Kein Cookie, keine Reichweitenmessung, selbst gehostete Schriften. Was mit einer über das Formular gesendeten Anfrage geschieht und wie lange sie bleibt.",
+        "en": "No cookie, no audience measurement and self-hosted typefaces. What becomes of an enquiry sent through the form, and exactly how long it is kept afterwards.",
+        "fr": "Aucun cookie, aucune mesure d’audience, polices hébergées en propre. Ce que devient une demande envoyée par le formulaire, et combien de temps elle est gardée."
+      },
+      "og_image_id": null,
+      "noindex": false,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    "conditions": {
+      "id": "conditions",
+      "titre": {
+        "de": "Geschäftsbedingungen — Étude d’Avocats LW LEGIS, Luxemburg",
+        "en": "Terms and conditions — Étude d’Avocats LW LEGIS, Luxembourg",
+        "fr": "Conditions générales — Étude d’Avocats LW LEGIS, Luxembourg"
+      },
+      "description": {
+        "de": "Die allgemeinen Geschäftsbedingungen für Mandate der Étude d’Avocats LW LEGIS, seit 1982 am Barreau de Luxembourg zugelassen, mit Sitz in Luxemburg-Belair.",
+        "en": "The general terms applying to engagements given to the Étude d’Avocats LW LEGIS, admitted to the Luxembourg bar since 1982, with its office in Luxembourg.",
+        "fr": "Les conditions générales applicables aux mandats confiés à l’Étude d’Avocats LW LEGIS, inscrite au barreau de Luxembourg depuis 1982, à Luxembourg-Belair."
+      },
+      "og_image_id": null,
+      "noindex": false,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    "recu": {
+      "id": "recu",
+      "titre": {
+        "de": "Ihre Anfrage ist angekommen — LW LEGIS",
+        "en": "Your enquiry has arrived — LW LEGIS",
+        "fr": "Votre demande est arrivée — LW LEGIS"
+      },
+      "description": {
+        "de": "Bestätigung des Eingangs Ihrer Anfrage an die Étude d’Avocats LW LEGIS in Luxemburg.",
+        "en": "Confirmation that your enquiry to Étude d’Avocats LW LEGIS in Luxembourg has been received.",
+        "fr": "Confirmation de réception de votre demande adressée à l’Étude d’Avocats LW LEGIS à Luxembourg."
+      },
+      "og_image_id": null,
+      "noindex": true,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    },
+    "erreur404": {
+      "id": "erreur404",
+      "titre": {
+        "de": "Seite nicht gefunden — LW LEGIS",
+        "en": "Page not found — LW LEGIS",
+        "fr": "Page introuvable — LW LEGIS"
+      },
+      "description": {
+        "de": "Diese Adresse gibt es auf der Seite der Étude d’Avocats LW LEGIS nicht.",
+        "en": "This address does not exist on the Étude d’Avocats LW LEGIS site.",
+        "fr": "Cette adresse n’existe pas sur le site de l’Étude d’Avocats LW LEGIS."
+      },
+      "og_image_id": null,
+      "noindex": true,
+      "updated_at": "2026-09-22T16:36:59.909008+00:00",
+      "updated_by": null
+    }
+  },
+  "seo_modeles": {
+    "situation": {
+      "titre": {
+        "fr": "%projet% au Luxembourg — depuis %pays% | LW LEGIS",
+        "de": "%projet% in Luxemburg — aus %pays% | LW LEGIS",
+        "en": "%projet% in Luxembourg — from %pays% | LW LEGIS",
+        "lb": null
+      }
+    },
+    "publication": {
+      "titre": {
+        "fr": "%titre% | Fonds documentaire LW LEGIS",
+        "de": "%titre% | Dokumente LW LEGIS",
+        "en": "%titre% | LW LEGIS library",
+        "lb": null
+      }
+    },
+    "famille": {
+      "titre": {
+        "fr": "%famille% — avocat à Luxembourg | LW LEGIS",
+        "de": "%famille% — Anwalt in Luxemburg | LW LEGIS",
+        "en": "%famille% — lawyer in Luxembourg | LW LEGIS",
+        "lb": null
+      }
+    },
+    "theme": {
+      "titre": {
+        "fr": "%theme% — documents | LW LEGIS",
+        "de": "%theme% — Dokumente | LW LEGIS",
+        "en": "%theme% — documents | LW LEGIS",
+        "lb": null
+      }
+    }
+  },
+  "seo_limites": {
+    "titre": {
+      "min": 50,
+      "max": 60,
+      "dur_max": 65
+    },
+    "description": {
+      "min": 150,
+      "max": 160,
+      "dur_max": 170
+    }
+  }
+}

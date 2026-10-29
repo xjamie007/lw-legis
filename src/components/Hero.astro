@@ -1,0 +1,497 @@
+---
+/**
+ * src/components/Hero.astro — Der Satz, den der Besucher zu Ende schreibt.
+ *
+ * Kein Karussell, kein Glasturm, keine grosse Zahl mit Verlaufsakzent.
+ * Die Typografie ist hier die Bedienoberflaeche, nicht der Textbehaelter.
+ *
+ * WARUM <button popovertarget> UND NICHT <details>
+ * Der Satz ist die <h1>. Das Inhaltsmodell einer Ueberschrift laesst nur
+ * Phrasing Content zu — <details> ist Flow Content und darin nicht
+ * erlaubt. <button> dagegen ist zulaessig. Zusammen mit dem Popover-API
+ * ergibt das ein Menue, das OHNE eine Zeile JavaScript funktioniert:
+ * der Browser uebernimmt Oeffnen, Schliessen per Escape, Klick daneben,
+ * die Fokusverwaltung und `aria-expanded` auf dem Ausloeser.
+ *
+ * Kennt ein Browser weder Popover noch JavaScript, erscheinen die beiden
+ * Listen einfach untereinander im Fluss — mit denselben echten <a>-Links
+ * auf echte Adressen. Auch dann ist alles bedienbar.
+ *
+ * Die Links fuehren auf Seiten, die es wirklich gibt:
+ *   Land    -> /<sprache>/<situation>/<land>/     (die sieben Vorhaben)
+ *   Vorhaben-> /<sprache>/<situation>/#projet-<id> (die sechs Laender)
+ * Nie auf eine leere Seite, nie auf 404.
+ */
+import type { Lang } from '../lib/langs';
+import { t } from '../lib/i18n';
+import { txt } from '../lib/langs';
+import { paysOptions, projetOptions, situationsPubliees, familleParId } from '../lib/content';
+import { seg, url } from '../lib/routes';
+import Bild from './Bild.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const pays = paysOptions(lang);
+const projets = projetOptions(lang);
+
+const segSituations = seg('situations', lang);
+const segServices = seg('services', lang);
+const apercu = segSituations ? `/${lang}/${segSituations}/` : null;
+
+/** Welche Konstellationen sind in dieser Sprache fertig? */
+const publiees = new Set(situationsPubliees(lang).map((s) => `${s.pays}--${s.projet}`));
+
+/**
+ * Die Wegetabelle fuer die Verbesserung mit JavaScript.
+ * Klein genug, um im HTML zu stehen — dafuer spart sie eine Anfrage.
+ */
+const table = Object.fromEntries(
+  pays.flatMap((p) =>
+    projets.map((pr) => {
+      const cle = `${p.id}--${pr.id}`;
+      const complet = publiees.has(cle);
+      const famille = familleParId(
+        // Vorhaben -> Taetigkeitsfeld, fuer den Fall, dass die
+        // Konstellation noch nicht ausgearbeitet ist.
+        ({
+          immobilier: 'immobilier-patrimoine',
+          societe: 'societes-fiscalite',
+          succession: 'successions',
+          creance: 'creances-droits',
+          marque: 'creances-droits',
+          fiscalite: 'societes-fiscalite',
+          litige: 'creances-droits',
+        })[pr.id] ?? null,
+      );
+      const replier =
+        famille && segServices ? url(lang, segServices, txt(famille.slug, lang)) : null;
+      return [
+        cle,
+        {
+          publie: complet,
+          url: complet ? url(lang, segSituations, txt(p.slug, lang), txt(pr.slug, lang)) : null,
+          repli: replier,
+          repliNom: famille ? txt(famille.terme, lang) : null,
+          phrase: `${txt(p.dans_la_phrase, lang)}||${txt(pr.dans_la_phrase, lang)}`,
+        },
+      ];
+    }),
+  ),
+);
+
+/**
+ * Steht am Satzende nur ein Satzzeichen (franzoesisch und deutsch: ein
+ * Punkt), wird es IN die Schaltflaeche gesetzt statt dahinter.
+ *
+ * Grund: Browser erzwingen auf <button> ein inline-block, egal was im
+ * Stylesheet steht. Die Schaltflaeche ist damit ein geschlossener Kasten,
+ * und ein Punkt dahinter faellt auf die naechste Zeile, sobald die letzte
+ * Zeile der Beschriftung breit ist. Im ::after der Schaltflaeche kann er
+ * das nicht. Der Lesename bleibt unberuehrt, weil aria-label ihn setzt.
+ *
+ * Im Englischen endet der Satz auf "in Luxembourg." — echte Woerter, die
+ * gewoehnlich umbrechen duerfen und deshalb dahinter stehenbleiben.
+ */
+const textes = {
+  debut: t(lang, 'hero.phrase.debut'),
+  milieu: t(lang, 'hero.phrase.milieu'),
+  fin: t(lang, 'hero.phrase.fin'),
+  paysDefaut: t(lang, 'hero.pays_defaut'),
+  projetDefaut: t(lang, 'hero.projet_defaut'),
+  choisirPays: t(lang, 'hero.choisir_pays'),
+  choisirProjet: t(lang, 'hero.choisir_projet'),
+  repondre: t(lang, 'hero.repondre'),
+  nonPubliee: t(lang, 'situation.non_publiee'),
+  versDomaine: t(lang, 'situation.vers_domaine'),
+  worum: t(lang, 'situation.worum'),
+  cadre: t(lang, 'situation.cadre'),
+  notreRole: t(lang, 'situation.notre_role'),
+  vosPieces: t(lang, 'situation.vos_pieces'),
+};
+
+const finEstPonctuation = textes.fin.trim().length <= 2;
+---
+
+<section class="hero">
+  {/* Zwei Spalten: links der Satz, rechts eine Aufnahme, die bis an den
+      rechten Rand läuft. Der Satz bleibt das Erste, was gelesen wird —
+      aber wer die Seite öffnet, sieht sofort, dass hinter ihr ein Ort mit
+      Holz und Tageslicht steht und kein Briefkasten. */}
+  <div class="hero__raster">
+    <div class="hero__satz">
+    <h1 class="titre-display hero__phrase lever">
+      <span>{textes.debut}</span>{' '}
+      <button
+        type="button"
+        class="fente"
+        popovertarget="fente-pays"
+        aria-label={textes.choisirPays}
+        data-fente="pays"
+      >
+        <span data-valeur="pays">{textes.paysDefaut}</span>
+      </button>{' '}
+      <span>{textes.milieu}</span>{' '}
+      <button
+        type="button"
+        class:list={['fente', { 'fente--finale': finEstPonctuation }]}
+        popovertarget="fente-projet"
+        aria-label={textes.choisirProjet}
+        data-fente="projet"
+        style={finEstPonctuation ? `--ponctuation: '${textes.fin}'` : undefined}
+      >
+        <span data-valeur="projet">{textes.projetDefaut}</span>
+      </button>{!finEstPonctuation && <span> {textes.fin}</span>}
+    </h1>
+
+    <p class="chapeau hero__sous lever lever--2">{t(lang, 'hero.sous_titre')}</p>
+    </div>
+
+    <div class="hero__bild lever lever--3">
+      <Bild
+        platz="bureau_1"
+        lang={lang}
+        eifrig
+        sizes="(min-width: 62rem) 34vw, 100vw"
+      />
+    </div>
+  </div>
+
+  <div class="enveloppe">
+
+    {/* --- Auswahlliste: Land ------------------------------------------- */}
+    <div popover="auto" id="fente-pays" class="choix">
+      <div class="choix__entete">
+        <p class="choix__titre">{textes.choisirPays}</p>
+        {/* Am Handy fuellt die Liste den Schirm — dann gibt es kein
+            "daneben", auf das man tippen koennte. Der Knopf schliesst
+            ohne JavaScript: popovertargetaction kennt der Browser. */}
+        <button
+          type="button"
+          class="choix__fermer"
+          popovertarget="fente-pays"
+          popovertargetaction="hide"
+        >
+          {t(lang, 'commun.fermer')}
+        </button>
+      </div>
+      <ul class="choix__liste">
+        {
+          pays.map((p) => (
+            <li>
+              <a
+                href={apercu ? `${apercu}${txt(p.slug, lang)}/` : '#'}
+                data-axe="pays"
+                data-id={p.id}
+                data-mot={txt(p.dans_la_phrase, lang)}
+              >
+                {txt(p.etiquette, lang)}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    {/* --- Auswahlliste: Vorhaben --------------------------------------- */}
+    <div popover="auto" id="fente-projet" class="choix">
+      <div class="choix__entete">
+        <p class="choix__titre">{textes.choisirProjet}</p>
+        <button
+          type="button"
+          class="choix__fermer"
+          popovertarget="fente-projet"
+          popovertargetaction="hide"
+        >
+          {t(lang, 'commun.fermer')}
+        </button>
+      </div>
+      <ul class="choix__liste">
+        {
+          projets.map((pr) => (
+            <li>
+              <a
+                href={apercu ? `${apercu}#projet-${pr.id}` : '#'}
+                data-axe="projet"
+                data-id={pr.id}
+                data-mot={txt(pr.dans_la_phrase, lang)}
+              >
+                {txt(pr.etiquette, lang)}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    {/* Die Antwortsektion. Bleibt leer, solange nichts gewaehlt ist, und
+        wird von hero.ts gefuellt. `aria-live` meldet Screenreadern, dass
+        sich hier etwas geaendert hat. */}
+    <div
+      id="hero-reponse"
+      class="hero__reponse"
+      aria-live="polite"
+      data-table={JSON.stringify(table)}
+      data-apercu={apercu}
+      data-textes={JSON.stringify(textes)}
+      data-lang={lang}
+    >
+    </div>
+  </div>
+</section>
+
+<script>
+  import '../scripts/hero.ts';
+</script>
+
+<style>
+  .hero {
+    padding-block: clamp(2rem, 1.5rem + 4vw, 4rem) clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+    background-color: var(--color-craie);
+    /* Oben etwas wärmer, nach unten in die Grundfläche auslaufend. Der
+       Satz steht damit auf einer Fläche, die Tiefe hat, ohne dass
+       irgendwo eine Kante sichtbar würde. */
+    background-image: linear-gradient(
+      180deg,
+      var(--color-craie-warm) 0,
+      var(--color-craie) 45%,
+      var(--color-craie) 88%,
+      var(--color-papier) 100%
+    );
+  }
+
+  .hero__phrase {
+    max-width: 22ch;
+    /* Ein Satz mit eingesetzten Schaltflaechen braucht etwas mehr Durchschuss
+       als reine Typografie, sonst stossen die Unterstreichungen an. */
+    line-height: 1.12;
+    /* Abweichung vom Typenraster, mit Grund: --text-display ist fuer eine
+       Schlagzeile aus drei Woertern gedacht. Hier stehen zwoelf. Bei
+       41 px fuellte der Satz am Handy sechs Zeilen und schob alles
+       Uebrige unter die Falz. Der obere Wert bleibt unveraendert. */
+    font-size: clamp(2.15rem, 1rem + 3.6vw, 4.75rem);
+  }
+
+  @media (min-width: 45rem) {
+    .hero__phrase {
+      max-width: 17ch;
+    }
+  }
+
+  .hero__sous {
+    margin-top: 1.75rem;
+    max-width: 46ch;
+    color: var(--color-pierre);
+  }
+
+  /* --- Satz und Bild nebeneinander ---------------------------------------- */
+  .hero__raster {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  /* Kein `.enveloppe`: Der Textteil sitzt in einer Rasterspalte neben
+     einem randlosen Bild. Er nimmt nur den linken Rand von dort — die
+     Breite gibt die Spalte vor. */
+  .hero__satz {
+    padding-inline: var(--bord-gauche) var(--gouttiere);
+    min-width: 0;
+  }
+  .hero__bild {
+    /* Am Handy steht das Bild unter dem Satz und läuft über die volle
+       Breite. Kein negativer Rand: Das Raster sitzt bereits randlos im
+       Abschnitt — ein zusätzliches Herausziehen schob das Bild auf dem
+       Telefon 16 Pixel über beide Kanten und erzeugte einen waagerechten
+       Bildlauf. Den Seitenrand trägt allein der Textteil. */
+    min-width: 0;
+  }
+  .hero__bild :global(.bild) {
+    border-radius: 0;
+  }
+
+  @media (min-width: 62rem) {
+    .hero__raster {
+      grid-template-columns: minmax(0, 1fr) clamp(19rem, 33vw, 31rem);
+      align-items: center;
+      gap: clamp(2rem, 4vw, 4rem);
+    }
+    .hero__satz {
+      padding-inline-end: 0;
+    }
+    .hero__bild {
+      margin-inline: 0;
+      align-self: stretch;
+      min-height: 26rem;
+    }
+    .hero__bild :global(.bild) {
+      height: 100%;
+      aspect-ratio: auto;
+      /* Nur links gerundet: rechts läuft das Bild aus dem Bild heraus. */
+      border-start-start-radius: var(--radius-commande);
+      border-end-start-radius: var(--radius-commande);
+    }
+  }
+
+  /* --- Die beiden Einsetzstellen ------------------------------------------
+     Die einzige Stelle der Seite, an der ein Wort farbig abgesetzt ist.
+     Das ist keine Hervorhebung, sondern die Kennzeichnung der Bedienflaeche:
+     unterstrichen, fokussierbar, mit aria-expanded (vom Browser gefuehrt).
+     ---------------------------------------------------------------------- */
+  .fente {
+    /* display: inline, nicht inline-block. Als Kasten bekam die
+       Schaltflaeche am Handy eine eigene Zeile, und der Satzpunkt
+       rutschte allein auf die naechste. Inline fliesst sie mit dem
+       Satz und bricht innerhalb der Zeile um, wie ein Wort es taete. */
+    display: inline;
+    font: inherit;
+    letter-spacing: inherit;
+    color: var(--color-frontiere);
+    background: none;
+    border: 0;
+    /* Kein Innenmass: sonst steht zwischen dem letzten Wort und dem
+       Satzpunkt eine sichtbare Luecke. Die Wortabstaende kommen aus
+       dem Markup. */
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    text-align: left;
+    text-decoration: underline;
+    text-decoration-thickness: 0.055em;
+    text-underline-offset: 0.11em;
+    text-decoration-color: color-mix(in srgb, var(--color-frontiere) 55%, transparent);
+    border-radius: var(--radius-commande);
+  }
+  .fente:hover {
+    color: var(--color-frontiere-tief);
+    text-decoration-color: var(--color-laiton);
+  }
+  /* Das Satzzeichen gehoert zum Satz, nicht zur Bedienflaeche: keine
+     Unterstreichung, Schriftfarbe wie der uebrige Satz. */
+  .fente--finale::after {
+    content: var(--ponctuation, '');
+    color: var(--color-encre);
+    text-decoration: none;
+  }
+  /* Aktiver Zustand in Messing — so, wie das Konzept es vorsieht. */
+  .fente[aria-expanded='true'],
+  .fente.est-choisie {
+    color: var(--color-laiton-texte);
+    text-decoration-color: var(--color-laiton);
+  }
+
+  /* --- Die Auswahllisten ---------------------------------------------------
+     Als Popover: der Browser uebernimmt Escape, Klick daneben, Fokus und
+     die Verknuepfung mit dem Ausloeser. Kein eigener JavaScript-Code.
+     ---------------------------------------------------------------------- */
+  .choix {
+    margin: 0;
+    padding: 0;
+    border: 1.5px solid var(--color-laiton);
+    border-radius: var(--radius-commande);
+    background-color: var(--color-craie);
+    color: var(--color-encre);
+    max-width: min(26rem, calc(100vw - 2rem));
+    inset: auto;
+    /* Bewusst kein weicher grauer Schatten. Die Messinglinie genuegt. */
+  }
+  .choix:popover-open {
+    position: fixed;
+    inset: auto;
+    margin: auto;
+  }
+  .choix::backdrop {
+    background-color: color-mix(in srgb, var(--color-encre) 38%, transparent);
+  }
+  .choix__entete {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 1.1rem 0.5rem;
+  }
+  .choix__titre {
+    font-family: var(--font-commande);
+    font-size: var(--text-marge);
+    color: var(--color-pierre);
+  }
+  .choix__fermer {
+    font-family: var(--font-commande);
+    font-size: var(--text-commande);
+    color: var(--color-frontiere);
+    background: none;
+    border: 0;
+    border-radius: var(--radius-commande);
+    cursor: pointer;
+    /* 44 Pixel Klickflaeche, ohne dass der Text so weit vom Rand steht. */
+    padding: 0.6rem;
+    margin: -0.6rem -0.6rem -0.6rem 0;
+    min-height: 2.75rem;
+  }
+  .choix__fermer:hover {
+    color: var(--color-frontiere-tief);
+    text-decoration: underline;
+  }
+  .choix__liste {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0.5rem;
+  }
+  .choix__liste a {
+    display: block;
+    /* Mindestens 44 Pixel hoch — weit ueber der 24-Pixel-Untergrenze. */
+    min-height: 2.75rem;
+    padding: 0.7rem 1.1rem;
+    font-family: var(--font-commande);
+    font-size: 1rem;
+    line-height: 1.35;
+    color: var(--color-encre);
+    text-decoration: none;
+  }
+  .choix__liste a:hover {
+    background-color: color-mix(in srgb, var(--color-laiton) 12%, transparent);
+    color: var(--color-frontiere-tief);
+  }
+
+  /* Am Handy: bildschirmfuellende Liste. */
+  @media (max-width: 45rem) {
+    .choix:popover-open {
+      position: fixed;
+      inset: 0;
+      margin: 0;
+      max-width: none;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      border-top: var(--trait);
+      overflow-y: auto;
+      padding-top: 0.5rem;
+    }
+    .choix__liste a {
+      min-height: 3.25rem;
+      font-size: 1.0625rem;
+      border-bottom: 1px solid color-mix(in srgb, var(--color-pierre) 15%, transparent);
+    }
+  }
+
+  /* Kennt der Browser Popover nicht, stehen die Listen im Fluss —
+     mit denselben echten Links. Degradiert, aber vollstaendig bedienbar. */
+  @supports not selector(:popover-open) {
+    .choix {
+      margin-top: 2rem;
+      max-width: 26rem;
+    }
+  }
+
+  /* --- Antwortsektion ------------------------------------------------------ */
+  .hero__reponse:empty {
+    display: none;
+  }
+  .hero__reponse {
+    margin-top: 2.75rem;
+    padding-top: 1.75rem;
+    border-top: var(--trait);
+    max-width: var(--mesure);
+  }
+</style>

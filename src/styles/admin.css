@@ -1,0 +1,1118 @@
+/* ===========================================================================
+   Redaktionsbereich — eigene Stile.
+   ---------------------------------------------------------------------------
+   Dieselben Tokens wie die oeffentliche Seite, damit der Redakteur die
+   Farben wiedererkennt, mit denen er arbeitet. Aber eine eigene Datei:
+   dieser Code landet ausschliesslich im Bundle von /admin.
+
+   Der Adminbereich erfuellt WCAG 2.2 AA genauso wie die oeffentliche
+   Seite: vollstaendig mit Tastatur bedienbar, sichtbarer Fokus,
+   Fehlermeldungen am Feld.
+   =========================================================================== */
+
+@import './fonts.css';
+
+:root {
+  --a-encre: #151e1a;
+  --a-frontiere: #2f5d50;
+  --a-frontiere-tief: #23463c;
+  --a-laiton: #a07c3c;
+  --a-laiton-texte: #7a5d2b;
+  --a-papier: #eef0ea;
+  --a-craie: #fcfcfa;
+  --a-pierre: #4f554f;
+  --a-lecture: 'Literata', Georgia, serif;
+  --a-commande: 'Atkinson Hyperlegible Next', system-ui, sans-serif;
+  --a-radius: 2px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Alles eine Stufe groesser als ueblich: Der Redaktionsbereich wird auch
+   von Menschen bedient, die nicht jeden Tag am Bildschirm sitzen. Weil
+   alle Masse in rem stehen, waechst das ganze Geruest mit. */
+html {
+  font-size: 112.5%;
+}
+
+body {
+  margin: 0;
+  background: var(--a-papier);
+  color: var(--a-encre);
+  font-family: var(--a-commande);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+:focus-visible {
+  outline: 2.5px solid var(--a-frontiere);
+  outline-offset: 2px;
+  border-radius: var(--a-radius);
+}
+
+.visuellement-cache {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.saut-admin {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  transform: translateY(-160%);
+  background: var(--a-frontiere);
+  color: var(--a-craie);
+  padding: 0.6rem 1rem;
+  border-radius: var(--a-radius);
+  text-decoration: none;
+  z-index: 50;
+}
+.saut-admin:focus {
+  transform: none;
+}
+
+/* --- Bedienelemente -------------------------------------------------------- */
+.bouton,
+.bouton-fin {
+  font-family: var(--a-commande);
+  font-size: 1rem;
+  min-height: 2.75rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: var(--a-radius);
+  cursor: pointer;
+  border: 1.5px solid var(--a-frontiere);
+}
+.bouton {
+  background: var(--a-frontiere);
+  color: var(--a-craie);
+}
+.bouton:hover:not(:disabled) {
+  background: var(--a-frontiere-tief);
+  border-color: var(--a-frontiere-tief);
+}
+.bouton-fin {
+  background: transparent;
+  color: var(--a-frontiere);
+}
+.bouton-fin:hover:not(:disabled) {
+  color: var(--a-frontiere-tief);
+  border-color: var(--a-frontiere-tief);
+}
+.bouton:disabled,
+.bouton-fin:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.bouton--gros {
+  min-height: 3.25rem;
+  padding: 0.75rem 1.4rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+.label,
+.champ-multi__label {
+  display: block;
+  font-weight: 500;
+  margin: 1rem 0 0.35rem;
+}
+.champ-multi__requis {
+  color: var(--a-laiton-texte);
+}
+
+.saisie {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.6rem 0.75rem;
+  font-family: var(--a-commande);
+  font-size: 1rem;
+  color: var(--a-encre);
+  background: var(--a-craie);
+  border: 1.5px solid color-mix(in srgb, var(--a-pierre) 45%, transparent);
+  border-radius: var(--a-radius);
+}
+.saisie--courte {
+  max-width: 16rem;
+}
+.saisie--code {
+  max-width: 10rem;
+  font-size: 1.5rem;
+  letter-spacing: 0.3em;
+  text-align: center;
+}
+
+.champ-bascule {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+.champ-bascule input {
+  width: 1.5rem;
+  height: 1.5rem;
+  accent-color: var(--a-frontiere);
+}
+
+/* --- Anmeldung ------------------------------------------------------------- */
+.connexion {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+.connexion__carte {
+  width: 100%;
+  max-width: 24rem;
+  background: var(--a-craie);
+  border: 1.5px solid var(--a-laiton);
+  border-radius: var(--a-radius);
+  padding: 2rem;
+}
+.connexion__marque {
+  font-family: var(--a-lecture);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin: 0 0 1.5rem;
+}
+.connexion__titre {
+  font-family: var(--a-lecture);
+  font-size: 1.5rem;
+  margin: 0 0 1rem;
+}
+.connexion__aide,
+.connexion__secret {
+  color: var(--a-pierre);
+  font-size: 0.875rem;
+}
+.connexion__qr {
+  margin: 1rem 0;
+  border: 1.5px solid color-mix(in srgb, var(--a-pierre) 35%, transparent);
+}
+.connexion__erreur {
+  border-left: 1.5px solid var(--a-laiton);
+  padding-left: 0.9rem;
+  margin-bottom: 1rem;
+}
+.connexion form .bouton {
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+/* --- Geruest ---------------------------------------------------------------
+   Oben eine dunkle Leiste mit vier grossen Reitern. Kein Seitenmenue mit
+   zehn Eintraegen: Wer die Website aendern will, braucht genau einen. */
+.admin {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.admin__entete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  padding: 0.6rem 1.25rem;
+  background: var(--a-encre);
+  color: var(--a-craie);
+}
+.admin__marque {
+  font-family: var(--a-lecture);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+.admin__cote {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+.admin__qui {
+  color: #c3c9c2;
+}
+.admin__cote .bouton-fin {
+  color: #d9b877;
+  border-color: #ab8440;
+  min-height: 2.5rem;
+}
+.admin__langue select {
+  font-family: var(--a-commande);
+  font-size: 1rem;
+  min-height: 2.5rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--a-radius);
+  border: 1.5px solid #4f554f;
+  background: var(--a-encre);
+  color: var(--a-craie);
+}
+
+.reiter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.reiter__knopf {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0.5rem 1rem;
+  font-family: var(--a-commande);
+  font-size: 1.0625rem;
+  color: var(--a-craie);
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: var(--a-radius);
+  cursor: pointer;
+}
+.reiter__knopf:hover {
+  border-color: #4f554f;
+}
+.reiter__knopf--aktiv,
+.reiter__knopf--aktiv:hover {
+  background: var(--a-craie);
+  color: var(--a-encre);
+  border-color: var(--a-craie);
+  font-weight: 600;
+}
+.reiter__icone {
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+.compteur-rond {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  padding: 0 0.4rem;
+  margin-left: 0.4rem;
+  border-radius: 1rem;
+  background: var(--a-laiton);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.admin__zone {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.admin__zone:focus {
+  outline: none;
+}
+.admin__page {
+  max-width: 64rem;
+  padding: 2rem 1.25rem 5rem;
+}
+.admin__titre {
+  font-family: var(--a-lecture);
+  font-size: 1.875rem;
+  margin: 0.75rem 0 1.25rem;
+}
+.admin__intro {
+  max-width: 42rem;
+  margin: 0 0 1.5rem;
+}
+
+@media (min-width: 60rem) {
+  .admin__page {
+    padding: 2.5rem 2.5rem 5rem;
+  }
+}
+
+/* --- Weitere Inhalte: Kacheln ------------------------------------------- */
+.kacheln {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1rem;
+}
+.kachel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  padding: 1.1rem 1.25rem;
+  background: var(--a-craie);
+  border: 1.5px solid color-mix(in srgb, var(--a-pierre) 30%, transparent);
+  border-radius: 4px;
+  font-family: var(--a-commande);
+  font-size: 1rem;
+  color: var(--a-encre);
+  cursor: pointer;
+}
+.kachel:hover {
+  border-color: var(--a-frontiere);
+}
+.kachel__titel {
+  font-family: var(--a-lecture);
+  font-size: 1.1875rem;
+  font-weight: 600;
+}
+.kachel__text {
+  color: var(--a-pierre);
+}
+
+/* --- Website bearbeiten -------------------------------------------------
+   Links die Vorschau, rechts der Arbeitsbereich. Die Seite scrollt als
+   Ganzes nicht: Vorschau und Arbeitsbereich scrollen jeder fuer sich,
+   damit das Eingabefeld nie aus dem Blick rutscht. */
+.admin--atelier {
+  height: 100vh;
+  overflow: hidden;
+}
+.atelier {
+  display: grid;
+  grid-template-columns: 1fr;
+  height: 100%;
+}
+.apercu {
+  display: flex;
+  flex-direction: column;
+  min-height: 70vh;
+  min-width: 0;
+}
+.apercu__barre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  padding: 0.6rem 1rem;
+  background: var(--a-craie);
+  border-bottom: 1.5px solid color-mix(in srgb, var(--a-pierre) 25%, transparent);
+}
+.apercu__ici {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.apercu__etiquette {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.apercu__choix {
+  min-width: 11rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+.apercu__langues {
+  display: flex;
+  gap: 0.25rem;
+}
+.langue-bouton {
+  min-height: 2.75rem;
+  padding: 0.4rem 0.8rem;
+  font-family: var(--a-commande);
+  font-size: 1rem;
+  background: transparent;
+  color: var(--a-frontiere);
+  border: 1.5px solid var(--a-frontiere);
+  border-radius: var(--a-radius);
+  cursor: pointer;
+}
+.langue-bouton--actif {
+  background: var(--a-frontiere);
+  color: var(--a-craie);
+  font-weight: 600;
+}
+.apercu__outils {
+  display: flex;
+  gap: 0.4rem;
+  margin-left: auto;
+}
+.apercu__outils .bouton-fin {
+  padding-inline: 0.8rem;
+}
+.apercu__legende {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.35rem 1rem;
+  font-size: 0.9375rem;
+  color: var(--a-pierre);
+  background: var(--a-papier);
+}
+.apercu__pastille {
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 2px;
+  background: rgba(255, 208, 90, 0.8);
+}
+.apercu__cadre {
+  flex: 1;
+  width: 100%;
+  min-height: 60vh;
+  border: 0;
+  border-top: 1.5px solid color-mix(in srgb, var(--a-pierre) 25%, transparent);
+  background: #fff;
+}
+
+.panneau {
+  padding: 1.5rem 1.5rem 3rem;
+  background: var(--a-craie);
+  border-top: 2px solid var(--a-laiton);
+  overflow-y: auto;
+}
+.panneau__titre {
+  font-family: var(--a-lecture);
+  font-size: 1.5rem;
+  line-height: 1.25;
+  margin: 0 0 0.75rem;
+}
+.panneau__surtitre {
+  margin: 0 0 0.2rem;
+  color: var(--a-laiton-texte);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.875rem;
+}
+.panneau__lieu {
+  margin: 0 0 1.25rem;
+  color: var(--a-pierre);
+}
+.panneau__aide {
+  color: var(--a-pierre);
+  margin: 0.75rem 0;
+}
+.panneau__hinweis {
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--a-laiton);
+  background: color-mix(in srgb, var(--a-laiton) 10%, transparent);
+}
+.panneau__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.panneau__actions .bouton {
+  flex: 1 1 10rem;
+}
+.panneau__reference {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid color-mix(in srgb, var(--a-pierre) 20%, transparent);
+}
+.panneau__reference summary {
+  cursor: pointer;
+  color: var(--a-frontiere);
+  font-weight: 600;
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+}
+.panneau__reference p {
+  font-family: var(--a-lecture);
+}
+.panneau__lien {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid color-mix(in srgb, var(--a-pierre) 20%, transparent);
+}
+.panneau__lien p {
+  margin: 0 0 0.5rem;
+}
+.panneau__bloc {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1.5px solid color-mix(in srgb, var(--a-pierre) 25%, transparent);
+}
+.panneau__fest {
+  margin-top: 2.5rem;
+  font-size: 0.9375rem;
+  color: var(--a-pierre);
+}
+.saisie--grande {
+  font-family: var(--a-lecture);
+  font-size: 1.1875rem;
+  line-height: 1.5;
+  padding: 0.75rem 0.9rem;
+  resize: vertical;
+  border-width: 2px;
+  border-color: var(--a-frontiere);
+}
+
+.bandeau {
+  margin: 0 0 1.5rem;
+  padding: 0.9rem 1.1rem;
+  background: color-mix(in srgb, var(--a-frontiere) 12%, var(--a-craie));
+  border-left: 4px solid var(--a-frontiere);
+  font-weight: 500;
+}
+
+.schritte {
+  list-style: none;
+  counter-reset: schritt;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+.schritte li {
+  counter-increment: schritt;
+  position: relative;
+  padding-left: 3rem;
+  min-height: 2.25rem;
+}
+.schritte li::before {
+  content: counter(schritt);
+  position: absolute;
+  left: 0;
+  top: -0.1rem;
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  background: var(--a-frontiere);
+  color: var(--a-craie);
+  font-weight: 700;
+}
+
+/* „Ihre Änderungen“ */
+.modifs {
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.9rem;
+}
+.modif {
+  padding: 0.9rem 1rem;
+  background: #fff;
+  border: 1.5px solid color-mix(in srgb, var(--a-pierre) 22%, transparent);
+  border-left: 4px solid rgba(214, 160, 30, 0.9);
+  border-radius: 3px;
+}
+.modif__ou {
+  margin: 0;
+  font-weight: 600;
+}
+.modif__quoi {
+  margin: 0.15rem 0 0.6rem;
+  color: var(--a-pierre);
+}
+.modif__textes {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.3rem 0.75rem;
+  margin: 0 0 0.75rem;
+  font-family: var(--a-lecture);
+}
+.modif__textes dt {
+  font-family: var(--a-commande);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--a-pierre);
+  padding-top: 0.15rem;
+}
+.modif__textes dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.modif__avant {
+  color: var(--a-pierre);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--a-pierre) 60%, transparent);
+}
+.modif__apres {
+  font-weight: 500;
+}
+.modif__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (min-width: 64rem) {
+  .atelier {
+    grid-template-columns: minmax(0, 1fr) clamp(22rem, 32vw, 27rem);
+  }
+  .apercu {
+    min-height: 0;
+  }
+  .panneau {
+    border-top: 0;
+    border-left: 2px solid var(--a-laiton);
+  }
+}
+@media (max-width: 63.99rem) {
+  /* Auf kleinen Bildschirmen untereinander, und dann darf die Seite
+     wieder als Ganzes scrollen. */
+  .admin--atelier {
+    height: auto;
+    overflow: visible;
+  }
+}
+
+/* --- Veroeffentlichen ------------------------------------------------------ */
+.publier {
+  margin: 1rem 0 0.5rem;
+}
+.bouton--publier {
+  width: 100%;
+}
+.publier__etat {
+  margin-top: 0.6rem;
+  font-size: 0.9375rem;
+  color: var(--a-pierre);
+}
+
+/* --- Listen ---------------------------------------------------------------- */
+.liste__barre {
+  margin-bottom: 1.25rem;
+  max-width: 22rem;
+}
+.liste__elements {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.liste__element {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--a-pierre) 20%, transparent);
+}
+.liste__element:last-child {
+  border-bottom: 1px solid color-mix(in srgb, var(--a-pierre) 20%, transparent);
+}
+.liste__lien {
+  flex: 1 1 18rem;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0.35rem 0;
+  min-height: 2.25rem;
+  font-family: var(--a-lecture);
+  font-size: 1.0625rem;
+  color: var(--a-encre);
+  cursor: pointer;
+}
+.liste__lien:hover {
+  color: var(--a-frontiere-tief);
+  text-decoration: underline;
+}
+.liste__meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.liste__ordre {
+  display: flex;
+  gap: 0.25rem;
+}
+.liste__ordre .bouton-fin {
+  min-width: 2.75rem;
+  padding: 0.5rem;
+}
+
+.pastille {
+  font-size: 0.875rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--a-radius);
+  border: 1px solid color-mix(in srgb, var(--a-pierre) 35%, transparent);
+  color: var(--a-pierre);
+  white-space: nowrap;
+}
+.pastille--publie {
+  border-color: var(--a-frontiere);
+  color: var(--a-frontiere);
+}
+.pastille--manque {
+  border-color: var(--a-laiton);
+  color: var(--a-laiton-texte);
+  background: color-mix(in srgb, var(--a-laiton) 12%, transparent);
+}
+
+/* --- Editor ---------------------------------------------------------------- */
+.editeur__barre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--a-pierre) 20%, transparent);
+}
+.editeur__etat {
+  color: var(--a-pierre);
+  font-size: 0.9375rem;
+}
+.editeur__champs {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.editeur__pied {
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid color-mix(in srgb, var(--a-pierre) 20%, transparent);
+}
+
+.langues {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.25rem 0;
+}
+.langues__onglet {
+  background: none;
+  border: 1.5px solid color-mix(in srgb, var(--a-pierre) 30%, transparent);
+  border-radius: var(--a-radius);
+  padding: 0.5rem 0.85rem;
+  min-height: 2.75rem;
+  font-family: var(--a-commande);
+  cursor: pointer;
+  text-align: left;
+  color: var(--a-encre);
+}
+.langues__onglet--actif {
+  border-color: var(--a-laiton);
+  background: color-mix(in srgb, var(--a-laiton) 10%, transparent);
+}
+.langues__compte {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--a-pierre);
+}
+
+.obstacles {
+  border-left: 1.5px solid var(--a-laiton);
+  padding: 0.5rem 0 0.5rem 1rem;
+  margin: 1.25rem 0;
+  background: color-mix(in srgb, var(--a-laiton) 8%, transparent);
+}
+.obstacles__titre {
+  font-weight: 500;
+  margin: 0 0 0.35rem;
+}
+.obstacles ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.champ-multi {
+  margin-bottom: 1.75rem;
+}
+.champ-multi__entete {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+.champ-multi__aide {
+  color: var(--a-pierre);
+  font-size: 0.9375rem;
+  margin: 0 0 0.5rem;
+}
+.marque-manque {
+  font-size: 0.875rem;
+  color: var(--a-laiton-texte);
+  border-bottom: 1.5px solid var(--a-laiton);
+}
+.champ-multi__corps--double {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 62rem) {
+  .champ-multi__corps--double {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.champ-multi__titre-colonne {
+  font-size: 0.875rem;
+  color: var(--a-pierre);
+  margin: 0 0 0.35rem;
+}
+.champ-multi__reference {
+  background: color-mix(in srgb, var(--a-pierre) 7%, transparent);
+  border: 1px dashed color-mix(in srgb, var(--a-pierre) 35%, transparent);
+  border-radius: var(--a-radius);
+  padding: 0.6rem 0.75rem;
+  font-family: var(--a-lecture);
+  min-height: 3rem;
+}
+.champ-multi__reference p {
+  margin: 0 0 0.5rem;
+}
+
+.compteur {
+  font-size: 0.875rem;
+  margin-top: 0.3rem;
+}
+.compteur--bon {
+  color: var(--a-frontiere);
+}
+.compteur--hors {
+  color: var(--a-laiton-texte);
+}
+
+/* --- Fliesstexteditor ------------------------------------------------------ */
+.ed {
+  border: 1.5px solid color-mix(in srgb, var(--a-pierre) 45%, transparent);
+  border-radius: var(--a-radius);
+  background: var(--a-craie);
+}
+.ed__outils {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.4rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--a-pierre) 25%, transparent);
+}
+.ed__outil {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--a-radius);
+  padding: 0.35rem 0.55rem;
+  min-height: 2.25rem;
+  font-family: var(--a-commande);
+  font-size: 0.9375rem;
+  color: var(--a-encre);
+  cursor: pointer;
+}
+.ed__outil:hover {
+  border-color: var(--a-laiton);
+  color: var(--a-frontiere-tief);
+}
+.ed__champ {
+  padding: 0.75rem;
+  min-height: 9rem;
+  font-family: var(--a-lecture);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.ed__champ h2 {
+  font-size: 1.25rem;
+  margin: 1rem 0 0.4rem;
+}
+.ed__champ h3 {
+  font-size: 1.0625rem;
+  margin: 0.9rem 0 0.35rem;
+}
+.ed__champ p {
+  margin: 0 0 0.75rem;
+}
+.ed__champ blockquote {
+  border-left: 1.5px solid var(--a-laiton);
+  margin: 0 0 0.75rem;
+  padding-left: 0.9rem;
+  color: var(--a-pierre);
+}
+.ed__champ sup[data-note] {
+  color: var(--a-laiton-texte);
+  cursor: help;
+}
+
+/* --- Fassungen ------------------------------------------------------------- */
+.revisions__titre {
+  font-family: var(--a-lecture);
+  font-size: 1.125rem;
+  margin: 1.25rem 0 0.5rem;
+}
+.revisions__liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.revisions__element {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--a-pierre) 18%, transparent);
+}
+.revisions__quand {
+  min-width: 12rem;
+}
+.revisions__qui {
+  color: var(--a-pierre);
+  font-size: 0.9375rem;
+  flex: 1;
+}
+
+/* --- Bilder ---------------------------------------------------------------- */
+.depot {
+  border: 1.5px dashed var(--a-laiton);
+  border-radius: var(--a-radius);
+  padding: 2rem 1.25rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.depot--survol {
+  background: color-mix(in srgb, var(--a-laiton) 12%, transparent);
+}
+.medias__liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.5rem;
+}
+.medias__element {
+  border-top: 1px solid color-mix(in srgb, var(--a-pierre) 20%, transparent);
+  padding-top: 1rem;
+}
+.medias__vignette {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  display: block;
+  max-width: 18rem;
+}
+.medias__vignette img {
+  width: 100%;
+  height: 10rem;
+  object-fit: cover;
+  border-radius: var(--a-radius);
+}
+.medias__nom {
+  font-size: 0.9375rem;
+  color: var(--a-pierre);
+  word-break: break-all;
+}
+.medias__detail {
+  font-size: 0.9375rem;
+  color: var(--a-pierre);
+}
+.medias__edition {
+  margin-top: 1rem;
+  max-width: 34rem;
+}
+.cadrage {
+  position: relative;
+  display: inline-block;
+  max-width: 22rem;
+}
+.cadrage img {
+  width: 100%;
+  height: auto;
+  cursor: crosshair;
+  border-radius: var(--a-radius);
+}
+.cadrage__point {
+  position: absolute;
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 2px solid var(--a-craie);
+  outline: 1.5px solid var(--a-encre);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.cadrage__champs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* --- Anfragen --------------------------------------------------------------- */
+.anfragen {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.5rem;
+}
+.anfrage {
+  background: var(--a-craie);
+  border-left: 1.5px solid var(--a-laiton);
+  padding: 1rem 1.25rem;
+}
+.anfrage--traitee {
+  border-left-color: color-mix(in srgb, var(--a-pierre) 40%, transparent);
+  opacity: 0.72;
+}
+.anfrage__entete {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.anfrage__nom {
+  font-family: var(--a-lecture);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  margin: 0;
+}
+.anfrage__quand {
+  color: var(--a-pierre);
+  font-size: 0.9375rem;
+  margin: 0;
+}
+.anfrage__donnees {
+  display: grid;
+  grid-template-columns: minmax(6rem, 9rem) 1fr;
+  gap: 0.1rem 1rem;
+  margin: 0.75rem 0;
+  font-size: 0.875rem;
+}
+.anfrage__donnees dt {
+  color: var(--a-pierre);
+}
+.anfrage__donnees dd {
+  margin: 0;
+}
+.anfrage__message {
+  font-family: var(--a-lecture);
+  white-space: pre-wrap;
+  margin: 0.75rem 0;
+}
+.anfrage__pied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.anfrage__frist {
+  font-size: 0.875rem;
+  color: var(--a-pierre);
+}
+
+.charge,
+.vide {
+  color: var(--a-pierre);
+}
+.alerte {
+  border-left: 1.5px solid var(--a-laiton);
+  padding-left: 0.9rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

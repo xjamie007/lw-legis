@@ -1,0 +1,102 @@
+---
+/**
+ * src/vues/Situation.astro — Eine ausgearbeitete Konstellation.
+ *
+ * Aufbau nach Vorgabe:
+ *   1. der vollendete Satz als <h1>
+ *   2. Worum es geht
+ *   3. Was in Luxemburg dafuer gilt
+ *   4. Was wir uebernehmen
+ *   5. Was wir von Ihnen brauchen
+ *   6. Passende Dokumente — automatisch ueber die Themen-Tags
+ *   7. Kontaktformular mit vorausgefuellter Situation
+ *
+ * Diese Seite wird nur gebaut, wenn 2 bis 5 in dieser Sprache stehen und
+ * zusammen rund 400 Woerter ergeben. Das prueft `situationPubliable()`.
+ */
+import type { Lang } from '../lib/langs';
+import { txt } from '../lib/langs';
+import { t } from '../lib/i18n';
+import { documentsParThemes, type OptionAxe, type Situation } from '../lib/content';
+import { seg } from '../lib/routes';
+import Formulaire from '../components/Formulaire.astro';
+import Marge from '../components/Marge.astro';
+import { ed } from '../lib/edition';
+
+interface Props {
+  lang: Lang;
+  situation: Situation;
+  pays: OptionAxe;
+  projet: OptionAxe;
+}
+const { lang, situation, pays, projet } = Astro.props;
+
+const documents = documentsParThemes(situation.themes, lang);
+const sPub = seg('publications', lang);
+---
+
+<article class="section">
+  <div class="enveloppe">
+    <div class="colonne">
+      <h1 class="titre-2" {...ed('situations', situation.id, 'titre')}>{txt(situation.titre, lang)}</h1>
+
+      <h2 class="titre-3 rubrique">{t(lang, 'situation.worum')}</h2>
+      <div class="corps corps--flux" set:html={txt(situation.worum, lang)} {...ed('situations', situation.id, 'worum', true)} />
+
+      <h2 class="titre-3 rubrique">{t(lang, 'situation.cadre')}</h2>
+      <div class="corps corps--flux" set:html={txt(situation.cadre, lang)} {...ed('situations', situation.id, 'cadre', true)} />
+      <Marge terme={txt(pays.etiquette, lang)}>{txt(projet.etiquette, lang)}</Marge>
+
+      <h2 class="titre-3 rubrique">{t(lang, 'situation.notre_role')}</h2>
+      <div class="corps corps--flux" set:html={txt(situation.notre_role, lang)} {...ed('situations', situation.id, 'notre_role', true)} />
+
+      <h2 class="titre-3 rubrique">{t(lang, 'situation.vos_pieces')}</h2>
+      <div class="corps corps--flux" set:html={txt(situation.vos_pieces, lang)} {...ed('situations', situation.id, 'vos_pieces', true)} />
+
+      {
+        documents.length > 0 && sPub && (
+          <>
+            <h2 class="titre-3 rubrique">{t(lang, 'situation.documents')}</h2>
+            <ul class="documents">
+              {documents.map((d) => (
+                <li>
+                  <a href={`/${lang}/${sPub}/${txt(d.slug, lang)}/`}>{txt(d.titre, lang)}</a>
+                </li>
+              ))}
+            </ul>
+          </>
+        )
+      }
+    </div>
+  </div>
+</article>
+
+<section class="section section--craie" aria-labelledby="titre-parler">
+  <div class="enveloppe">
+    <div class="colonne">
+      <h2 class="titre-2" id="titre-parler">{t(lang, 'situation.parler')}</h2>
+      <Formulaire
+        lang={lang}
+        niveau={3}
+        id="formulaire-situation"
+        paysPrechoisi={pays.id}
+        projetPrechoisi={projet.id}
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .rubrique {
+    margin-top: 2.25rem;
+  }
+  .documents {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+  }
+  .documents li {
+    padding-block: 0.6rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-pierre) 20%, transparent);
+  }
+</style>

@@ -1,0 +1,61 @@
+
+════════════════════════════════════════════════════════════════
+  LW LEGIS — Inhaltspruefung vor dem Build
+  27.9.2026, 12:24:39
+════════════════════════════════════════════════════════════════
+
+1. OBERFLÄCHENTEXTE
+   fr: vollständig
+   de: vollständig
+   en: vollständig
+   lb: 133 von 133 offen
+
+2. SPRACHFASSUNGEN
+   gebaut:          fr, de, en
+   nicht gebaut:    lb
+   Begründung: eine halb übersetzte Fassung wird nicht ausgeliefert.
+   Sie erscheint weder in der Sitemap noch in den hreflang-Angaben.
+
+3. SITUATIONSMATRIX
+   gebaut:          0
+   übersprungen:    126
+      126×  Status Entwurf; Abschnitte fehlen: worum, cadre, notre_role, vos_pieces
+   Diese Konstellationen stehen nicht in der Sitemap und werden nirgends
+   verlinkt. Im Auswahlmenü führen sie auf das zugehörige Tätigkeitsgebiet.
+
+4. FONDS DOCUMENTAIRE
+   gebaut:          0
+   übersprungen:    87
+      87×  Status Entwurf
+      87×  Rechtsstand fehlt (Pflichtfeld)
+      87×  Kurzfassung fehlt
+      87×  Volltext fehlt
+
+5. TITLE UND DESCRIPTION
+   alle im Zielbereich
+
+6. OFFENE PUNKTE
+   insgesamt:       29
+   davon blockierend: 17
+       6  Impressum
+       4  Honorare
+       4  Bilder
+       3  Kontaktdaten
+       2  Formular
+       2  Kanzlei
+       2  Dokumente
+       2  Rechtstexte
+       1  Situationsmatrix
+       1  Sprachen
+       1  Standesrecht
+       1  Betrieb
+
+7. SCHNAPPSCHUSS
+   erzeugt:         2026-09-22T16:38:35.622Z
+   Quelle:          supabase
+   in Ordnung
+
+════════════════════════════════════════════════════════════════
+  3 von 4 Sprachfassungen  ·  0 von 126 Konstellationen  ·  0 von 87 Dokumenten  ·  17 blockierende offene Punkte
+════════════════════════════════════════════════════════════════
+

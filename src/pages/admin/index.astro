@@ -1,0 +1,64 @@
+---
+/**
+ * src/pages/admin/index.astro — Der Redaktionsbereich.
+ *
+ * Eine eigene Seite, die NICHTS mit den oeffentlichen Seiten teilt:
+ * eigenes Stylesheet, eigenes Bundle. Astro buendelt je Seite, und keine
+ * oeffentliche Seite fordert diese Dateien an — nachgeprueft von
+ * scripts/postbuild.mjs, das meldet, welche Bundles ungenutzt sind.
+ *
+ * DREIFACH gegen Indexierung gesichert:
+ *   1. <meta name="robots" content="noindex, nofollow"> hier
+ *   2. Disallow in robots.txt
+ *   3. X-Robots-Tag in _headers (wirkt auch, wenn ein Crawler das
+ *      Dokument gar nicht erst liest)
+ * In der Sitemap steht /admin nicht — sie entsteht aus der Adresstabelle
+ * der oeffentlichen Seiten, und die kennt den Redaktionsbereich nicht.
+ *
+ * Diese Seite ist die einzige der Website, die ueberhaupt etwas auf dem
+ * Geraet ablegt: ein Anmeldemerkmal im localStorage, nur unter /admin.
+ * Die oeffentliche Seite legt nichts ab und braucht deshalb kein
+ * Cookie-Banner.
+ */
+import '../../styles/admin.css';
+import App from '../../admin/App';
+import { contenu, languesDuSite } from '../../lib/content';
+
+// Nur diese beiden Angaben gehen an den Browser, nicht der Schnappschuss:
+// Darin stehen auch Entwuerfe, und das Bundle von /admin ist oeffentlich
+// abrufbar. `stand` ist der Zeitpunkt, aus dem die Website gebaut wurde —
+// alles, was danach gespeichert wurde, ist noch nicht online.
+const stand = contenu.meta.genere_le;
+const langues = languesDuSite();
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Redaktion — LW LEGIS</title>
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#151E1A" />
+    <link
+      rel="preload"
+      href="/fonts/atkinson-hyperlegible-next-roman-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+  </head>
+  <body>
+    {/* client:only — der Redaktionsbereich hat keinen Inhalt, den ein
+        Server vorrendern koennte: alles haengt am angemeldeten Konto.
+        Vorrendern wuerde nur eine leere Huelle erzeugen. */}
+    <App client:only="react" stand={stand} langues={langues} />
+    <noscript>
+      <p style="padding:2rem;font-family:sans-serif">
+        Der Redaktionsbereich braucht JavaScript. Die öffentliche Website
+        funktioniert vollständig ohne.
+      </p>
+    </noscript>
+  </body>
+</html>

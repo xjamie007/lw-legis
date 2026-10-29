@@ -1,0 +1,15 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*.ts", "**/*.tsx", "**/*.astro", "scripts/**/*.mjs"],
+  "exclude": ["dist", "node_modules", "supabase/functions"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@lib/*": ["src/lib/*"],
+      "@components/*": ["src/components/*"],
+      "@islands/*": ["src/islands/*"]
+    },
+    "verbatimModuleSyntax": true
+  }
+}

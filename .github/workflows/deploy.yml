@@ -1,0 +1,129 @@
+# ===========================================================================
+# LW LEGIS — Bauen und veroeffentlichen
+# ---------------------------------------------------------------------------
+# Laeuft, wenn
+#   - jemand in `main` schreibt
+#   - der Redaktionsbereich „Veroeffentlichen“ ausloest (repository_dispatch)
+#   - jemand den Lauf von Hand startet
+#
+# Der Service-Role-Schluessel steht ausschliesslich hier als Secret. Er
+# gelangt nie in den Browser: gelesen wird damit nur beim Bauen.
+# ===========================================================================
+name: Bauen und veröffentlichen
+
+on:
+  push:
+    branches: [main]
+  repository_dispatch:
+    types: [publier]
+  workflow_dispatch:
+
+concurrency:
+  # Ein Build zur Zeit. Startet Me Lorang zweimal hintereinander, laeuft
+  # der zweite — der erste wird abgebrochen, statt sich zu ueberholen.
+  group: veroeffentlichen
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  bauen:
+    runs-on: ubuntu-latest
+    # `secrets` laesst sich in einer `if:`-Bedingung nicht lesen — deshalb
+    # hier einmal in eine Umgebungsvariable gespiegelt. Solange kein Ziel
+    # hinterlegt ist, laeuft der Build vollstaendig durch und prueft alles;
+    # nur das Ausliefern entfaellt, statt den Lauf rot zu faerben.
+    env:
+      HAT_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Abhängigkeiten installieren
+        run: npm ci
+
+      - name: Inhalte aus Supabase holen
+        env:
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        # Bricht bewusst nicht ab, wenn Supabase klemmt: dann wird aus dem
+        # eingecheckten Schnappschuss gebaut und die Seite bleibt online.
+        run: node scripts/fetch-content.mjs
+
+      - name: Farbkontraste prüfen
+        run: node scripts/check-contrast.mjs
+
+      - name: Inhalte prüfen
+        run: node scripts/check-content.mjs
+
+      - name: Bauen
+        env:
+          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+        run: npx astro build && node scripts/postbuild.mjs
+
+      - name: Links prüfen
+        run: node scripts/check-links.mjs
+
+      # Der Schnappschuss wandert zurueck ins Repository. Damit ist jeder
+      # ausgelieferte Stand im Verlauf nachvollziehbar — und der naechste
+      # Build hat einen Rueckfall, falls Supabase dann nicht antwortet.
+      - name: Schnappschuss zurückschreiben
+        if: github.event_name == 'repository_dispatch'
+        run: |
+          if git diff --quiet content/snapshot.json; then
+            echo "Keine Inhaltsänderung."
+          else
+            git config user.name  "LW LEGIS Redaktion"
+            git config user.email "noreply@users.noreply.github.com"
+            git add content/snapshot.json
+            git commit -m "Inhalte: Stand vom $(date -u +%Y-%m-%dT%H:%MZ)
+
+          Ausgelöst von: ${{ github.event.client_payload.declenche_par }}"
+            git push
+          fi
+
+      - name: Build-Bericht aufbewahren
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-bericht
+          path: |
+            docs/build-bericht.txt
+            docs/kontrast.md
+          retention-days: 30
+
+      # --- Ausliefern -------------------------------------------------------
+      # Cloudflare Pages: statisch, EU-Rechenzentren, liest `_headers` und
+      # `_redirects`, kann Vorschau-Deployments. Wer lieber Netlify nimmt,
+      # tauscht diesen einen Schritt aus — `dist/` bleibt dasselbe.
+      - name: Auf Cloudflare Pages ausliefern
+        if: github.ref == 'refs/heads/main' && env.HAT_CLOUDFLARE == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=lw-legis --branch=main
+
+      # Ohne Auslieferungsziel waere das Ergebnis sonst nach dem Lauf weg.
+      - name: Fertige Seite aufbewahren, wenn nicht ausgeliefert wird
+        if: env.HAT_CLOUDFLARE != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: website
+          path: dist
+          retention-days: 14
+
+      - name: Hinweis — kein Auslieferungsziel hinterlegt
+        if: env.HAT_CLOUDFLARE != 'true'
+        run: |
+          echo "Gebaut und geprueft, aber nicht ausgeliefert."
+          echo "Es fehlen die Repository-Secrets CLOUDFLARE_API_TOKEN und"
+          echo "CLOUDFLARE_ACCOUNT_ID. Die fertige Seite liegt als Artefakt"
+          echo "\"website\" bei diesem Lauf."

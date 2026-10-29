@@ -1,0 +1,30 @@
+---
+/**
+ * src/components/Depliant.astro — Aufklappbare Frage.
+ *
+ * Ein <details>/<summary>-Paar. Der Browser fuehrt aria-expanded selbst,
+ * die Tastaturbedienung ist eingebaut, und ohne JavaScript funktioniert
+ * alles. Die Bewegung antwortet auf eine Handlung — genau dafuer ist sie da.
+ */
+import type { Edition } from '../lib/edition';
+
+interface Props {
+  question: string;
+  /** Beim Laden offen? Genau eine Frage darf das sein, sonst keine. */
+  ouvert?: boolean;
+  id?: string;
+  /** Anklickbar im Redaktionsbereich — siehe src/lib/edition.ts. */
+  edQuestion?: Edition;
+}
+const { question, ouvert = false, id, edQuestion } = Astro.props;
+---
+
+<details class="depliant" open={ouvert} id={id}>
+  <summary class="depliant__titre">
+    <span {...edQuestion}>{question}</span>
+    <span class="depliant__signe" aria-hidden="true"></span>
+  </summary>
+  <div class="depliant__corps corps corps--flux">
+    <slot />
+  </div>
+</details>

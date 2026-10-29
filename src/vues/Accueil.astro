@@ -1,0 +1,537 @@
+---
+/**
+ * src/vues/Accueil.astro — Startseite.
+ *
+ * Reihenfolge und Sichtbarkeit der Sektionen kommen aus den Inhalten
+ * (`sections_accueil`) und sind im Adminbereich aenderbar. Hero und
+ * Kontakt sind gesperrt: ohne sie ergibt die Seite keinen Sinn.
+ */
+import type { Lang } from '../lib/langs';
+import { txt } from '../lib/langs';
+import { t } from '../lib/i18n';
+import { contenu, familles, publicationsPubliees, faqToutes, faqPubliable } from '../lib/content';
+import { seg } from '../lib/routes';
+import Hero from '../components/Hero.astro';
+import Leiste from '../components/Leiste.astro';
+import Marge from '../components/Marge.astro';
+import Lacune from '../components/Lacune.astro';
+import Depliant from '../components/Depliant.astro';
+import Formulaire from '../components/Formulaire.astro';
+import Bild from '../components/Bild.astro';
+import { ed, edAvocat, edFamille, edPage } from '../lib/edition';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const sections = contenu.sections_accueil
+  .filter((s) => s.visible)
+  .sort((a, b) => a.ordre - b.ordre)
+  .map((s) => s.id);
+
+const acc = contenu.pages.accueil.sections;
+const nosFamilles = familles(lang);
+const derniers = publicationsPubliees(lang).slice(0, 4);
+const questions = faqToutes(lang);
+
+const lien = (n: Parameters<typeof seg>[0]) => {
+  const x = seg(n, lang);
+  return x ? `/${lang}/${x}/` : null;
+};
+const versServices = lien('services');
+const versEtude = lien('etude');
+const versPublications = lien('publications');
+const versHonoraires = lien('honoraires');
+const versContact = lien('contact');
+
+const avocat = contenu.avocat;
+const honoraires = contenu.pages.honoraires;
+---
+
+{
+  sections.map((id) => {
+    switch (id) {
+      // ===================================================================
+      case 'hero':
+        return (
+          <>
+            <Hero lang={lang} />
+            {/* Die Schnellleiste gehört zum Hero und ist deshalb nicht
+                einzeln abschaltbar: Ohne sie fehlt die Antwort auf die
+                erste Frage, die jeder Besucher hat. */}
+            <Leiste lang={lang} />
+          </>
+        );
+
+      // ===================================================================
+      case 'services':
+        return (
+          <section class="section" aria-labelledby="titre-services">
+            <div class="enveloppe">
+              <div class="colonne">
+                <h2 class="titre-2" id="titre-services" data-revele="titre" {...edPage('accueil.sections.services.titre')}>
+                  {txt(acc.services.titre, lang)}
+                </h2>
+                <p class="chapeau discret" data-revele="texte" {...edPage('accueil.sections.services.chapeau')}>{txt(acc.services.chapeau, lang)}</p>
+
+                <dl class="definitions" data-revele="definitions">
+                  {nosFamilles.map((f) => (
+                    <>
+                      <dt class="definitions__terme">
+                        {versServices ? (
+                          <a href={`${versServices}${txt(f.slug, lang)}/`} {...edFamille(f.id, 'terme')}>{txt(f.terme, lang)}</a>
+                        ) : (
+                          txt(f.terme, lang)
+                        )}
+                      </dt>
+                      <dd class="definitions__texte">
+                        <p class="definitions__definition" {...edFamille(f.id, 'definition')}>{txt(f.definition, lang)}</p>
+                        <p {...edFamille(f.id, 'texte')}>{txt(f.texte, lang)}</p>
+                      </dd>
+                    </>
+                  ))}
+                </dl>
+
+                <Marge
+                  terme={txt(nosFamilles[0]?.marge.terme, lang)}
+                  edTerme={edFamille(nosFamilles[0]?.id, 'marge.terme')}
+                  edTexte={edFamille(nosFamilles[0]?.id, 'marge.texte')}
+                >
+                  {txt(nosFamilles[0]?.marge.texte, lang)}
+                </Marge>
+
+                {versServices && (
+                  <p class="apres">
+                    <a href={versServices}>{t(lang, 'services.tous')}</a>
+                  </p>
+                )}
+              </div>
+            </div>
+          </section>
+        );
+
+      // ===================================================================
+      case 'avocat':
+        return (
+          <section class="section section--craie" aria-labelledby="titre-avocat">
+            <div class="enveloppe">
+              {/* Zwei Spalten: links das Gesicht, rechts der Mensch dazu.
+                  Das ist die Stelle, an der die Seite aufhört, eine
+                  Broschüre zu sein. */}
+              <div class="personne">
+                <div class="personne__bild" data-revele="bild">
+                  <Bild
+                    platz="portrait"
+                    lang={lang}
+                    sizes="(min-width: 62rem) 24rem, 100vw"
+                  />
+                </div>
+
+                <div class="personne__texte">
+                  <h2 class="titre-2" id="titre-avocat" data-revele="titre" {...edPage('accueil.sections.avocat.titre')}>
+                    {txt(acc.avocat.titre, lang)}
+                  </h2>
+
+                  <p class="personne__nom" data-revele="texte">
+                    {avocat.civilite} {avocat.nom_complet}
+                  </p>
+                  <p class="personne__titre" data-revele="texte">
+                    <span {...edAvocat('titre')}>{txt(avocat.titre, lang)}</span> · {t(lang, 'commun.depuis')} {avocat.barreau_depuis}
+                  </p>
+
+                  <p class="corps personne__corps" data-revele="texte" {...edPage('accueil.sections.avocat.texte')}>
+                    {txt(acc.avocat.texte, lang)}
+                  </p>
+
+                  {/* Die Durchwahl, groß und direkt. Wer hier anruft,
+                      spricht mit ihm — das ist die Zusage der ganzen
+                      Seite, also steht sie auch so da. */}
+                  <p class="personne__appel" data-revele="texte">
+                    <span class="personne__appel-label" {...edPage('accueil.sections.avocat.appel')}>
+                      {txt(acc.avocat.appel, lang)}
+                    </span>
+                    <a class="personne__numero" href={`tel:${avocat.telephone.replace(/[^+0-9]/g, '')}`}>
+                      {avocat.telephone}
+                    </a>
+                  </p>
+
+                  {versEtude && (
+                    <p class="apres">
+                      <a href={versEtude} {...edPage('accueil.sections.avocat.lien')}>{txt(acc.avocat.lien, lang)}</a>
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+
+      // ===================================================================
+      case 'bureau':
+        return (
+          <section class="section" aria-labelledby="titre-bureau">
+            <div class="enveloppe">
+              <div class="colonne">
+                <h2 class="titre-2" id="titre-bureau" data-revele="titre" {...edPage('accueil.sections.bureau.titre')}>
+                  {txt(acc.bureau.titre, lang)}
+                </h2>
+                <p class="chapeau discret" data-revele="texte" {...edPage('accueil.sections.bureau.chapeau')}>
+                  {txt(acc.bureau.chapeau, lang)}
+                </p>
+              </div>
+            </div>
+
+            {/* Drei Aufnahmen, ungleich breit — ein gleichmäßiges Raster
+                sähe nach Bildagentur aus. */}
+            <div class="enveloppe">
+              {/* Zwei Aufnahmen, ungleich: eine liegende und eine stehende.
+                  Zwei gleich große nebeneinander sähen nach Katalog aus. */}
+              <div class="bureau" data-revele="liste">
+                <div class="bureau__gross">
+                  <Bild platz="bureau_1" lang={lang} sizes="(min-width: 50rem) 36rem, 100vw" />
+                </div>
+                <div class="bureau__klein">
+                  <Bild platz="bureau_2" lang={lang} sizes="(min-width: 50rem) 17rem, 100vw" />
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+
+      // ===================================================================
+      case 'publications':
+        return (
+          <section class="section" aria-labelledby="titre-publications">
+            <div class="enveloppe">
+              <div class="colonne">
+                <h2 class="titre-2" id="titre-publications" data-revele="titre" {...edPage('accueil.sections.publications.titre')}>
+                  {txt(acc.publications.titre, lang)}
+                </h2>
+                <p class="chapeau discret" data-revele="texte" {...edPage('accueil.sections.publications.chapeau')}>{txt(acc.publications.chapeau, lang)}</p>
+
+                {derniers.length > 0 ? (
+                  <ul class="liste-documents" data-revele="liste">
+                    {derniers.map((p) => (
+                      <li class="rang">
+                        <a href={`${versPublications}${txt(p.slug, lang)}/`} {...ed('publications', p.id, 'titre')}>
+                          {txt(p.titre, lang)}
+                        </a>
+                        {p.etat_du_droit && (
+                          <span class="liste-documents__etat">
+                            {t(lang, 'publications.etat_du_droit')} {p.etat_du_droit}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p class="note">
+                    {t(lang, 'publications.en_preparation')} <Lacune id="documents_texte" lang={lang} />
+                  </p>
+                )}
+
+                {versPublications && (
+                  <p class="apres">
+                    <a href={versPublications} {...edPage('accueil.sections.publications.lien')}>{txt(acc.publications.lien, lang)}</a>
+                  </p>
+                )}
+              </div>
+            </div>
+          </section>
+        );
+
+      // ===================================================================
+      case 'honoraires':
+        return (
+          <section class="section section--craie" aria-labelledby="titre-honoraires">
+            <div class="enveloppe">
+              <div class="colonne">
+                <h2 class="titre-2" id="titre-honoraires" data-revele="titre" {...edPage('accueil.sections.honoraires.titre')}>
+                  {txt(acc.honoraires.titre, lang)}
+                </h2>
+                <p class="chapeau discret" data-revele="texte" {...edPage('accueil.sections.honoraires.chapeau')}>{txt(acc.honoraires.chapeau, lang)}</p>
+                <dl class="postes" data-revele="definitions">
+                  {honoraires.postes.map((poste: { id: string; ouvert: string }) => (
+                    <>
+                      <dt>{t(lang, `honoraires.${poste.id}` as never)}</dt>
+                      <dd>
+                        <Lacune id={poste.ouvert} lang={lang} />
+                      </dd>
+                    </>
+                  ))}
+                </dl>
+                <p class="corps">{t(lang, 'honoraires.convention')}</p>
+                {versHonoraires && (
+                  <p class="apres">
+                    <a href={versHonoraires} {...edPage('accueil.sections.honoraires.lien')}>{txt(acc.honoraires.lien, lang)}</a>
+                  </p>
+                )}
+              </div>
+            </div>
+          </section>
+        );
+
+      // ===================================================================
+      case 'faq':
+        return (
+          <section class="section" aria-labelledby="titre-faq">
+            <div class="enveloppe">
+              <div class="colonne">
+                <h2 class="titre-2" id="titre-faq" data-revele="titre">
+                  {t(lang, 'faq.titre')}
+                </h2>
+                <div class="faq" data-revele="liste">
+                  {questions.map((q) => (
+                    <Depliant
+                      question={txt(q.question, lang)}
+                      id={`faq-${q.id}`}
+                      edQuestion={ed('faq', q.id, 'question')}
+                    >
+                      {faqPubliable(q, lang) ? (
+                        <p set:html={txt(q.reponse, lang)} {...ed('faq', q.id, 'reponse', true)} />
+                      ) : (
+                        <p {...ed('faq', q.id, 'reponse', true)}>
+                          <Lacune id={q.ouvert ?? 'situations_contenu'} lang={lang} />
+                        </p>
+                      )}
+                      {q.complement_ouvert && (
+                        <p>
+                          <Lacune id={q.complement_ouvert} lang={lang} />
+                        </p>
+                      )}
+                    </Depliant>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+
+      // ===================================================================
+      case 'contact':
+        return (
+          <section class="section section--craie" id="contact" aria-labelledby="titre-contact">
+            <div class="enveloppe">
+              <div class="colonne">
+                <h2 class="titre-2" id="titre-contact" data-revele="titre" {...edPage('accueil.sections.contact.titre')}>
+                  {txt(acc.contact.titre, lang)}
+                </h2>
+                <p class="chapeau discret" data-revele="texte" {...edPage('accueil.sections.contact.chapeau')}>{txt(acc.contact.chapeau, lang)}</p>
+                <Formulaire lang={lang} niveau={3} id="formulaire-accueil" />
+                {versContact && (
+                  <p class="apres">
+                    <a href={versContact}>{t(lang, 'contact.titre')}</a>
+                  </p>
+                )}
+              </div>
+            </div>
+          </section>
+        );
+
+      default:
+        return null;
+    }
+  })
+}
+
+<style>
+  .definitions__terme a {
+    color: var(--color-encre);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--color-laiton);
+  }
+  .definitions__terme a:hover {
+    color: var(--color-frontiere-tief);
+  }
+  .definitions__definition {
+    color: var(--color-pierre);
+    margin-bottom: 0.4rem;
+  }
+
+  .apres {
+    margin-top: 2rem;
+    font-family: var(--font-commande);
+    font-size: var(--text-commande);
+  }
+
+  .liste-documents {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: var(--mesure);
+  }
+  .liste-documents li {
+    padding-block: 0.9rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-pierre) 22%, transparent);
+  }
+  .liste-documents li:first-child {
+    border-top: 1px solid color-mix(in srgb, var(--color-pierre) 22%, transparent);
+  }
+  .liste-documents a {
+    font-family: var(--font-lecture);
+    font-size: var(--text-h3);
+    color: var(--color-encre);
+    text-decoration: none;
+  }
+  .liste-documents a:hover {
+    color: var(--color-frontiere-tief);
+    text-decoration: underline;
+  }
+  .liste-documents__etat {
+    display: block;
+    font-family: var(--font-commande);
+    font-size: var(--text-marge);
+    color: var(--color-pierre);
+    margin-top: 0.25rem;
+  }
+
+  .postes {
+    margin: 1.5rem 0 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.35rem 1.5rem;
+    max-width: var(--mesure);
+  }
+  .postes dt {
+    font-family: var(--font-commande);
+    font-size: var(--text-commande);
+    font-weight: 500;
+  }
+  .postes dd {
+    margin: 0 0 1rem;
+  }
+  @media (min-width: 40rem) {
+    .postes {
+      grid-template-columns: minmax(10rem, 14rem) 1fr;
+    }
+    .postes dt {
+      padding-top: 0.15rem;
+    }
+    .postes dd {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .faq {
+    margin-top: 1.75rem;
+    max-width: var(--mesure);
+  }
+  /* --- Wer antwortet: Gesicht und Mensch ---------------------------------
+     Zwei ungleiche Spalten. Das Porträt ist schmaler als der Text — es
+     soll begleiten, nicht dominieren. Am Handy steht es oben, weil ein
+     Gesicht am Anfang mehr sagt als eine Überschrift.
+     ---------------------------------------------------------------------- */
+  .personne {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+  .personne__bild {
+    max-width: 20rem;
+  }
+  .personne__texte {
+    min-width: 0;
+    max-width: var(--mesure);
+  }
+  .personne__nom {
+    font-family: var(--font-lecture);
+    font-size: var(--text-h3);
+    font-weight: 600;
+    margin-top: 1.5rem;
+  }
+  .personne__titre {
+    font-family: var(--font-commande);
+    font-size: var(--text-commande);
+    color: var(--color-pierre);
+    margin-top: 0.15rem;
+  }
+  .personne__corps {
+    margin-top: 1.25rem;
+  }
+
+  /* Die Durchwahl. Kein Knopf, kein Kasten — eine Zahl, groß gesetzt,
+     mit der Messinglinie darunter, die überall sonst auch steht. */
+  .personne__appel {
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: var(--trait);
+  }
+  .personne__appel-label {
+    display: block;
+    font-family: var(--font-commande);
+    font-size: var(--text-marge);
+    color: var(--color-pierre);
+    margin-bottom: 0.3rem;
+  }
+  .personne__numero {
+    font-family: var(--font-lecture);
+    font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-frontiere);
+    text-decoration: none;
+    display: inline-block;
+    background-image: linear-gradient(var(--color-laiton), var(--color-laiton));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 2px;
+    transition:
+      background-size 380ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      color 200ms ease-out;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .personne__numero:hover {
+      color: var(--color-frontiere-tief);
+      background-size: 100% 2px;
+    }
+  }
+  @media (hover: none) {
+    .personne__numero {
+      background-size: 100% 2px;
+    }
+  }
+
+  @media (min-width: 62rem) {
+    .personne {
+      grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+      gap: 3.5rem;
+    }
+    .personne__bild {
+      max-width: none;
+      /* Etwas tiefer als die Überschrift ansetzen: das Bild trägt den
+         Blick nach unten in den Text hinein. */
+      margin-top: 0.5rem;
+    }
+    .personne__nom {
+      margin-top: 1.75rem;
+    }
+  }
+
+  /* --- Das Büro -----------------------------------------------------------
+     Eine große Aufnahme, zwei kleinere daneben. Ein gleichmäßiges Raster
+     aus drei gleich großen Bildern sähe nach Bildagentur aus.
+     ---------------------------------------------------------------------- */
+  .bureau {
+    margin-top: 2.5rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 50rem) {
+    .bureau {
+      grid-template-columns: 1.75fr 1fr;
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+    /* Beide Spalten enden auf derselben Höhe. Das liegende Bild folgt
+       dafür der Höhe des stehenden statt seinem eigenen Verhältnis —
+       sonst franst das Band unten aus. */
+    .bureau__gross,
+    .bureau__gross :global(.bild) {
+      height: 100%;
+      aspect-ratio: auto;
+    }
+  }
+</style>

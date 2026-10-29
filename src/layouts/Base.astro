@@ -1,0 +1,134 @@
+---
+/**
+ * src/layouts/Base.astro — Die Huelle jeder Seite.
+ *
+ * Hier stehen: Sprachkennzeichnung, Title und Description, kanonische
+ * Adresse, hreflang, Open Graph, strukturierte Daten, der Sprung zum
+ * Inhalt, Kopf- und Fussbereich.
+ *
+ * Kein Cookie, kein externer Aufruf, keine Schrift von einer fremden CDN.
+ */
+import '../styles/global.css';
+import { LANG_BALISE, type Lang } from '../lib/langs';
+import { t } from '../lib/i18n';
+import { absolu, alternatives, couper, type Alternative } from '../lib/seo';
+import Entete from '../components/Entete.astro';
+import Pied from '../components/Pied.astro';
+
+interface Props {
+  lang: Lang;
+  titre: string;
+  description: string;
+  /** Pfad dieser Seite, mit fuehrendem und abschliessendem Schraegstrich. */
+  chemin: string;
+  /** Liefert je Sprache den Pfad dieser Seite — oder null. */
+  alternatifs?: (l: Lang) => string | null;
+  noindex?: boolean;
+  /** Fertiges JSON-LD, bereits als Zeichenkette. */
+  jsonld?: string | null;
+  /** Bild fuer Open Graph, absoluter Pfad ab Wurzel. */
+  image?: string;
+  /** Nur die Startseite bekommt den einen choreografierten Moment. */
+  animerEntree?: boolean;
+}
+
+const {
+  lang,
+  titre,
+  description,
+  chemin,
+  alternatifs,
+  noindex = false,
+  jsonld = null,
+  image = '/og/lw-legis.png',
+  animerEntree = false,
+} = Astro.props;
+
+const canonique = absolu(chemin);
+const alts: Alternative[] = alternatifs ? alternatives(alternatifs) : [];
+const descriptionCourte = couper(description, 200);
+---
+
+<!doctype html>
+<html lang={LANG_BALISE[lang]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{titre}</title>
+    <meta name="description" content={descriptionCourte} />
+    <link rel="canonical" href={canonique} />
+
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    {
+      alts.map((a) => (
+        <link rel="alternate" hreflang={a.hreflang} href={a.href} />
+      ))
+    }
+
+    {/* Schriften: selbst gehostet. Vorgeladen wird nur der Schnitt, der
+        ueber der Falz gebraucht wird — Literata roman, latin. Alles
+        weitere laedt der Browser, wenn er es braucht. */}
+    <link
+      rel="preload"
+      href="/fonts/literata-roman-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/atkinson-hyperlegible-next-roman-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Étude d’Avocats LW LEGIS" />
+    <meta property="og:title" content={titre} />
+    <meta property="og:description" content={descriptionCourte} />
+    <meta property="og:url" content={canonique} />
+    <meta property="og:locale" content={LANG_BALISE[lang]} />
+    <meta property="og:image" content={absolu(image)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={titre} />
+    <meta name="twitter:description" content={descriptionCourte} />
+    <meta name="twitter:image" content={absolu(image)} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#2F5D50" />
+
+    {jsonld && <script type="application/ld+json" is:inline set:html={jsonld} />}
+  </head>
+
+  <body>
+    <a class="saut" href="#contenu">{t(lang, 'nav.aller_au_contenu')}</a>
+
+    <Entete lang={lang} chemin={chemin} alternatifs={alternatifs} />
+
+    <main id="contenu" tabindex="-1" class={animerEntree ? 'lever' : undefined}>
+      <slot />
+    </main>
+
+    <Pied lang={lang} />
+
+    {/* Einblenden beim Scrollen. Ohne dieses Skript ist alles sichtbar —
+        es versteckt erst und zeigt dann. */}
+    <script>
+      import '../scripts/revele.ts';
+    </script>
+  </body>
+</html>
+
+<style>
+  /* `main` bekommt beim Fokussieren keinen Ring — der Sprunglink hat
+     bereits einen, und ein Ring um die halbe Seite hilft niemandem. */
+  main:focus {
+    outline: none;
+  }
+</style>

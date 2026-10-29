@@ -1,0 +1,146 @@
+---
+/**
+ * src/pages/[lang]/[...chemin].astro — Die einzige oeffentliche Route.
+ *
+ * Weil sich die Pfadsegmente je Sprache unterscheiden (/fr/votre-situation/
+ * gegen /de/ihre-situation/), kann Astros Praefix-Routing das nicht
+ * abbilden. Stattdessen erzeugt `toutesLesRoutes()` die vollstaendige
+ * Adresstabelle, und diese Datei baut daraus jede Seite.
+ *
+ * Derselbe Tabellenaufbau speist Sitemap, hreflang, Brotkrumen und die
+ * Link-Pruefung — es gibt keine zweite Liste, die abweichen koennte.
+ */
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import FilAriane from '../../components/FilAriane.astro';
+import Accueil from '../../vues/Accueil.astro';
+import Situations from '../../vues/Situations.astro';
+import SituationPays from '../../vues/SituationPays.astro';
+import SituationVue from '../../vues/Situation.astro';
+import Services from '../../vues/Services.astro';
+import FamilleVue from '../../vues/Famille.astro';
+import Etude from '../../vues/Etude.astro';
+import Publications from '../../vues/Publications.astro';
+import PublicationDetail from '../../vues/PublicationDetail.astro';
+import Honoraires from '../../vues/Honoraires.astro';
+import Contact from '../../vues/Contact.astro';
+import Recu from '../../vues/Recu.astro';
+import PageLegale from '../../vues/PageLegale.astro';
+
+import { toutesLesRoutes, alternatifsPour, type Route } from '../../lib/pages';
+import { languesDuSite, contenu, familles, faqPubliee, publicationsPubliees } from '../../lib/content';
+import { txt, type Lang } from '../../lib/langs';
+import { seg } from '../../lib/routes';
+import * as ld from '../../lib/jsonld';
+
+export const getStaticPaths = (() => {
+  return toutesLesRoutes().map((r) => ({
+    params: {
+      lang: r.lang,
+      // Die Startseite hat keine weiteren Segmente.
+      chemin: r.segments.length > 0 ? r.segments.join('/') : undefined,
+    },
+    props: { route: r },
+  }));
+}) satisfies GetStaticPaths;
+
+const { route } = Astro.props as { route: Route };
+const lang = route.lang as Lang;
+const pretes = languesDuSite();
+
+// --- Strukturierte Daten -----------------------------------------------------
+const noeuds: (Record<string, unknown> | null)[] = [
+  ld.legalService(lang, pretes),
+  ld.attorney(lang),
+  ld.webSite(lang, route.chemin),
+  ld.fildAriane(route.fil.map((e) => ({ nom: e.nom, url: e.url }))),
+];
+
+if (route.type === 'accueil') {
+  const entrees = faqPubliee(lang).map((f) => ({
+    question: txt(f.question, lang),
+    reponse: txt(f.reponse, lang).replace(/<[^>]*>/g, ' ').trim(),
+  }));
+  noeuds.push(ld.faqPage(entrees));
+  const sSrv = seg('services', lang);
+  if (sSrv) {
+    for (const f of familles(lang)) {
+      noeuds.push(ld.service(f, lang, `/${lang}/${sSrv}/${txt(f.slug, lang)}/`));
+    }
+  }
+}
+
+if (route.type === 'famille') {
+  noeuds.push(ld.service(route.data.famille as never, lang, route.chemin));
+}
+
+if (route.type === 'publication') {
+  noeuds.push(ld.article(route.data.publication, lang, route.chemin));
+}
+
+if (route.type === 'publications') {
+  // Jede Bibliotheksseite listet ihre Dokumente auch strukturiert.
+  const sPub = seg('publications', lang);
+  if (sPub) {
+    for (const p of publicationsPubliees(lang).slice(0, 20)) {
+      noeuds.push(ld.article(p, lang, `/${lang}/${sPub}/${txt(p.slug, lang)}/`));
+    }
+  }
+}
+
+const jsonld = ld.graphe(noeuds);
+const alternatifs = alternatifsPour(route.cle);
+---
+
+<Base
+  lang={lang}
+  titre={route.titre}
+  description={route.description}
+  chemin={route.chemin}
+  alternatifs={alternatifs}
+  noindex={route.noindex}
+  jsonld={jsonld}
+  animerEntree={route.type === 'accueil'}
+>
+  {route.fil.length > 1 && <FilAriane lang={lang} etapes={route.fil} />}
+
+  {route.type === 'accueil' && <Accueil lang={lang} />}
+  {route.type === 'situations' && <Situations lang={lang} />}
+  {
+    route.type === 'situation-pays' && (
+      <SituationPays
+        lang={lang}
+        pays={route.data.pays as never}
+        projets={route.data.projets as never}
+      />
+    )
+  }
+  {
+    route.type === 'situation' && (
+      <SituationVue
+        lang={lang}
+        situation={route.data.situation as never}
+        pays={route.data.pays as never}
+        projet={route.data.projet as never}
+      />
+    )
+  }
+  {route.type === 'services' && <Services lang={lang} />}
+  {route.type === 'famille' && <FamilleVue lang={lang} famille={route.data.famille as never} />}
+  {route.type === 'etude' && <Etude lang={lang} />}
+  {route.type === 'publications' && <Publications lang={lang} />}
+  {route.type === 'theme' && <Publications lang={lang} theme={route.data.theme as never} />}
+  {
+    route.type === 'publication' && (
+      <PublicationDetail lang={lang} publication={route.data.publication as never} />
+    )
+  }
+  {route.type === 'honoraires' && <Honoraires lang={lang} />}
+  {route.type === 'contact' && <Contact lang={lang} />}
+  {route.type === 'recu' && <Recu lang={lang} />}
+  {
+    (route.type === 'mentions' || route.type === 'donnees' || route.type === 'conditions') && (
+      <PageLegale lang={lang} quelle={route.type} />
+    )
+  }
+</Base>

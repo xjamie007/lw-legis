@@ -1,0 +1,134 @@
+---
+/**
+ * src/pages/404.astro — Seite nicht gefunden.
+ *
+ * Eine einzige Datei fuer alle Sprachen: wer auf einer falschen Adresse
+ * landet, hat oft keine Sprache gewaehlt, und der Server weiss nicht,
+ * welche gemeint war. Deshalb steht hier jede gebaute Sprache mit ihren
+ * kuerzesten Wegen — und nicht eine Sprache, die vielleicht die falsche ist.
+ */
+import '../styles/global.css';
+import { LANG_BALISE, LANG_NOMS, txt, type Lang } from '../lib/langs';
+import { t } from '../lib/i18n';
+import { contenu, languesDuSite } from '../lib/content';
+import { seg, urlAccueil } from '../lib/routes';
+
+const pretes = languesDuSite();
+const s = contenu.settings;
+
+const chemins = (l: Lang) =>
+  (['situations', 'services', 'publications', 'contact'] as const)
+    .map((n) => {
+      const x = seg(n, l);
+      return x ? { nom: t(l, `nav.${n}` as never), href: `/${l}/${x}/` } : null;
+    })
+    .filter((x): x is { nom: string; href: string } => x !== null);
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Page introuvable — Seite nicht gefunden — Page not found | LW LEGIS</title>
+    <meta name="robots" content="noindex, follow" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#2F5D50" />
+    <link
+      rel="preload"
+      href="/fonts/literata-roman-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+  </head>
+  <body>
+    <main id="contenu" class="section">
+      <div class="enveloppe">
+        <div class="colonne">
+          {/* Sprachneutral: die Zahl gilt in jeder Sprache. Die
+              sprachspezifischen Ueberschriften darunter sind h2. */}
+          <h1 class="code">404</h1>
+          <div class="langues-404">
+            {
+              pretes.map((l) => (
+                <section class="langue" lang={LANG_BALISE[l]}>
+                  <h2 class="titre-3">{t(l, 'erreur404.titre')}</h2>
+                  <p class="corps">{t(l, 'erreur404.texte')}</p>
+                  <ul class="chemins">
+                    <li>
+                      <a href={urlAccueil(l)}>{t(l, 'erreur404.accueil')}</a>
+                    </li>
+                    {chemins(l).map((c) => (
+                      <li>
+                        <a href={c.href}>{c.nom}</a>
+                      </li>
+                    ))}
+                  </ul>
+                  <p class="langue__nom">{LANG_NOMS[l]}</p>
+                </section>
+              ))
+            }
+          </div>
+
+          <p class="secours">
+            {s.nom} · {s.adresse.une_ligne} ·{' '}
+            <a href={`tel:${s.telephone.central_lien}`}>{s.telephone.central}</a>
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <style>
+      .code {
+        font-family: var(--font-commande);
+        font-size: var(--text-marge);
+        color: var(--color-laiton-texte);
+        border-bottom: var(--trait);
+        display: inline-block;
+        padding-bottom: 0.3rem;
+        margin-bottom: 2rem;
+      }
+      .langues-404 {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+      .langue__nom {
+        font-family: var(--font-commande);
+        font-size: var(--text-marge);
+        color: var(--color-pierre);
+        margin-top: 0.75rem;
+      }
+      .chemins {
+        list-style: none;
+        margin: 1rem 0 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem 1.5rem;
+        font-family: var(--font-commande);
+        font-size: var(--text-commande);
+      }
+      .chemins a {
+        display: inline-block;
+        min-height: 2.25rem;
+        padding-block: 0.4rem;
+      }
+      .secours {
+        margin-top: 3rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid color-mix(in srgb, var(--color-pierre) 25%, transparent);
+        font-family: var(--font-commande);
+        font-size: var(--text-marge);
+        color: var(--color-pierre);
+      }
+      @media (min-width: 52rem) {
+        .langues-404 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 3rem;
+        }
+      }
+    </style>
+  </body>
+</html>

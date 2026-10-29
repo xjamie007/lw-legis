@@ -1,0 +1,59 @@
+---
+/**
+ * src/pages/index.astro — Die Wurzel.
+ *
+ * Standardsprache ist Franzoesisch, weil sie in Luxemburg im
+ * Geschaeftsverkehr am breitesten traegt. Weitergeleitet wird per
+ * <meta http-equiv="refresh"> und zusaetzlich per Skript: auf einer
+ * statischen Seite gibt es keinen Server, der einen 302 schicken koennte.
+ * Der sichtbare Link sorgt dafuer, dass auch ohne beides niemand
+ * strandet.
+ *
+ * Wer auf dem Hosting eine echte 301 einrichten kann, sollte das tun —
+ * siehe README, Abschnitt „Weiterleitungen“.
+ */
+import { LANG_DEFAUT, LANGS, LANG_NOMS } from '../lib/langs';
+import { languesDuSite } from '../lib/content';
+import { absolu } from '../lib/seo';
+
+const cible = `/${LANG_DEFAUT}/`;
+const pretes = languesDuSite();
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Étude d’Avocats LW LEGIS — Luxembourg</title>
+    <meta http-equiv="refresh" content={`0; url=${cible}`} />
+    <link rel="canonical" href={absolu(cible)} />
+    {
+      LANGS.filter((l) => pretes.includes(l)).map((l) => (
+        <link rel="alternate" hreflang={l} href={absolu(`/${l}/`)} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={absolu(cible)} />
+    <meta name="robots" content="noindex, follow" />
+    <script is:inline define:vars={{ cible }}>
+      window.location.replace(cible);
+    </script>
+  </head>
+  <body>
+    <h1>Étude d’Avocats LW LEGIS</h1>
+    <p>
+      <a href={cible}>Luxembourg</a>
+    </p>
+    <ul>
+      {
+        LANGS.filter((l) => pretes.includes(l)).map((l) => (
+          <li>
+            <a href={`/${l}/`} hreflang={l}>
+              {LANG_NOMS[l]}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </body>
+</html>

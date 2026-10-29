@@ -1,0 +1,188 @@
+---
+/**
+ * src/vues/PublicationDetail.astro — Ein Dokument.
+ *
+ * Ausdruecklicher Kundenwunsch: die Dokumente sollen sich OEFFNEN lassen,
+ * nicht nur herunterladen. Hauptinhalt ist deshalb die lesbare
+ * HTML-Fassung; ihr Text steht im ausgelieferten HTML und ist indexierbar.
+ *
+ * Das PDF steht daneben — vom eigenen Server, mit sprechendem Dateinamen
+ * und Dateigroesse im Link. Niemals ein fremder Viewer.
+ *
+ * Die eingebettete Vorschau wird erst auf Klick geladen. Ein <object> beim
+ * Seitenaufruf kippt die Ladezeit; deshalb steckt es in einem <details>
+ * und entsteht erst, wenn jemand es wirklich will.
+ */
+import type { Lang } from '../lib/langs';
+import { txt } from '../lib/langs';
+import { t, formaterDate, formaterTaille } from '../lib/i18n';
+import { themeParId, type Publication } from '../lib/content';
+import { seg } from '../lib/routes';
+import Marge from '../components/Marge.astro';
+import { ed } from '../lib/edition';
+
+interface Props {
+  lang: Lang;
+  publication: Publication;
+}
+const { lang, publication: p } = Astro.props;
+
+const sPub = seg('publications', lang);
+const sTheme = seg('theme', lang);
+const base = sPub ? `/${lang}/${sPub}/` : null;
+
+const etiquetteType =
+  p.type === 'dossier'
+    ? t(lang, 'publications.type_dossier')
+    : t(lang, 'publications.type_conference');
+
+const themes = p.themes.map((id) => themeParId(id)).filter((x): x is NonNullable<typeof x> => Boolean(x));
+---
+
+<article class="section">
+  <div class="enveloppe">
+    <div class="colonne">
+      <h1 class="titre-2" {...ed('publications', p.id, 'titre')}>{txt(p.titre, lang)}</h1>
+      <p class="chapeau discret" {...ed('publications', p.id, 'resume')}>{txt(p.resume, lang)}</p>
+
+      <Marge terme={etiquetteType}>
+        {p.etat_du_droit && (
+          <>
+            {t(lang, 'publications.etat_du_droit')}: {formaterDate(p.etat_du_droit, lang)}
+            <br />
+          </>
+        )}
+        {p.auteur}
+      </Marge>
+
+      {/* --- Das PDF, wenn es eines gibt ------------------------------- */}
+      {
+        p.pdf && (
+          <div class="pdf">
+            <p>
+              <a class="bouton bouton--contour" href={p.pdf.chemin} download>
+                {t(lang, 'publications.telecharger')} ({formaterTaille(p.pdf.octets, lang)})
+              </a>
+            </p>
+            <details class="apercu">
+              <summary class="apercu__bouton">{t(lang, 'publications.apercu')}</summary>
+              <div class="apercu__cadre">
+                {/* Erst hier entsteht das <object>. Vor dem Aufklappen
+                    laedt der Browser nichts. */}
+                <object data={p.pdf.chemin} type="application/pdf" width="100%" height="700">
+                  <p>
+                    {t(lang, 'publications.apercu_indisponible')}{' '}
+                    <a href={p.pdf.chemin}>{t(lang, 'publications.telecharger')}</a>
+                  </p>
+                </object>
+              </div>
+            </details>
+          </div>
+        )
+      }
+
+      {/* --- Die lesbare Fassung -------------------------------------- */}
+      <div
+        class="corps corps--flux document"
+        set:html={txt(p.corps, lang)}
+        {...ed('publications', p.id, 'corps', true)}
+      />
+
+      {/* --- Themen ---------------------------------------------------- */}
+      {
+        themes.length > 0 && base && sTheme && (
+          <p class="themes">
+            <span class="themes__titre">{t(lang, 'publications.themes')}:</span>{' '}
+            {themes.map((th, i) => (
+              <>
+                {i > 0 && ', '}
+                <a href={`${base}${sTheme}/${txt(th.slug, lang)}/`}>{txt(th.etiquette, lang)}</a>
+              </>
+            ))}
+          </p>
+        )
+      }
+
+      {/* --- Rechtsstandhinweis: deutlich, aber ruhig ------------------- */}
+      <p class="note avertissement">
+        {t(lang, 'publications.avertissement')}
+        {p.etat_du_droit && <> ({formaterDate(p.etat_du_droit, lang)})</>}
+      </p>
+
+      {base && (
+        <p class="apres">
+          <a href={base}>{t(lang, 'publications.retour')}</a>
+        </p>
+      )}
+    </div>
+  </div>
+</article>
+
+<style>
+  .pdf {
+    margin-block: 1.75rem;
+  }
+  .apercu {
+    margin-top: 1rem;
+  }
+  .apercu__bouton {
+    font-family: var(--font-commande);
+    font-size: var(--text-commande);
+    color: var(--color-frontiere);
+    cursor: pointer;
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+  }
+  .apercu__bouton:hover {
+    color: var(--color-frontiere-tief);
+    text-decoration: underline;
+  }
+  .apercu__cadre {
+    margin-top: 0.75rem;
+    border: 1.5px solid var(--color-laiton);
+    border-radius: var(--radius-commande);
+    overflow: hidden;
+  }
+
+  .document :global(h2) {
+    font-size: var(--text-h3);
+    margin-top: 2rem;
+  }
+  .document :global(h3) {
+    font-family: var(--font-commande);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+  }
+  .document :global(ul),
+  .document :global(ol) {
+    padding-left: 1.2rem;
+  }
+  .document :global(li + li) {
+    margin-top: 0.4rem;
+  }
+  .document :global(blockquote) {
+    border-left: var(--trait);
+    padding-left: 1.1rem;
+    color: var(--color-pierre);
+  }
+
+  .themes {
+    margin-top: 2rem;
+    font-family: var(--font-commande);
+    font-size: var(--text-commande);
+  }
+  .themes__titre {
+    color: var(--color-pierre);
+  }
+
+  .avertissement {
+    margin-top: 2rem;
+  }
+  .apres {
+    margin-top: 2.5rem;
+    font-family: var(--font-commande);
+    font-size: var(--text-commande);
+  }
+</style>
