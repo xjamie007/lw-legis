@@ -10,15 +10,18 @@
 import { useEffect, useState } from 'react';
 import { facteurObligatoire, supabase } from '../supabase';
 import { traduire, type LangueAdmin } from '../i18n';
+import Feuille from './Feuille';
 
 type Etape = 'identifiants' | 'mfa_verifier' | 'mfa_inscrire';
 
 interface Props {
   langue: LangueAdmin;
   onConnecte: () => void;
+  /** Fenster schliessen, ohne sich anzumelden: zurueck zur Website. */
+  onFermer: () => void;
 }
 
-export default function Connexion({ langue, onConnecte }: Props) {
+export default function Connexion({ langue, onConnecte, onFermer }: Props) {
   const t = (c: Parameters<typeof traduire>[1]) => traduire(langue, c);
 
   const [etape, setEtape] = useState<Etape>('identifiants');
@@ -148,69 +151,62 @@ export default function Connexion({ langue, onConnecte }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onConnecte]);
 
+  const titre =
+    etape === 'identifiants'
+      ? t('anmeldung.titre')
+      : etape === 'mfa_inscrire'
+        ? t('anmeldung.mfa_einrichten_titel')
+        : t('anmeldung.mfa_titel');
+
   return (
-    <main className="connexion">
-      <div className="connexion__carte">
-        <p className="connexion__marque">LW LEGIS</p>
-
-        {erreur && (
-          <p className="connexion__erreur" role="alert">
-            {erreur}
-          </p>
-        )}
-
-        {etape === 'identifiants' && (
-          <form onSubmit={envoyerIdentifiants}>
-            <h1 className="connexion__titre">{t('anmeldung.titre')}</h1>
-
-            <label className="label" htmlFor="courriel">
-              {t('anmeldung.email')}
-            </label>
+    <Feuille titre={titre} onFermer={onFermer} fermer={t('atelier.schliessen')}>
+      {etape === 'identifiants' && (
+        <form className="kx-form" onSubmit={envoyerIdentifiants}>
+          <label>
+            {t('anmeldung.email')}
             <input
-              id="courriel"
-              className="saisie"
               type="email"
               autoComplete="username"
+              autoCapitalize="none"
               required
               value={courriel}
               onChange={(e) => setCourriel(e.target.value)}
             />
-
-            <label className="label" htmlFor="mdp">
-              {t('anmeldung.passwort')}
-            </label>
+          </label>
+          <label>
+            {t('anmeldung.passwort')}
             <input
-              id="mdp"
-              className="saisie"
               type="password"
               autoComplete="current-password"
               required
               value={motDePasse}
               onChange={(e) => setMotDePasse(e.target.value)}
             />
+          </label>
+          {erreur && (
+            <p className="kx-err" role="alert">
+              {erreur}
+            </p>
+          )}
+          <button className="kx-btn kx-primary kx-block" type="submit" disabled={occupe}>
+            {occupe ? t('anmeldung.laeuft') : t('anmeldung.senden')}
+          </button>
+        </form>
+      )}
 
-            <button className="bouton" type="submit" disabled={occupe}>
-              {occupe ? t('anmeldung.laeuft') : t('anmeldung.senden')}
-            </button>
-          </form>
-        )}
-
-        {etape === 'mfa_inscrire' && (
-          <form onSubmit={envoyerCode}>
-            <h1 className="connexion__titre">{t('anmeldung.mfa_einrichten_titel')}</h1>
-            <p className="connexion__aide">{t('anmeldung.mfa_einrichten_hilfe')}</p>
-            {qr && <img className="connexion__qr" src={qr} alt="" width={200} height={200} />}
-            {secret && (
-              <p className="connexion__secret">
-                {t('anmeldung.mfa_geheimnis')} <code>{secret}</code>
-              </p>
-            )}
-            <label className="label" htmlFor="code-i">
-              {t('anmeldung.mfa_code')}
-            </label>
+      {etape === 'mfa_inscrire' && (
+        <form className="kx-form" onSubmit={envoyerCode}>
+          <p className="kx-p">{t('anmeldung.mfa_einrichten_hilfe')}</p>
+          {qr && <img className="kx-qr" src={qr} alt="" width={200} height={200} />}
+          {secret && (
+            <p className="kx-hint">
+              {t('anmeldung.mfa_geheimnis')} <code>{secret}</code>
+            </p>
+          )}
+          <label>
+            {t('anmeldung.mfa_code')}
             <input
-              id="code-i"
-              className="saisie saisie--code"
+              className="kx-code"
               inputMode="numeric"
               autoComplete="one-time-code"
               pattern="[0-9]{6}"
@@ -219,37 +215,44 @@ export default function Connexion({ langue, onConnecte }: Props) {
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
             />
-            <button className="bouton" type="submit" disabled={occupe}>
-              {t('anmeldung.mfa_bestaetigen')}
-            </button>
-          </form>
-        )}
+          </label>
+          {erreur && (
+            <p className="kx-err" role="alert">
+              {erreur}
+            </p>
+          )}
+          <button className="kx-btn kx-primary kx-block" type="submit" disabled={occupe}>
+            {t('anmeldung.mfa_bestaetigen')}
+          </button>
+        </form>
+      )}
 
-        {etape === 'mfa_verifier' && (
-          <form onSubmit={envoyerCode}>
-            <h1 className="connexion__titre">{t('anmeldung.mfa_titel')}</h1>
-            <p className="connexion__aide">{t('anmeldung.mfa_hilfe')}</p>
-            <label className="label" htmlFor="code-v">
-              {t('anmeldung.mfa_code')}
-            </label>
+      {etape === 'mfa_verifier' && (
+        <form className="kx-form" onSubmit={envoyerCode}>
+          <p className="kx-p">{t('anmeldung.mfa_hilfe')}</p>
+          <label>
+            {t('anmeldung.mfa_code')}
             <input
-              id="code-v"
-              className="saisie saisie--code"
+              className="kx-code"
               inputMode="numeric"
               autoComplete="one-time-code"
               pattern="[0-9]{6}"
               maxLength={6}
               required
-              autoFocus
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
             />
-            <button className="bouton" type="submit" disabled={occupe}>
-              {t('anmeldung.mfa_pruefen')}
-            </button>
-          </form>
-        )}
-      </div>
-    </main>
+          </label>
+          {erreur && (
+            <p className="kx-err" role="alert">
+              {erreur}
+            </p>
+          )}
+          <button className="kx-btn kx-primary kx-block" type="submit" disabled={occupe}>
+            {t('anmeldung.mfa_pruefen')}
+          </button>
+        </form>
+      )}
+    </Feuille>
   );
 }

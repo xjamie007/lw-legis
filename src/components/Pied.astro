@@ -19,8 +19,10 @@ import Wappen from './Wappen.astro';
 
 interface Props {
   lang: Lang;
+  /** Pfad dieser Seite: Nach dem Login geht es genau hier weiter. */
+  chemin: string;
 }
-const { lang } = Astro.props;
+const { lang, chemin } = Astro.props;
 
 const s = contenu.settings;
 
@@ -86,6 +88,9 @@ const annee = new Date().getFullYear();
     <p class="pied__mention">{t(lang, 'pied.barreau')}</p>
     <p class="pied__mention">
       © {annee} {s.nom}. {t(lang, 'pied.droits')}.
+      {/* Unauffaellig wie bei Krombach und DRP: fuehrt in den
+          Redaktionsbereich, der dieselbe Seite zum Bearbeiten oeffnet. */}
+      <a class="k-login" href={`/admin/?seite=${encodeURIComponent(chemin)}`} rel="nofollow">Login</a>
     </p>
   </div>
 </footer>
@@ -206,6 +211,16 @@ const annee = new Date().getFullYear();
     font-family: var(--font-commande);
     font-size: var(--text-marge);
     color: var(--color-craie-gedaempft);
+  }
+  /* Dieselbe Farbe wie der ©-Text, damit der Kontrast stimmt. */
+  .k-login {
+    color: inherit;
+    margin-left: 0.6em;
+    text-decoration: none;
+  }
+  .k-login:hover,
+  .k-login:focus-visible {
+    text-decoration: underline;
   }
 
   @media (min-width: 40rem) {

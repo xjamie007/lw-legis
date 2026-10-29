@@ -42,9 +42,15 @@ Texte mit eigener Adresse, mit Datum und Rechtsstand, nach Thema filterbar.
 
 ## Anmelden
 
-1. `https://IHRE-ADRESSE/admin` aufrufen.
-2. E-Mail-Adresse und Passwort eingeben.
+1. Auf der Website ganz unten im Footer, neben „© … Tous droits réservés.“,
+   auf **„Login“** klicken. (Oder direkt `https://IHRE-ADRESSE/admin`.)
+2. Vor der Seite erscheint das Anmeldefenster: E-Mail-Adresse und Passwort
+   eingeben.
 3. Den sechsstelligen Code aus der Authenticator-App eingeben.
+
+Danach sind Sie auf **derselben Seite**, auf der Sie „Login“ geklickt
+haben, und können sie sofort bearbeiten. Abmelden: im Footer auf
+„Abmelden“ (dort, wo vorher „Login“ stand) oder unter „Mehr“.
 
 Der zweite Faktor ist **Pflicht**. Beim ersten Anmelden zeigt die Seite einen
 QR-Code: Den mit einer Authenticator-App scannen (Google Authenticator,
@@ -63,43 +69,50 @@ Es gibt zwei Rollen:
   aber nicht Impressum, Datenschutz, Geschäftsbedingungen, Stammdaten oder
   Konten.
 
-Oben rechts lässt sich die Sprache des Redaktionsbereichs zwischen Deutsch
+Unter „Mehr“ lässt sich die Sprache des Redaktionsbereichs zwischen Deutsch
 und Französisch umschalten.
 
 ## Einen Text ändern
 
-Nach dem Anmelden sehen Sie links **die Website selbst**, so wie Besucher sie
-sehen — nur mit Ihren gespeicherten Änderungen. Rechts steht, was zu tun ist.
+Bedient wird der Redaktionsbereich wie bei den Websites von Krombach und
+DRP Group: Sie sehen die Website selbst und ändern sie direkt dort. Unten
+steht eine dunkle Leiste:
 
-1. **Text anklicken.** Fahren Sie mit der Maus über die Website: Was sich
-   ändern lässt, wird umrandet. Klicken Sie darauf.
-2. **Ändern und speichern.** Rechts erscheint ein Eingabefeld mit dem Text.
-   Während Sie schreiben, ändert sich die Website links sofort mit. Dann auf
-   **„Speichern“**. „Abbrechen“ nimmt alles zurück.
-3. **Veröffentlichen.** Rechts unter „Ihre Änderungen“ auf
-   **„Jetzt veröffentlichen“**. Erst dann sehen Besucher die Änderung.
+**Speichern · Rückgängig · Seiten · Google · Veröffentlichen · Mehr**
 
-Oben über der Website stehen **„Sie sind hier“** (dort lässt sich auch jede
-andere Seite wählen) und die **Sprache**. Bearbeitet wird immer die Sprache,
-die Sie gerade sehen: Wer den französischen Text ändern will, stellt oben auf
-„Français“.
+1. **Text anklicken und lostippen.** Fährt man mit der Maus über einen Text,
+   der sich ändern lässt, wird er gestrichelt umrandet. Enter beendet die
+   Eingabe.
+2. **Längere Texte** (mit Absätzen, Listen, Fußnoten) öffnen beim Anklicken
+   ein Fenster mit dem Texteditor. „Übernehmen“ setzt den Text in die Seite.
+3. **„Speichern“.** Die Schaltfläche leuchtet grün, sobald es etwas zu
+   speichern gibt. Vertippt? **„Rückgängig“** nimmt die letzte Eingabe
+   zurück, solange noch nicht gespeichert ist.
+4. **„Veröffentlichen“.** Erst dann sehen Besucher die Änderung. Die Zahl
+   auf der Schaltfläche sagt, wie viele Änderungen noch nicht online sind.
+   Im Fenster steht jede davon mit dem alten und dem neuen Text; „Ansehen“
+   springt an die Stelle, „Zurücknehmen“ stellt den veröffentlichten Text
+   wieder her.
 
-**Gelb hinterlegt** ist alles, was geändert, aber noch nicht veröffentlicht
-ist. Rechts unter „Ihre Änderungen“ steht jede dieser Änderungen mit dem
-alten und dem neuen Text. „Ansehen“ springt an die Stelle, „Zurücknehmen“
-stellt den veröffentlichten Text wieder her.
+**Gelb hinterlegt** ist alles, was anders ist als online.
 
-Steht ein Text zugleich in einem Link — etwa der Name eines
-Tätigkeitsgebiets —, öffnet der Klick das Eingabefeld. Darunter gibt es
-„Diese Seite öffnen“, um dem Link zu folgen. Links zu anderen Websites und das
-Kontaktformular sind in der Vorschau abgeschaltet.
+Bearbeitet wird immer die Sprache, die Sie gerade sehen. Eine andere Seite
+oder Sprache wählen Sie unter **„Seiten“**; Links auf der Website
+funktionieren ebenfalls. Links zu anderen Websites und das Kontaktformular
+sind beim Bearbeiten abgeschaltet. Getippte, noch nicht gespeicherte Texte
+gehen beim Seitenwechsel nicht verloren.
+
+**„Google“** zeigt Titel und Beschreibung der Seite so, wie Google sie
+anzeigt, mit Zeichenzähler. Das gibt es für die Startseite und die
+Hauptseiten; Unterseiten bekommen beides automatisch aus ihrem Inhalt.
 
 Nicht jeder Text lässt sich anklicken: Menü, Schaltflächen und der große Satz
-ganz oben gehören zur Gestaltung. Ob ein Eintrag veröffentlicht ist, die
-Angaben für Google, neue Einträge und die Reihenfolge der Startseite finden
-Sie oben unter **„Weitere Inhalte“**. Dort steht bei jeder Sprache außer
-Französisch links die **französische Referenzfassung**; „Referenz übernehmen“
-kopiert sie herüber, damit Sie übersetzen statt abzutippen.
+ganz oben gehören zur Gestaltung. Unter **„Mehr“** finden Sie die
+Nachrichten aus dem Formular, die Bilder und die **Weiteren Inhalte**: ob
+ein Eintrag veröffentlicht ist, neue Einträge und die Reihenfolge der
+Startseite. Dort steht bei jeder Sprache außer Französisch links die
+**französische Referenzfassung**; „Referenz übernehmen“ kopiert sie herüber,
+damit Sie übersetzen statt abzutippen.
 
 Der Texteditor kann Absatz, Zwischenüberschrift, Unterüberschrift, Liste,
 fett, kursiv, Link, Zitat und Fußnote. Mehr nicht — und das ist Absicht: Es
@@ -112,7 +125,7 @@ Formatierung befreit. Das ist gewollt.
 
 ## Ein Bild austauschen
 
-1. Oben auf „Bilder“.
+1. Unten auf „Mehr“, dann „Bilder“.
 2. Bild in das gestrichelte Feld ziehen, oder auf „Bild hochladen“.
 3. Die Seite erzeugt im Hintergrund die modernen Bildformate (AVIF und WebP)
    in vier Breiten. Das dauert ein paar Sekunden.
@@ -124,7 +137,7 @@ Formatierung befreit. Das ist gewollt.
 6. Beim **Bildausschnitt** auf die Stelle klicken, die immer sichtbar bleiben
    soll — meist ein Gesicht. Wer lieber tippt, trägt die Werte in die beiden
    Zahlenfelder darunter ein.
-7. Haken bei „Veröffentlicht“, dann unter „Website bearbeiten“ auf
+7. Haken bei „Veröffentlicht“, dann unten auf „Veröffentlichen“ und
    „Jetzt veröffentlichen“.
 
 ## Wappen und Fotos
@@ -183,7 +196,7 @@ als gar keiner.
 
 ## Ein Dokument einstellen
 
-1. Oben auf „Weitere Inhalte“, dann „Dokumente“.
+1. Unten auf „Mehr“, dann „Weitere Inhalte“ und „Dokumente“.
 2. Art wählen: Fachdossier oder Konferenzunterlage.
 3. Titel und Adresse eintragen, in jeder Sprache.
 4. Kurzfassung schreiben — zwei, drei Sätze. Sie steht in der Übersicht und
@@ -200,7 +213,7 @@ als gar keiner.
    passenden Tätigkeitsgebieten und Konstellationen.
 8. Wenn ein PDF vorliegt: hochladen. Es steht dann als Download daneben, mit
    Dateigröße im Link, vom eigenen Server.
-9. Status auf „Veröffentlicht“, dann unter „Website bearbeiten“ auf
+9. Status auf „Veröffentlicht“, dann unten auf „Veröffentlichen“ und
    „Jetzt veröffentlichen“.
 
 ## Eine neue Konstellation der Situationsmatrix anlegen
@@ -208,7 +221,7 @@ als gar keiner.
 Das ist die Arbeit, die der Seite ihren Wert gibt — und sie kann nur von
 einem Anwalt kommen.
 
-1. Oben auf „Weitere Inhalte“, dann „Situationsmatrix“. Dort stehen alle 42
+1. Unten auf „Mehr“, dann „Weitere Inhalte“ und „Situationsmatrix“. Dort stehen alle 42
    Kombinationen.
 2. Eine anklicken, etwa „Sie sind in Frankreich und möchten in Luxemburg eine
    Immobilie kaufen“.
@@ -221,7 +234,7 @@ einem Anwalt kommen.
      muss.
 4. Oben steht, was einer Veröffentlichung noch entgegensteht, und wie viele
    Wörter schon geschrieben sind.
-5. Status auf „Veröffentlicht“, dann unter „Website bearbeiten“ auf
+5. Status auf „Veröffentlicht“, dann unten auf „Veröffentlichen“ und
    „Jetzt veröffentlichen“.
 
 **Eine Konstellation erscheint erst, wenn alle vier Abschnitte stehen und
@@ -253,14 +266,16 @@ online — es gibt keinen Moment, in dem die Seite leer ist. Der
 Redaktionsbereich zeigt „Wird veröffentlicht, seit 40 Sekunden“ und danach
 „Veröffentlicht um 14:32“.
 
-Eine eigene Vorschau muss nicht mehr gebaut werden: Unter „Website
-bearbeiten“ steht jede gespeicherte Änderung sofort in der Website, gelb
+Eine eigene Vorschau muss nicht mehr gebaut werden: Nach dem Login
+steht jede gespeicherte Änderung sofort in der Website, gelb
 hinterlegt, bevor sie freigegeben wird.
 
 ## Eine Änderung rückgängig machen
 
-Solange eine Änderung noch nicht veröffentlicht ist: unter „Website
-bearbeiten“, „Ihre Änderungen“, beim betreffenden Eintrag auf
+Noch nicht gespeichert: unten auf **„Rückgängig“**.
+
+Gespeichert, aber noch nicht veröffentlicht: unten auf „Veröffentlichen“,
+unter „Ihre Änderungen“ beim betreffenden Eintrag auf
 **„Zurücknehmen“**. Dann steht dort wieder der veröffentlichte Text.
 
 Für ältere Stände: Jedes Speichern sichert die vorherige Fassung. Unten in jedem Eintrag gibt es
@@ -396,9 +411,14 @@ Es gibt keine zweite Liste, die abweichen könnte.
 
 ## Die Vorschau im Redaktionsbereich
 
-„Website bearbeiten“ zeigt die gebaute Seite in einem `<iframe>` (dieselbe
-Adresse, derselbe Server) und legt beim Laden die gespeicherten Texte aus
-Supabase darüber. Welcher Text zu welchem Datensatz gehört, steht im HTML:
+Der Redaktionsbereich zeigt die gebaute Seite in einem `<iframe>` über die
+ganze Fläche (dieselbe Adresse, derselbe Server) und legt beim Laden die
+gespeicherten und die noch nicht gespeicherten Texte darüber. Einzeilige
+Texte werden dort `contenteditable`, `data-lw-html` öffnet den Texteditor in
+einem Fenster. Getippt wird zuerst nur im Browser; „Speichern“ schreibt alles
+auf einmal, je Datensatz frisch gelesen (`src/admin/atelier/Atelier.tsx`).
+Der „Login“-Link im Footer (`Pied.astro`) führt nach `/admin/?seite=<pfad>`,
+damit es auf derselben Seite weitergeht. Welcher Text zu welchem Datensatz gehört, steht im HTML:
 
 ```html
 <h2 data-lw="settings|pages|valeur.accueil.sections.services.titre">…</h2>
