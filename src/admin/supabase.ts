@@ -14,6 +14,8 @@
 import { createClient } from '@supabase/supabase-js';
 import { creerClientDemo } from './demo';
 
+export { urlFichier } from './demo';
+
 /**
  * Leer zaehlt wie nicht gesetzt.
  *
@@ -121,4 +123,26 @@ export async function appelerFonction<T>(nom: string, corps: unknown = {}): Prom
     throw new Error(`${nom}: ${reponse.status} ${texte}`);
   }
   return (await reponse.json()) as T;
+}
+
+/**
+ * Ein Dokument (PDF) in die Ablage `documents` laden. Zurueck kommen die
+ * oeffentliche Adresse und die Groesse — beides steht dann in
+ * `publications.pdf_chemin` und `pdf_octets`.
+ */
+export async function televerserDocument(fichier: File): Promise<{ chemin: string; octets: number }> {
+  const propre = fichier.name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9.]+/g, '-')
+    .replace(/^-|-$/g, '');
+  const nom = `${Date.now()}-${propre}`;
+  const ablage = supabase.storage.from('documents');
+  const { error } = await ablage.upload(nom, fichier, {
+    contentType: fichier.type || 'application/pdf',
+    upsert: false,
+  });
+  if (error) throw new Error(error.message);
+  return { chemin: ablage.getPublicUrl(nom).data.publicUrl, octets: fichier.size };
 }

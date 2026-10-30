@@ -1,0 +1,19 @@
+---
+/**
+ * src/components/T.astro — Ein fester Text der Oberflaeche, im
+ * Redaktionsbereich anklickbar. Fuer Stellen, an denen der Text nicht
+ * allein in seinem Element steht (neben einem Symbol, in einem Knopf).
+ * Steht er allein, traegt das Element selbst `edLibelle()`.
+ */
+import type { Lang } from '../lib/langs';
+import { t, type Cle } from '../lib/i18n';
+import { edLibelle } from '../lib/edition';
+
+interface Props {
+  lang: Lang;
+  k: Cle;
+}
+const { lang, k } = Astro.props;
+---
+
+<span {...edLibelle(k)}>{t(lang, k)}</span>

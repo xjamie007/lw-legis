@@ -13,6 +13,7 @@ import { t } from './i18n';
 import { seg, urlAccueil, type NomSegment } from './routes';
 import { couper, sansBalises } from './seo';
 import { prefixer } from './base';
+import { ed, edLibelle, edPage, type Edition } from './edition';
 import {
   activites,
   contenu,
@@ -42,6 +43,8 @@ export type TypePage =
 export interface Etape {
   nom: string;
   url: string;
+  /** Wo der Name im Redaktionsbereich bearbeitet wird. */
+  ed?: Edition;
 }
 
 export interface Route {
@@ -76,19 +79,19 @@ function meta(cle: string, lang: Lang, nom: string, texte: string) {
 const p = (lang: Lang, ...teile: string[]) => prefixer(`/${lang}/${teile.join('/')}/`);
 
 /** Die einfachen Seiten: Schluessel, Seitentyp, Segment, Quelle der Ueberschrift. */
-const SIMPLES: { cle: TypePage; nom: (l: Lang) => string; texte: (l: Lang) => string }[] = [
-  { cle: 'avocats', nom: (l) => txt(contenu.pages.avocats.titre, l), texte: (l) => txt(contenu.pages.avocats.intro, l) },
-  { cle: 'activites', nom: (l) => txt(contenu.pages.activites.titre, l), texte: (l) => txt(contenu.pages.activites.intro, l) },
-  { cle: 'dossiers', nom: (l) => txt(contenu.pages.dossiers.titre, l), texte: (l) => txt(contenu.pages.dossiers.intro, l) },
-  { cle: 'conferences', nom: (l) => (aValeur(contenu.pages.conferences.titre, l) ? txt(contenu.pages.conferences.titre, l) : t(l, 'nav.conferences')), texte: (l) => txt(contenu.pages.conferences.intro, l) },
-  { cle: 'partenaires', nom: (l) => txt(contenu.pages.partenaires.titre, l), texte: (l) => txt(contenu.pages.partenaires.intro, l) },
-  { cle: 'index', nom: (l) => t(l, 'nav.index'), texte: (l) => t(l, 'index.intro') },
-  { cle: 'contact', nom: (l) => txt(contenu.pages.contact.titre, l), texte: () => '' },
-  { cle: 'recu', nom: (l) => t(l, 'recu.titre'), texte: (l) => t(l, 'recu.texte') },
-  { cle: 'mentions', nom: (l) => txt(contenu.legal.mentions?.titre, l), texte: (l) => txt(contenu.legal.mentions?.corps, l) },
-  { cle: 'donnees', nom: (l) => txt(contenu.legal.donnees?.titre, l), texte: (l) => txt(contenu.legal.donnees?.corps, l) },
-  { cle: 'cookies', nom: (l) => txt(contenu.legal.cookies?.titre, l), texte: (l) => txt(contenu.legal.cookies?.corps, l) },
-  { cle: 'conditions', nom: (l) => txt(contenu.legal.conditions?.titre, l), texte: (l) => txt(contenu.legal.conditions?.corps, l) },
+const SIMPLES: { cle: TypePage; nom: (l: Lang) => string; texte: (l: Lang) => string; ed?: Edition }[] = [
+  { cle: 'avocats', nom: (l) => txt(contenu.pages.avocats.titre, l), texte: (l) => txt(contenu.pages.avocats.intro, l), ed: edPage('avocats.titre') },
+  { cle: 'activites', nom: (l) => txt(contenu.pages.activites.titre, l), texte: (l) => txt(contenu.pages.activites.intro, l), ed: edPage('activites.titre') },
+  { cle: 'dossiers', nom: (l) => txt(contenu.pages.dossiers.titre, l), texte: (l) => txt(contenu.pages.dossiers.intro, l), ed: edPage('dossiers.titre') },
+  { cle: 'conferences', nom: (l) => (aValeur(contenu.pages.conferences.titre, l) ? txt(contenu.pages.conferences.titre, l) : t(l, 'nav.conferences')), texte: (l) => txt(contenu.pages.conferences.intro, l), ed: edPage('conferences.titre') },
+  { cle: 'partenaires', nom: (l) => txt(contenu.pages.partenaires.titre, l), texte: (l) => txt(contenu.pages.partenaires.intro, l), ed: edPage('partenaires.titre') },
+  { cle: 'index', nom: (l) => t(l, 'nav.index'), texte: (l) => t(l, 'index.intro'), ed: edLibelle('nav.index') },
+  { cle: 'contact', nom: (l) => txt(contenu.pages.contact.titre, l), texte: () => '', ed: edPage('contact.titre') },
+  { cle: 'recu', nom: (l) => t(l, 'recu.titre'), texte: (l) => t(l, 'recu.texte'), ed: edLibelle('recu.titre') },
+  { cle: 'mentions', nom: (l) => txt(contenu.legal.mentions?.titre, l), texte: (l) => txt(contenu.legal.mentions?.corps, l), ed: ed('legal_pages', 'mentions', 'titre') },
+  { cle: 'donnees', nom: (l) => txt(contenu.legal.donnees?.titre, l), texte: (l) => txt(contenu.legal.donnees?.corps, l), ed: ed('legal_pages', 'donnees', 'titre') },
+  { cle: 'cookies', nom: (l) => txt(contenu.legal.cookies?.titre, l), texte: (l) => txt(contenu.legal.cookies?.corps, l), ed: ed('legal_pages', 'cookies', 'titre') },
+  { cle: 'conditions', nom: (l) => txt(contenu.legal.conditions?.titre, l), texte: (l) => txt(contenu.legal.conditions?.corps, l), ed: ed('legal_pages', 'conditions', 'titre') },
 ];
 
 /** Gibt es diese einfache Seite in dieser Sprache? */
@@ -113,7 +116,7 @@ function simpleExiste(cle: TypePage, lang: Lang): boolean {
 /** Baut alle Adressen einer Sprache. */
 function routesDe(lang: Lang): Route[] {
   const out: Route[] = [];
-  const accueil: Etape = { nom: t(lang, 'nav.accueil'), url: urlAccueil(lang) };
+  const accueil: Etape = { nom: t(lang, 'nav.accueil'), url: urlAccueil(lang), ed: edLibelle('nav.accueil') };
 
   // --- Startseite -----------------------------------------------------------
   {
@@ -138,7 +141,7 @@ function routesDe(lang: Lang): Route[] {
     if (!x || !simpleExiste(s.cle, lang)) continue;
     const chemin = p(lang, x);
     const nom = s.nom(lang);
-    etapes[s.cle] = { nom, url: chemin };
+    etapes[s.cle] = { nom, url: chemin, ed: s.ed };
     out.push({
       cle: s.cle,
       lang,
@@ -147,7 +150,7 @@ function routesDe(lang: Lang): Route[] {
       segments: [x],
       nom,
       ...meta(s.cle, lang, nom, s.texte(lang)),
-      fil: [accueil, { nom, url: chemin }],
+      fil: [accueil, { nom, url: chemin, ed: s.ed }],
       data: {},
     });
   }
@@ -167,7 +170,7 @@ function routesDe(lang: Lang): Route[] {
         segments: [sAct, slug],
         nom,
         ...meta(`activite:${a.id}`, lang, nom, txt(a.definition, lang) || txt(a.texte, lang)),
-        fil: [accueil, etapes.activites, { nom, url: chemin }],
+        fil: [accueil, etapes.activites, { nom, url: chemin, ed: ed('services', a.id, 'terme') }],
         data: { activite: a },
       });
     }
@@ -188,7 +191,7 @@ function routesDe(lang: Lang): Route[] {
         segments: [sDos, slug],
         nom,
         ...meta(`dossier:${d.id}`, lang, nom, txt(d.resume, lang) || txt(d.corps, lang)),
-        fil: [accueil, etapes.dossiers, { nom, url: chemin }],
+        fil: [accueil, etapes.dossiers, { nom, url: chemin, ed: ed('publications', d.id, 'titre') }],
         data: { dossier: d },
       });
     }

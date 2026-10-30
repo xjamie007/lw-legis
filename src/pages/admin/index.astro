@@ -22,7 +22,8 @@
  */
 import '../../styles/admin.css';
 import App from '../../admin/App';
-import { contenu, languesDuSite } from '../../lib/content';
+import { activites, contenu, dossiers, languesDuSite } from '../../lib/content';
+import { adresse } from '../../lib/pages';
 import { prefixer } from '../../lib/base';
 import { demo } from '../../admin/supabase';
 
@@ -32,6 +33,25 @@ import { demo } from '../../admin/supabase';
 // alles, was danach gespeichert wurde, ist noch nicht online.
 const stand = contenu.meta.genere_le;
 const langues = languesDuSite();
+
+// Fuer neue Seiten (src/admin/atelier/nouveau.ts): welche Eintraege die
+// gebaute Website schon kennt, und auf welchen Seiten Neues gezeigt wird.
+// Nur Kennungen und Adressen — keine Inhalte.
+const site = {
+  ids: [...contenu.familles.map((a) => a.id), ...contenu.publications.map((p) => p.id)],
+  adresses: Object.fromEntries(
+    langues.map((l) => [
+      l,
+      {
+        services: activites(l)[0] ? adresse(`activite:${activites(l)[0].id}`, l) : null,
+        dossier: dossiers(l)[0] ? adresse(`dossier:${dossiers(l)[0].id}`, l) : null,
+        activites: adresse('activites', l),
+        dossiers: adresse('dossiers', l),
+        conferences: adresse('conferences', l),
+      },
+    ]),
+  ),
+};
 
 // Demo (siehe `demo` in src/admin/supabase.ts): ohne Datenbank. Dann
 // bekommt der Redaktionsbereich die Startinhalte als Tabellenzeilen mit —
@@ -46,6 +66,7 @@ const graines = demo
         settings: [
           ligne({ cle: 'stammdaten', valeur: c.settings, reserve_owner: true }),
           ligne({ cle: 'pages', valeur: c.pages, reserve_owner: false }),
+          ligne({ cle: 'libelles', valeur: c.libelles ?? {}, reserve_owner: false }),
         ],
         navigation: [
           ...c.navigation.map((x: any) => ligne({ ...x, cle_i18n: x.cle, emplacement: 'principale' })),
@@ -97,6 +118,7 @@ const graines = demo
     />
   </head>
   <body>
+    <script type="application/json" id="lw-site" set:html={JSON.stringify(site)} />
     {graines && <script type="application/json" id="lw-demo-graines" set:html={JSON.stringify(graines).replace(/</g, '\\u003c')} />}
     {/* client:only — der Redaktionsbereich hat keinen Inhalt, den ein
         Server vorrendern koennte: alles haengt am angemeldeten Konto.

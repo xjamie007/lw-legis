@@ -30,6 +30,8 @@ export interface Activite {
   definition: Multi;
   /** Der Text der Detailseite, HTML. */
   texte: Multi;
+  /** Bereich auf der Uebersicht (src/lib/groupes.ts). */
+  groupe?: string | null;
 }
 
 export interface Publication {
@@ -90,6 +92,16 @@ export const contenu = brut as unknown as {
   seo_modeles: Record<string, { titre: Multi }>;
   seo_limites: { titre: { min: number; max: number }; description: { min: number; max: number } };
 };
+
+// Abgeleitete Angaben: Im Redaktionsbereich werden Strasse, Postleitzahl,
+// Ort und die angezeigte Telefonnummer einzeln geaendert. Die Zeile fuer
+// die Adresse und die Nummer fuer den Anruf-Link folgen daraus.
+{
+  const s = contenu.settings;
+  s.adresse.une_ligne = `${s.adresse.rue}, ${s.adresse.code_postal} ${s.adresse.ville}`;
+  if (s.postfach) s.postfach.une_ligne = `${s.postfach.boite}, ${s.adresse.code_postal} ${s.adresse.ville}`;
+  s.telephone.lien = s.telephone.affiche.replace(/[^\d+]/g, '');
+}
 
 // ---------------------------------------------------------------------------
 // Abfragen

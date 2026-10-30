@@ -17,7 +17,7 @@ import { activites, contenu, type Activite } from '../lib/content';
 import { groupesAvecActivites } from '../lib/groupes';
 import { sommaire } from '../lib/sommaire';
 import { adresse, type Route } from '../lib/pages';
-import { ed, edPage } from '../lib/edition';
+import { ed, edPage, edLibelle } from '../lib/edition';
 import { prefixerHtml } from '../lib/base';
 import Tete from '../components/Tete.astro';
 import Sommaire from '../components/Sommaire.astro';
@@ -34,6 +34,8 @@ const toutes = activites(lang);
 const groupes = groupesAvecActivites(lang);
 const urlContact = adresse('contact', lang);
 const texte = activite ? sommaire(txt(activite.texte, lang)) : null;
+import T from '../components/T.astro';
+import S from '../components/S.astro';
 ---
 
 {
@@ -51,7 +53,7 @@ const texte = activite ? sommaire(txt(activite.texte, lang)) : null;
         <nav class="sauts" aria-label={t(lang, 'activites.domaines')}>
           {groupes.map((g) => (
             <a href={`#${g.id}`}>
-              {txt(g.nom, lang)}
+              <span {...edPage(`activites.groupes.${g.id}`)}>{txt(g.nom, lang)}</span>
               <span>{g.liste.length}</span>
             </a>
           ))}
@@ -61,12 +63,12 @@ const texte = activite ? sommaire(txt(activite.texte, lang)) : null;
         {groupes.map((g) => (
           <section class="groupe" id={g.id} aria-labelledby={`titre-${g.id}`} data-revele>
             <h2 id={`titre-${g.id}`}>
-              {txt(g.nom, lang)}
+              <span {...edPage(`activites.groupes.${g.id}`)}>{txt(g.nom, lang)}</span>
               <span class="groupe__nombre">{g.liste.length}</span>
             </h2>
-            <ul class="registre registre--deux">
+            <ul class="registre registre--deux" data-lw-liste="services" data-lw-groupe={g.id} data-lw-ajouter>
               {g.liste.map((a, i) => (
-                <li class="registre__ligne" data-revele-i style={`--i: ${i}`}>
+                <li class="registre__ligne" data-revele-i style={`--i: ${i}`} data-lw-item={a.id}>
                   <a class="registre__lien" href={adresse(`activite:${a.id}`, lang)}>
                     <span class="registre__titre" {...ed('services', a.id, 'terme')}>
                       {txt(a.terme, lang)}
@@ -105,23 +107,23 @@ const texte = activite ? sommaire(txt(activite.texte, lang)) : null;
           </div>
           <aside class="sans-impression">
             <div class="encadre">
-              <h2>{t(lang, 'activite.contacter')}</h2>
-              <p>{t(lang, 'activite.contacter_texte')}</p>
+              <h2 {...edLibelle('activite.contacter')}>{t(lang, 'activite.contacter')}</h2>
+              <p {...edLibelle('activite.contacter_texte')}>{t(lang, 'activite.contacter_texte')}</p>
               {urlContact && (
                 <a class="bouton bouton--or" href={`${urlContact}?domaine=${activite.id}#formulaire`}>
-                  {t(lang, 'contact.ecrire')}
+                  <T lang={lang} k={'contact.ecrire'} />
                   <Icone nom="fleche" />
                 </a>
               )}
               <a class="encadre__tel" href={`tel:${s.telephone.lien}`}>
-                {s.telephone.affiche}
+                <S k="telephone.affiche" />
               </a>
             </div>
-            <nav class="liste-aside" aria-labelledby="autres-activites">
-              <h2 id="autres-activites">{t(lang, 'activite.autres')}</h2>
+            <nav class="liste-aside" aria-labelledby="autres-activites" data-lw-liste="services">
+              <h2 id="autres-activites" {...edLibelle('activite.autres')}>{t(lang, 'activite.autres')}</h2>
               {toutes.map((a) => (
-                <a href={adresse(`activite:${a.id}`, lang)} aria-current={a.id === activite.id ? 'page' : undefined}>
-                  {txt(a.terme, lang)}
+                <a href={adresse(`activite:${a.id}`, lang)} aria-current={a.id === activite.id ? 'page' : undefined} data-lw-item={a.id}>
+                  <span {...ed('services', a.id, 'terme')}>{txt(a.terme, lang)}</span>
                 </a>
               ))}
             </nav>

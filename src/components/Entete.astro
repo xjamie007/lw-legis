@@ -39,15 +39,18 @@ const langues = languesDuSite().map((l) => ({
   href: alternatifs?.(l) ?? urlAccueil(l),
   courant: l === lang,
 }));
+import T from './T.astro';
+import { edLibelle } from '../lib/edition';
+import S from './S.astro';
 ---
 
 <header class="entete">
   <div class="barre">
     <div class="enveloppe barre__interieur">
-      <p class="barre__adresse">{s.adresse.une_ligne}</p>
+      <p class="barre__adresse"><S k="adresse.rue" />, <S k="adresse.code_postal" /> <S k="adresse.ville" /></p>
       <div class="barre__droite">
-        <a href={`tel:${s.telephone.lien}`}><Icone nom="telephone" />{s.telephone.affiche}</a>
-        <a href={`mailto:${s.courriel}`} class="barre__courriel"><Icone nom="courriel" />{s.courriel}</a>
+        <a href={`tel:${s.telephone.lien}`}><Icone nom="telephone" /><S k="telephone.affiche" /></a>
+        <a href={`mailto:${s.courriel}`} class="barre__courriel"><Icone nom="courriel" /><S k="courriel" /></a>
         <ul class="langues" aria-label={t(lang, 'nav.langue')}>
           {
             langues.map((l) => (
@@ -87,7 +90,7 @@ const langues = languesDuSite().map((l) => ({
       >
         <Icone nom="menu" class="menu-bouton__ouvrir" />
         <Icone nom="fermer" class="menu-bouton__fermer" />
-        <span>{t(lang, 'nav.menu')}</span>
+        <span {...edLibelle('nav.menu')}>{t(lang, 'nav.menu')}</span>
       </button>
 
       <nav class="menu" id="menu" aria-label={t(lang, 'nav.principale')} data-menu>
@@ -95,7 +98,7 @@ const langues = languesDuSite().map((l) => ({
           {
             liens.map((l) => (
               <li>
-                <a href={l.href} aria-current={actif(l.href) ? 'page' : undefined}>
+                <a href={l.href} aria-current={actif(l.href) ? 'page' : undefined} {...edLibelle(l.cle)}>
                   {t(lang, l.cle)}
                 </a>
               </li>
@@ -103,9 +106,9 @@ const langues = languesDuSite().map((l) => ({
           }
         </ul>
         <div class="menu__pied">
-          <a href={`tel:${s.telephone.lien}`}>{s.telephone.affiche}</a>
-          <a href={`mailto:${s.courriel}`}>{s.courriel}</a>
-          <p>{s.adresse.une_ligne}</p>
+          <a href={`tel:${s.telephone.lien}`}><S k="telephone.affiche" /></a>
+          <a href={`mailto:${s.courriel}`}><S k="courriel" /></a>
+          <p><S k="adresse.rue" />, <S k="adresse.code_postal" /> <S k="adresse.ville" /></p>
         </div>
       </nav>
     </div>

@@ -43,6 +43,8 @@ const messages = Object.fromEntries(
   ).map((c) => [c, t(lang, c)]),
 );
 const obligatoire = t(lang, 'formulaire.obligatoire');
+import T from './T.astro';
+import { edLibelle, edPage } from '../lib/edition';
 ---
 
 <form
@@ -56,7 +58,7 @@ const obligatoire = t(lang, 'formulaire.obligatoire');
   data-messages={JSON.stringify(messages)}
 >
   <div class="formulaire__resume" role="alert" tabindex="-1" data-resume hidden>
-    <p>{t(lang, 'formulaire.erreur_titre')}</p>
+    <p {...edLibelle('formulaire.erreur_titre')}>{t(lang, 'formulaire.erreur_titre')}</p>
     <ul data-resume-liste></ul>
   </div>
 
@@ -72,37 +74,37 @@ const obligatoire = t(lang, 'formulaire.obligatoire');
 
   <div class="formulaire__grille">
     <div class="champ champ--large">
-      <label for="nom">{t(lang, 'formulaire.nom')} <abbr title={obligatoire}>*</abbr></label>
+      <label for="nom"><T lang={lang} k={'formulaire.nom'} /> <abbr title={obligatoire}>*</abbr></label>
       <input id="nom" name="nom" autocomplete="name" required aria-describedby="erreur-nom" />
       <p class="champ__erreur" id="erreur-nom" data-erreur="nom" hidden></p>
     </div>
     <div class="champ">
-      <label for="societe">{t(lang, 'formulaire.societe')}</label>
+      <label for="societe" {...edLibelle('formulaire.societe')}>{t(lang, 'formulaire.societe')}</label>
       <input id="societe" name="societe" autocomplete="organization" />
     </div>
     <div class="champ">
-      <label for="adresse">{t(lang, 'formulaire.adresse')}</label>
+      <label for="adresse" {...edLibelle('formulaire.adresse')}>{t(lang, 'formulaire.adresse')}</label>
       <input id="adresse" name="adresse" autocomplete="street-address" />
     </div>
     <div class="champ">
-      <label for="telephone">{t(lang, 'formulaire.telephone')} <abbr title={obligatoire}>*</abbr></label>
+      <label for="telephone"><T lang={lang} k={'formulaire.telephone'} /> <abbr title={obligatoire}>*</abbr></label>
       <input id="telephone" name="telephone" type="tel" autocomplete="tel" required aria-describedby="erreur-telephone" />
       <p class="champ__erreur" id="erreur-telephone" data-erreur="telephone" hidden></p>
     </div>
     <div class="champ">
-      <label for="courriel">{t(lang, 'formulaire.courriel')} <abbr title={obligatoire}>*</abbr></label>
+      <label for="courriel"><T lang={lang} k={'formulaire.courriel'} /> <abbr title={obligatoire}>*</abbr></label>
       <input id="courriel" name="courriel" type="email" autocomplete="email" required aria-describedby="erreur-courriel" />
       <p class="champ__erreur" id="erreur-courriel" data-erreur="courriel" hidden></p>
     </div>
     <div class="champ champ--large">
-      <label for="domaine">{t(lang, 'formulaire.domaine')}</label>
+      <label for="domaine" {...edLibelle('formulaire.domaine')}>{t(lang, 'formulaire.domaine')}</label>
       <select id="domaine" name="domaine" data-domaine>
         <option value="">{t(lang, 'formulaire.domaine_aucun')}</option>
         {activites(lang).map((a) => <option value={a.id}>{txt(a.terme, lang)}</option>)}
       </select>
     </div>
     <div class="champ champ--large">
-      <label for="message">{t(lang, 'formulaire.demande')} <abbr title={obligatoire}>*</abbr></label>
+      <label for="message"><T lang={lang} k={'formulaire.demande'} /> <abbr title={obligatoire}>*</abbr></label>
       <textarea id="message" name="message" rows="7" required aria-describedby="erreur-message"></textarea>
       <p class="champ__erreur" id="erreur-message" data-erreur="message" hidden></p>
     </div>
@@ -110,21 +112,21 @@ const obligatoire = t(lang, 'formulaire.obligatoire');
 
   <div class="consentement">
     <input id="consentement" name="consentement" type="checkbox" value="1" required aria-describedby="erreur-consentement" />
-    <label for="consentement">{txt(p.consentement, lang)}</label>
+    <label for="consentement" {...edPage('contact.consentement')}>{txt(p.consentement, lang)}</label>
   </div>
   <p class="champ__erreur" id="erreur-consentement" data-erreur="consentement" hidden></p>
 
   <p class="formulaire__note">
     {
       urlDonnees ? (
-        <a href={urlDonnees}>{txt(p.note_droits, lang)}</a>
+        <a href={urlDonnees} {...edPage('contact.note_droits')}>{txt(p.note_droits, lang)}</a>
       ) : (
-        txt(p.note_droits, lang)
+        <span {...edPage('contact.note_droits')}>{txt(p.note_droits, lang)}</span>
       )
     }
   </p>
 
-  <button class="bouton" type="submit" data-envoi>{t(lang, 'formulaire.envoyer')}</button>
+  <button class="bouton" type="submit" data-envoi><T lang={lang} k={'formulaire.envoyer'} /></button>
 </form>
 
 <script>

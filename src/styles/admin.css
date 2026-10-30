@@ -826,6 +826,7 @@ body {
   color: var(--a-pierre);
 }
 .kx-form input,
+.kx-form select,
 .kx-form textarea {
   width: 100%;
   min-height: 50px;
@@ -1030,4 +1031,45 @@ body {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* --- Neue Seite: Themen zum Ankreuzen ------------------------------------ */
+.kx-cases {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.kx-cases legend {
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+.kx-form .kx-case {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 400;
+}
+.kx-form .kx-case input {
+  width: 20px;
+  min-height: 20px;
+  height: 20px;
+}
+.kx-form input[type='file'] {
+  min-height: 0;
+  padding: 10px;
+  font-size: 15px;
+}
+
+/* --- Formular eines Eintrags: Loeschen ----------------------------------- */
+.editeur__supprimer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--a-trait, #d9dde3);
+}
+.bouton-fin--danger {
+  color: #a32020;
+  border-color: #a32020;
 }

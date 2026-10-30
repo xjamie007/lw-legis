@@ -85,6 +85,9 @@ const snapshot = {
   seo: SEO,
   seo_modeles: MODELES,
   seo_limites: LIMITES,
+  // Im Redaktionsbereich geaenderte feste Texte (src/lib/i18n.ts). Aus den
+  // Quellen kommt nichts: dort gelten src/i18n/*.json.
+  libelles: {},
 };
 
 /**

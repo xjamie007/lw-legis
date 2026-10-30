@@ -210,7 +210,7 @@ const DE = {
   'mehr.neu_laden': 'Seite neu laden',
 
   'hilfe.1_titel': 'Text ändern:',
-  'hilfe.1': 'Text anklicken und lostippen. Gilt für die Sprache, die Sie gerade sehen.',
+  'hilfe.1': 'Text anklicken und lostippen – auch Überschriften, Menü, Knöpfe, Adresse und Fußzeile. Gilt für die Sprache, die Sie gerade sehen.',
   'hilfe.2_titel': 'Längere Texte',
   'hilfe.2': '(mit Absätzen, Listen oder Fußnoten): anklicken – es öffnet sich ein Fenster mit dem Texteditor.',
   'hilfe.3_titel': 'Fertig?',
@@ -219,11 +219,12 @@ const DE = {
   'hilfe.4':
     'Erst dann sehen Besucher Ihre Änderungen. Gelb hinterlegt ist, was gespeichert, aber noch nicht online ist.',
   'hilfe.5_titel': 'Andere Seite oder Sprache:',
-  'hilfe.5': '„Seiten“.',
+  'hilfe.5': '„Seiten“. Unter einem angeklickten Link steht außerdem „Seite öffnen →“.',
   'hilfe.6_titel': 'Google:',
   'hilfe.6': 'Titel und Beschreibung dieser Seite.',
-  'hilfe.7_titel': 'Bilder, Nachrichten, neue Einträge, Entwurf oder veröffentlicht:',
-  'hilfe.7': '„Mehr“.',
+  'hilfe.7_titel': 'Neue Seite:',
+  'hilfe.7':
+    'Tätigkeit, Fachdossier mit PDF oder Konferenz mit PDF: Knopf „＋ …“ in der Liste oder „Seiten → Neue Seite hinzufügen“. Datum, Themen, PDF austauschen oder löschen: „⚙ Einstellungen“. Nachrichten und Bilder: „Mehr“.',
 
   'publier.knopf_n': 'Jetzt veröffentlichen ({n})',
   'publier.erst_speichern': 'Es gibt noch ungespeicherte Änderungen. Bitte zuerst „Speichern“.',
@@ -231,6 +232,10 @@ const DE = {
     'Jetzt veröffentlichen? Danach sehen alle Besucher Ihre Änderungen ({n}). Das dauert ein bis zwei Minuten.',
   'publier.lokal':
     'Dies ist die Testumgebung auf diesem Rechner. Veröffentlicht wird nur auf der echten Website — Ihre Änderungen sehen Sie hier trotzdem in der Vorschau.',
+  'atelier.seite_oeffnen': 'Seite öffnen →',
+  'atelier.neue_seite_ok': 'Seite angelegt. Klicken Sie auf die Texte, um sie zu ergänzen.',
+  'atelier.seite_geloescht': 'Seite gelöscht.',
+  'seiten.hinzufuegen': 'Neue Seite hinzufügen',
   'publier.demo':
     'Dies ist die Vorführfassung. Ihre Änderungen bleiben in diesem Browser gespeichert und gehen nicht online. Mit der echten Datenbank veröffentlicht dieser Knopf die Website.',
   'mehr.demo_zuruecksetzen': 'Demo auf den Anfang zurücksetzen',
@@ -438,7 +443,7 @@ const FR: Record<keyof typeof DE, string> = {
   'mehr.neu_laden': 'Recharger la page',
 
   'hilfe.1_titel': 'Modifier un texte :',
-  'hilfe.1': 'cliquez sur le texte et tapez. Vaut pour la langue affichée.',
+  'hilfe.1': 'cliquez sur le texte et tapez – y compris titres, menu, boutons, adresse et pied de page. Vaut pour la langue affichée.',
   'hilfe.2_titel': 'Textes longs',
   'hilfe.2': '(avec paragraphes, listes ou notes) : un clic ouvre une fenêtre avec l’éditeur.',
   'hilfe.3_titel': 'Terminé ?',
@@ -447,11 +452,12 @@ const FR: Record<keyof typeof DE, string> = {
   'hilfe.4':
     'c’est seulement alors que les visiteurs voient vos modifications. En jaune : enregistré, mais pas encore en ligne.',
   'hilfe.5_titel': 'Autre page ou langue :',
-  'hilfe.5': '« Pages ».',
+  'hilfe.5': '« Pages ». Sous un lien cliqué apparaît aussi « Ouvrir la page → ».',
   'hilfe.6_titel': 'Google :',
   'hilfe.6': 'titre et description de cette page.',
-  'hilfe.7_titel': 'Images, messages, nouvelles entrées, brouillon ou publié :',
-  'hilfe.7': '« Plus ».',
+  'hilfe.7_titel': 'Nouvelle page :',
+  'hilfe.7':
+    'activité, dossier thématique avec PDF ou conférence avec PDF : bouton « ＋ … » dans la liste ou « Pages → Ajouter une page ». Date, thèmes, remplacer le PDF ou supprimer : « ⚙ Réglages ». Messages et images : « Plus ».',
 
   'publier.knopf_n': 'Publier maintenant ({n})',
   'publier.erst_speichern': 'Certaines modifications ne sont pas encore enregistrées. Appuyez d’abord sur « Enregistrer ».',
@@ -459,6 +465,10 @@ const FR: Record<keyof typeof DE, string> = {
     'Publier maintenant ? Ensuite, tous les visiteurs verront vos modifications ({n}). Cela prend une à deux minutes.',
   'publier.lokal':
     'Ceci est l’environnement de test sur cet ordinateur. La publication n’a lieu que sur le vrai site — vous voyez tout de même vos modifications dans l’aperçu.',
+  'atelier.seite_oeffnen': 'Ouvrir la page →',
+  'atelier.neue_seite_ok': 'Page créée. Cliquez sur les textes pour les compléter.',
+  'atelier.seite_geloescht': 'Page supprimée.',
+  'seiten.hinzufuegen': 'Ajouter une page',
   'publier.demo':
     'Ceci est la version de démonstration. Vos modifications restent enregistrées dans ce navigateur et ne sont pas mises en ligne. Avec la vraie base de données, ce bouton publie le site.',
   'mehr.demo_zuruecksetzen': 'Remettre la démo à zéro',

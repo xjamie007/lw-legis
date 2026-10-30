@@ -15,13 +15,14 @@ interface Props {
   titres: { id: string; texte: string }[];
 }
 const { lang, titres } = Astro.props;
+import T from './T.astro';
 ---
 
 {
   titres.length >= 3 && (
     <details class="sommaire sans-impression" data-sommaire>
       <summary>
-        {t(lang, 'sommaire.titre')}
+        <T lang={lang} k={'sommaire.titre'} />
         <span class="sommaire__nombre">{titres.length}</span>
         <Icone nom="plus" />
       </summary>

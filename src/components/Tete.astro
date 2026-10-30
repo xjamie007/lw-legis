@@ -23,6 +23,8 @@ interface Props {
 }
 const { lang, fil, titre, chapeau, chapeauHtml = false, edTitre, edChapeau, chapeauDesktop = false } = Astro.props;
 const klasse = chapeauDesktop ? 'chapeau chapeau--desktop' : 'chapeau';
+// Ohne eigene Angabe: der Name aus der Brotkrume — derselbe Text.
+const edH1 = edTitre ?? fil[fil.length - 1]?.ed;
 ---
 
 <div class="tete">
@@ -33,10 +35,10 @@ const klasse = chapeauDesktop ? 'chapeau chapeau--desktop' : 'chapeau';
           <ol>
             {fil.map((e, i) =>
               i === fil.length - 1 ? (
-                <li aria-current="page">{e.nom}</li>
+                <li aria-current="page" {...e.ed}>{e.nom}</li>
               ) : (
                 <li>
-                  <a href={e.url}>{e.nom}</a>
+                  <a href={e.url} {...e.ed}>{e.nom}</a>
                 </li>
               ),
             )}
@@ -44,7 +46,7 @@ const klasse = chapeauDesktop ? 'chapeau chapeau--desktop' : 'chapeau';
         </nav>
       )
     }
-    <h1 {...edTitre}>{titre}</h1>
+    <h1 {...edH1}>{titre}</h1>
     {chapeau && chapeauHtml && <div class:list={[klasse, 'tete__html']} set:html={chapeau} {...edChapeau} />}
     {chapeau && !chapeauHtml && <p class={klasse} {...edChapeau}>{chapeau}</p>}
     <slot />

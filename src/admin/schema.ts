@@ -10,6 +10,7 @@
  * Design, das der Redakteur verstellen kann, ist nach drei Monaten tot.
  */
 import type { LangueAdmin } from './i18n';
+import { AUTRES, GROUPES } from '../lib/groupes-liste';
 
 export type TypeChamp =
   | 'texte' // einzeilig, mehrsprachig
@@ -21,6 +22,7 @@ export type TypeChamp =
   | 'choix'
   | 'liste_texte' // mehrsprachige Liste (z. B. Rechtsgebiete)
   | 'etiquettes' // Themen-Tags
+  | 'fichier' // PDF hochladen (publications.pdf_chemin)
   | 'media'
   | 'seo_titre'
   | 'seo_description';
@@ -89,6 +91,15 @@ export const COLLECTIONS: Record<string, Collection> = {
         requis: true,
       },
       { nom: 'texte', etiquette: L('Text der Seite', 'Texte de la page'), type: 'texte_long', requis: true },
+      {
+        nom: 'groupe',
+        etiquette: L('Bereich auf der Übersicht', 'Domaine dans la liste'),
+        type: 'choix',
+        options: [...GROUPES, { id: 'autres', nom: AUTRES }].map((g) => ({
+          valeur: g.id,
+          etiquette: L(g.nom.fr ?? g.id, g.nom.fr ?? g.id),
+        })),
+      },
       { nom: 'statut', etiquette: L('Status', 'Statut'), type: 'choix', options: STATUT_OPTIONS },
     ],
     requisParLangue: ['terme', 'slug', 'definition', 'texte'],
@@ -105,9 +116,9 @@ export const COLLECTIONS: Record<string, Collection> = {
     triable: true,
     champs: [
       { nom: 'titre', etiquette: L('Titel', 'Titre'), type: 'texte', requis: true },
-      { nom: 'slug', etiquette: L('Adresse', 'Adresse'), type: 'texte', requis: true },
-      { nom: 'resume', etiquette: L('Kurzfassung', 'Résumé'), type: 'texte_long', requis: true },
-      { nom: 'corps', etiquette: L('Volltext', 'Texte intégral'), type: 'texte_long', requis: true },
+      { nom: 'slug', etiquette: L('Adresse', 'Adresse'), type: 'texte' },
+      { nom: 'resume', etiquette: L('Kurzfassung', 'Résumé'), type: 'texte_long' },
+      { nom: 'corps', etiquette: L('Volltext (nur Fachdossiers)', 'Texte intégral (dossiers seulement)'), type: 'texte_long' },
       { nom: 'date_publication', etiquette: L('Datum', 'Date'), type: 'date' },
       {
         nom: 'type',
@@ -119,7 +130,7 @@ export const COLLECTIONS: Record<string, Collection> = {
         ],
       },
       { nom: 'auteur', etiquette: L('Autor', 'Auteur'), type: 'texte_simple' },
-      { nom: 'pdf_chemin', etiquette: L('PDF', 'PDF'), type: 'texte_simple' },
+      { nom: 'pdf_chemin', etiquette: L('PDF', 'PDF'), type: 'fichier' },
       {
         nom: 'dossier',
         etiquette: L('Verweist auf das Dossier', 'Renvoie au dossier'),

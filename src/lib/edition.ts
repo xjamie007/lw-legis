@@ -42,6 +42,9 @@ export function ed(table: string, cle: string, chemin: string, html = false): Ed
 export const edPage = (chemin: string, html = false) =>
   ed('settings', 'pages', `valeur.${chemin}`, html);
 
+/** Ein fester Text der Oberflaeche (src/lib/i18n.ts), `settings`, Zeile `libelles`. */
+export const edLibelle = (cle: string) => ed('settings', 'libelles', `valeur.${cle}`);
+
 /** Angaben zur Person — `settings`, Zeile `avocat`. Nur der Inhaber. */
 export const edAvocat = (chemin: string, html = false) =>
   ed('settings', 'avocat', `valeur.${chemin}`, html);
