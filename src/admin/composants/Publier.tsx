@@ -13,7 +13,7 @@
  * statt mit einer Fehlermeldung zu scheitern.
  */
 import { useEffect, useRef, useState } from 'react';
-import { appelerFonction } from '../supabase';
+import { appelerFonction, demo } from '../supabase';
 import { traduire, type LangueAdmin } from '../i18n';
 
 type Etat = 'ruhe' | 'laeuft' | 'fertig' | 'fehler';
@@ -77,7 +77,7 @@ export default function Publier({ langue, nombre, local }: Props) {
       </button>
 
       <p className="publier__etat" role="status">
-        {local && t('publier.lokal')}
+        {local && t(demo ? 'publier.demo' : 'publier.lokal')}
         {!local && etat === 'ruhe' && t('publier.hinweis')}
         {etat === 'laeuft' && t('publier.laeuft', { s: secondes })}
         {etat === 'fertig' && fini && t('publier.fertig', { zeit: fini })}

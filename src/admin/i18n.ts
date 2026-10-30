@@ -230,6 +230,10 @@ const DE = {
     'Jetzt veröffentlichen? Danach sehen alle Besucher Ihre Änderungen ({n}). Das dauert ein bis zwei Minuten.',
   'publier.lokal':
     'Dies ist die Testumgebung auf diesem Rechner. Veröffentlicht wird nur auf der echten Website — Ihre Änderungen sehen Sie hier trotzdem in der Vorschau.',
+  'publier.demo':
+    'Dies ist die Vorführfassung. Ihre Änderungen bleiben in diesem Browser gespeichert und gehen nicht online. Mit der echten Datenbank veröffentlicht dieser Knopf die Website.',
+  'mehr.demo_zuruecksetzen': 'Demo auf den Anfang zurücksetzen',
+  'mehr.demo_sicher': 'Alle Änderungen in dieser Demo verwerfen?',
 } as const;
 
 const FR: Record<keyof typeof DE, string> = {
@@ -453,6 +457,10 @@ const FR: Record<keyof typeof DE, string> = {
     'Publier maintenant ? Ensuite, tous les visiteurs verront vos modifications ({n}). Cela prend une à deux minutes.',
   'publier.lokal':
     'Ceci est l’environnement de test sur cet ordinateur. La publication n’a lieu que sur le vrai site — vous voyez tout de même vos modifications dans l’aperçu.',
+  'publier.demo':
+    'Ceci est la version de démonstration. Vos modifications restent enregistrées dans ce navigateur et ne sont pas mises en ligne. Avec la vraie base de données, ce bouton publie le site.',
+  'mehr.demo_zuruecksetzen': 'Remettre la démo à zéro',
+  'mehr.demo_sicher': 'Abandonner toutes les modifications de cette démo ?',
 };
 
 const TABLES = { de: DE, fr: FR } as const;

@@ -24,6 +24,7 @@ import '../../styles/admin.css';
 import App from '../../admin/App';
 import { contenu, languesDuSite } from '../../lib/content';
 import { prefixer } from '../../lib/base';
+import { demo } from '../../admin/supabase';
 
 // Nur diese beiden Angaben gehen an den Browser, nicht der Schnappschuss:
 // Darin stehen auch Entwuerfe, und das Bundle von /admin ist oeffentlich
@@ -31,6 +32,51 @@ import { prefixer } from '../../lib/base';
 // alles, was danach gespeichert wurde, ist noch nicht online.
 const stand = contenu.meta.genere_le;
 const langues = languesDuSite();
+
+// Demo (siehe `demo` in src/admin/supabase.ts): ohne Datenbank. Dann
+// bekommt der Redaktionsbereich die Startinhalte als Tabellenzeilen mit —
+// dieselbe Zuordnung wie scripts/seed-from-snapshot.mjs. Die
+// Entwuerfe darin stammen alle von der alten Website, nichts Vertrauliches.
+const graines = demo
+  ? (() => {
+      const c = contenu as any;
+      const statut = (v: string) => (v === 'publie' || v === 'veroeffentlicht' ? 'veroeffentlicht' : 'entwurf');
+      const ligne = (x: object) => ({ ...x, updated_at: stand });
+      return {
+        settings: [
+          ligne({ cle: 'stammdaten', valeur: c.settings, reserve_owner: true }),
+          ligne({ cle: 'pages', valeur: c.pages, reserve_owner: false }),
+        ],
+        navigation: [
+          ...c.navigation.map((x: any) => ligne({ ...x, cle_i18n: x.cle, emplacement: 'principale' })),
+          ...c.pied.map((x: any) => ligne({ ...x, cle_i18n: x.cle, emplacement: 'pied' })),
+        ],
+        pages: Object.entries(c.pages).map(([id, p]: [string, any]) =>
+          ligne({ id, titre: p.titre ?? {}, statut: 'veroeffentlicht' }),
+        ),
+        services: c.familles.map((f: any) =>
+          ligne({
+            id: f.id, slug: f.slug, terme: f.terme, definition: f.definition, texte: f.texte, kurz: f.kurz,
+            marge_terme: f.marge?.terme ?? {}, marge_texte: f.marge?.texte ?? {}, matieres: f.matieres,
+            ordre: f.ordre, statut: 'veroeffentlicht',
+          }),
+        ),
+        publication_tags: c.themes.map((t: any, i: number) => ligne({ ...t, ordre: i })),
+        publications: c.publications.map(({ pdf, statut: st, ...p }: any) =>
+          ligne({ ...p, pdf_chemin: pdf?.chemin ?? null, pdf_octets: pdf?.octets ?? null, statut: statut(st) }),
+        ),
+        team: c.team.map((m: any) => ligne({ ...m, statut: statut(m.statut) })),
+        legal_pages: Object.entries(c.legal).map(([id, p]: [string, any]) =>
+          ligne({ id, ...p, blocs: p.blocs ?? [], statut: 'veroeffentlicht' }),
+        ),
+        seo_meta: Object.entries(c.seo).map(([id, m]: [string, any]) => ligne({ id, ...m, noindex: Boolean(m.noindex) })),
+        media: [],
+        inquiries: [],
+        revisions: [],
+        profiles: [{ id: 'demo', nom: 'Me Alain Lorang', role: 'owner', langue_admin: 'fr' }],
+      };
+    })()
+  : null;
 ---
 
 <!doctype html>
@@ -51,6 +97,7 @@ const langues = languesDuSite();
     />
   </head>
   <body>
+    {graines && <script type="application/json" id="lw-demo-graines" set:html={JSON.stringify(graines).replace(/</g, '\\u003c')} />}
     {/* client:only — der Redaktionsbereich hat keinen Inhalt, den ein
         Server vorrendern koennte: alles haengt am angemeldeten Konto.
         Vorrendern wuerde nur eine leere Huelle erzeugen. */}

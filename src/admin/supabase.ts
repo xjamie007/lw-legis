@@ -12,6 +12,7 @@
  * Cookie-Banner.
  */
 import { createClient } from '@supabase/supabase-js';
+import { creerClientDemo } from './demo';
 
 /**
  * Leer zaehlt wie nicht gesetzt.
@@ -25,20 +26,31 @@ import { createClient } from '@supabase/supabase-js';
 const url = import.meta.env.PUBLIC_SUPABASE_URL || '';
 const cle = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
 
-export const configuré = Boolean(url && cle);
+/**
+ * Vorfuehrfassung ohne Datenbank (src/admin/demo.ts): mit PUBLIC_DEMO=1,
+ * und von selbst in der Vorschau auf GitHub Pages (PUBLIC_NOINDEX), solange
+ * dort keine Datenbank verbunden ist. Die echte Website (deploy.yml) setzt
+ * PUBLIC_NOINDEX nicht und bekommt deshalb nie den Demo-Login.
+ */
+export const demo =
+  import.meta.env.PUBLIC_DEMO === '1' || (import.meta.env.PUBLIC_NOINDEX === '1' && !(url && cle));
 
-export const supabase = createClient(url || 'http://localhost', cle || 'anon', {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: false,
-    storageKey: 'lw-legis-admin',
-    flowType: 'pkce',
-  },
-});
+export const configuré = demo || Boolean(url && cle);
+
+export const supabase = demo
+  ? (creerClientDemo() as unknown as ReturnType<typeof createClient>)
+  : createClient(url || 'http://localhost', cle || 'anon', {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: false,
+        storageKey: 'lw-legis-admin',
+        flowType: 'pkce',
+      },
+    });
 
 /** Zeigt die Seite auf die oertliche Supabase-Instanz (Probedaten)? */
-export const estLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/.test(url);
+export const estLocal = demo || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/.test(url);
 
 /**
  * Verlangt die Anmeldung einen zweiten Faktor?

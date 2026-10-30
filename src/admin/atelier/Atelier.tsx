@@ -23,7 +23,8 @@
  * `data-lw` (src/lib/edition.ts, src/admin/atelier/chemins.ts).
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { estLocal, supabase, type Profil } from '../supabase';
+import { demo, estLocal, supabase, type Profil } from '../supabase';
+import { reinitialiserDemo } from '../demo';
 import { traduire, type LangueAdmin } from '../i18n';
 import { COLLECTIONS, ORDRE_NAV } from '../schema';
 import { LANG_NOMS, type Lang } from '../../lib/langs';
@@ -787,6 +788,19 @@ export default function Atelier({
             <button type="button" className="kx-li" onClick={recharger}>
               ↻ {t('mehr.neu_laden')}
             </button>
+            {demo && (
+              <button
+                type="button"
+                className="kx-li"
+                onClick={() => {
+                  if (!window.confirm(t('mehr.demo_sicher'))) return;
+                  reinitialiserDemo();
+                  window.location.reload();
+                }}
+              >
+                ⟲ {t('mehr.demo_zuruecksetzen')}
+              </button>
+            )}
           </div>
           <h3 className="kx-h3">{t('app.sprache')}</h3>
           <div className="kx-row kx-row--start">
