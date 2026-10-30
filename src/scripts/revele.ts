@@ -10,7 +10,10 @@
  */
 const reduit = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-if (!reduit && 'IntersectionObserver' in window) {
+// Wer ueber eine Sprungmarke kommt (#immobilier), soll genau dort landen:
+// Dann wird nichts versetzt, sonst rutschte das Ziel nach dem Springen um
+// den Versatz der Animation nach oben unter den Kopf.
+if (!reduit && 'IntersectionObserver' in window && !location.hash) {
   const elements = [...document.querySelectorAll<HTMLElement>('[data-revele]')];
   const hauteur = window.innerHeight;
 
@@ -34,6 +37,11 @@ if (!reduit && 'IntersectionObserver' in window) {
     observateur.observe(el);
   }
 
-  // Vor dem Drucken alles zeigen.
-  window.addEventListener('beforeprint', () => elements.forEach(montrer));
+  // Vor dem Drucken und vor jedem Sprung innerhalb der Seite alles zeigen.
+  const toutMontrer = () => elements.forEach(montrer);
+  window.addEventListener('beforeprint', toutMontrer);
+  document.addEventListener('click', (e) => {
+    if ((e.target as Element).closest?.('a[href*="#"]')) toutMontrer();
+  });
+  window.addEventListener('hashchange', toutMontrer);
 }

@@ -57,6 +57,10 @@
   --mesure: 68ch;
   --section: clamp(4rem, 2.5rem + 6vw, 7.5rem);
   --entete: 5.25rem;
+  /* Der ganze feste Kopf: Leiste (2.5rem) plus Kopfzeile. Sprungziele
+     halten diesen Abstand plus Luft frei, sonst verschwindet der Titel
+     unter dem Kopf. */
+  --tete-fixe: calc(var(--entete) + 2.5rem);
 }
 
 /* ---------------------------------------------------------------------------
@@ -65,7 +69,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: calc(var(--entete) + 1rem);
+    scroll-padding-top: calc(var(--tete-fixe) + 1.5rem);
     -webkit-text-size-adjust: 100%;
   }
   @media (prefers-reduced-motion: reduce) {
@@ -585,7 +589,7 @@
     }
     .avec-aside > aside {
       position: sticky;
-      top: calc(var(--entete) + 2rem);
+      top: calc(var(--tete-fixe) + 1.5rem);
     }
   }
 
