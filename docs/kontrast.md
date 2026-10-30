@@ -11,8 +11,8 @@ Schwellen nach WCAG 2.2: **4,5:1** für Fließtext und kleinen Text,
 
 | Token | Hex |
 |---|---|
-| `marine` | `#13294B` |
-| `marine-tief` | `#0C1C36` |
+| `marine` | `#1F2A36` |
+| `marine-tief` | `#151D26` |
 | `encre` | `#0E1A2B` |
 | `texte` | `#2B3442` |
 | `gris` | `#5B6575` |
@@ -21,7 +21,7 @@ Schwellen nach WCAG 2.2: **4,5:1** für Fließtext und kleinen Text,
 | `blanc` | `#FFFFFF` |
 | `or` | `#A07C3C` |
 | `or-clair` | `#CDB27F` |
-| `marine-texte` | `#B9C3D3` |
+| `marine-texte` | `#B6BFCA` |
 | `erreur` | `#A32020` |
 | `bordure` | `#858E9B` |
 
@@ -35,15 +35,15 @@ Schwellen nach WCAG 2.2: **4,5:1** für Fließtext und kleinen Text,
 | `encre` auf `brume` | 15,88:1 | 4.5 | Überschriften auf hellgrauen Bändern |
 | `gris` auf `blanc` | 5,89:1 | 4.5 | Sekundärtext, Einleitungen |
 | `gris` auf `brume` | 5,36:1 | 4.5 | Sekundärtext auf hellgrauen Bändern |
-| `marine` auf `blanc` | 14,52:1 | 4.5 | Links, Knöpfe als Text |
-| `marine` auf `brume` | 13,19:1 | 4.5 | Links auf hellgrauen Bändern |
-| `blanc` auf `marine` | 14,52:1 | 4.5 | Schrift auf Marine (Hero, Bänder, Knöpfe) |
-| `marine-texte` auf `marine` | 8,16:1 | 4.5 | Zweitschrift auf Marine |
-| `or-clair` auf `marine` | 7,10:1 | 4.5 | Gold als Schrift auf Marine |
-| `marine-tief` auf `or-clair` | 8,32:1 | 4.5 | Schrift auf dem goldenen Knopf |
+| `marine` auf `blanc` | 14,56:1 | 4.5 | Links, Knöpfe als Text |
+| `marine` auf `brume` | 13,23:1 | 4.5 | Links auf hellgrauen Bändern |
+| `blanc` auf `marine` | 14,56:1 | 4.5 | Schrift auf Marine (Hero, Bänder, Knöpfe) |
+| `marine-texte` auf `marine` | 7,83:1 | 4.5 | Zweitschrift auf Marine |
+| `or-clair` auf `marine` | 7,12:1 | 4.5 | Gold als Schrift auf Marine |
+| `marine-tief` auf `or-clair` | 8,31:1 | 4.5 | Schrift auf dem goldenen Knopf |
 | `blanc` auf `marine-tief` | 17,00:1 | 4.5 | Schrift im Fußbereich und in der Leiste |
-| `marine-texte` auf `marine-tief` | 9,56:1 | 4.5 | Zweitschrift im Fußbereich |
-| `or-clair` auf `marine-tief` | 8,32:1 | 4.5 | Gold als Schrift im Fußbereich |
+| `marine-texte` auf `marine-tief` | 9,14:1 | 4.5 | Zweitschrift im Fußbereich |
+| `or-clair` auf `marine-tief` | 8,31:1 | 4.5 | Gold als Schrift im Fußbereich |
 | `erreur` auf `blanc` | 7,54:1 | 4.5 | Fehlermeldungen im Formular |
 | `or` auf `blanc` | 3,86:1 | 3 | Goldlinien, Pfeile, Fokusring (grafisch, WCAG 1.4.11) |
 | `or` auf `brume` | 3,51:1 | 3 | Goldlinien auf hellgrauen Bändern |

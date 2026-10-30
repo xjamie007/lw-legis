@@ -60,7 +60,10 @@ const texte = activite ? sommaire(txt(activite.texte, lang)) : null;
       <div class="enveloppe groupes">
         {groupes.map((g) => (
           <section class="groupe" id={g.id} aria-labelledby={`titre-${g.id}`} data-revele>
-            <h2 id={`titre-${g.id}`}>{txt(g.nom, lang)}</h2>
+            <h2 id={`titre-${g.id}`}>
+              {txt(g.nom, lang)}
+              <span class="groupe__nombre">{g.liste.length}</span>
+            </h2>
             <ul class="registre registre--deux">
               {g.liste.map((a, i) => (
                 <li class="registre__ligne" data-revele-i style={`--i: ${i}`}>
@@ -164,10 +167,29 @@ const texte = activite ? sommaire(txt(activite.texte, lang)) : null;
   .groupe + .groupe {
     margin-top: clamp(3rem, 2rem + 3vw, 5rem);
   }
+  /* Jeder Bereich als deutlicher Abschnittstitel: gross, Marine, mit der
+     Anzahl in Gold und einer kraeftigen Goldlinie ueber die ganze Breite. */
   .groupe h2 {
-    font-size: var(--text-h2);
-    font-weight: 300;
-    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: var(--text-titre);
+    font-weight: 400;
+    color: var(--color-marine);
+    padding-bottom: 1rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 3px solid var(--color-or);
     scroll-margin-top: calc(var(--entete) + 3rem);
+  }
+  .groupe__nombre {
+    font-family: var(--font-texte);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-or);
+    font-variant-numeric: tabular-nums;
+  }
+  .groupe .registre--deux .registre__ligne:nth-child(-n + 2) {
+    border-top: 0;
   }
 </style>

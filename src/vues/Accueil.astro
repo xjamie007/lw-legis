@@ -103,7 +103,10 @@ const urlConferences = adresse('conferences', lang);
       {
         groupes.map((g, i) => (
           <div class="groupe" data-revele-i style={`--i: ${i}`}>
-            <h3>{txt(g.nom, lang)}</h3>
+            <h3>
+              {txt(g.nom, lang)}
+              <span class="groupe__nombre">{g.liste.length}</span>
+            </h3>
             <ul>
               {g.liste.map((a) => (
                 <li>
@@ -460,25 +463,35 @@ const urlConferences = adresse('conferences', lang);
     display: grid;
     gap: 2.5rem 3rem;
   }
+  /* Der Bereich steht klar ueber seinen Taetigkeiten: Spectral in Marine,
+     die Anzahl in Gold, darunter eine kraeftige Goldlinie. */
   .groupe h3 {
-    font-family: var(--font-texte);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-gris);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 1.625rem;
+    font-weight: 400;
+    color: var(--color-marine);
     padding-bottom: 0.75rem;
-    border-bottom: 2px solid var(--color-or);
+    border-bottom: 3px solid var(--color-or);
+  }
+  .groupe__nombre {
+    font-family: var(--font-texte);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-or);
+    font-variant-numeric: tabular-nums;
   }
   .groupe a {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.8rem 0;
+    padding: 0.75rem 0;
     border-bottom: 1px solid var(--color-trait);
-    font-family: var(--font-titre);
-    font-size: 1.1875rem;
+    font-family: var(--font-texte);
+    font-size: 1rem;
     line-height: 1.35;
     color: var(--color-encre);
     text-decoration: none;

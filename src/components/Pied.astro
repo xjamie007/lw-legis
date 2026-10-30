@@ -94,6 +94,9 @@ const annee = new Date().getFullYear();
       © {annee} {s.nom}. {t(lang, 'pied.droits')}.
       <a class="k-login" href={`${prefixer('/admin/')}?seite=${encodeURIComponent(chemin)}`} rel="nofollow">Login</a>
     </p>
+    <p class="pied__nave">
+      {t(lang, 'pied.realisation')} <a href="https://nave.lu" rel="noopener">Nave</a>
+    </p>
   </div>
 </footer>
 
@@ -163,6 +166,13 @@ const annee = new Date().getFullYear();
   /* Dieselbe Farbe wie der ©-Text, damit der Kontrast stimmt. */
   .k-login {
     margin-left: 0.75em;
+  }
+  .pied__nave {
+    flex-basis: 100%;
+    opacity: 0.85;
+  }
+  .pied__nave a {
+    color: var(--color-or-clair);
   }
 
   @media (min-width: 40rem) {

@@ -31,8 +31,8 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
  * ein warmes Nussbaumschwarz, aus dem graugruenen Papier ein warmer Sand.
  */
 export const PALETTE = {
-  marine: '#13294B',
-  'marine-tief': '#0C1C36',
+  marine: '#1F2A36',
+  'marine-tief': '#151D26',
   encre: '#0E1A2B',
   texte: '#2B3442',
   gris: '#5B6575',
@@ -44,7 +44,7 @@ export const PALETTE = {
   /** Gold fuer Schrift auf Marine. */
   'or-clair': '#CDB27F',
   /** Zweitschrift auf Marine. */
-  'marine-texte': '#B9C3D3',
+  'marine-texte': '#B6BFCA',
   erreur: '#A32020',
   bordure: '#858E9B',
 };

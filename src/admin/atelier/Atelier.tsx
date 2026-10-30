@@ -93,8 +93,8 @@ const STYLE_VORSCHAU = `
     outline: 2px dashed transparent; outline-offset: 3px;
     transition: outline-color .15s;
   }
-  [data-lw]:hover { outline-color: rgba(47, 93, 80, .6); }
-  [data-lw]:focus { outline: 2px solid #2f5d50; background-color: rgba(47, 93, 80, .07); }
+  [data-lw]:hover { outline-color: rgba(160, 124, 60, .75); }
+  [data-lw]:focus { outline: 2px solid #a07c3c; background-color: rgba(160, 124, 60, .08); }
   [data-lw-html] { cursor: pointer; }
   .lw-fixe, .lw-fixe:hover { cursor: not-allowed; outline-color: transparent; }
   .lw-geaendert {

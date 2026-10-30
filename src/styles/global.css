@@ -22,8 +22,8 @@
    2. TOKENS — Kontraste in scripts/check-contrast.mjs geprueft.
    --------------------------------------------------------------------------- */
 @theme {
-  --color-marine: #13294b;
-  --color-marine-tief: #0c1c36;
+  --color-marine: #1f2a36;
+  --color-marine-tief: #151d26;
   --color-encre: #0e1a2b;
   --color-texte: #2b3442;
   --color-gris: #5b6575;
@@ -32,10 +32,10 @@
   --color-blanc: #ffffff;
   /* Das Gold des Wappens. Traegt auf Weiss KEINEN Text (3,86:1) — nur Linien. */
   --color-or: #a07c3c;
-  /* Gold fuer Schrift auf Marine (7,1:1). */
+  /* Gold fuer Schrift auf Marine. */
   --color-or-clair: #cdb27f;
-  /* Zweitschrift auf Marine (8,2:1). */
-  --color-marine-texte: #b9c3d3;
+  /* Zweitschrift auf Marine. */
+  --color-marine-texte: #b6bfca;
   /* Formular: Fehlermeldungen (7,5:1) und Feldrahmen (3,3:1, WCAG 1.4.11). */
   --color-erreur: #a32020;
   --color-bordure: #858e9b;
