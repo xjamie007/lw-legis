@@ -30,12 +30,15 @@
   --color-trait: #d9dde3;
   --color-brume: #f3f4f6;
   --color-blanc: #ffffff;
-  /* Das Gold des Wappens. Traegt auf Weiss KEINEN Text (3,4:1) — nur Linien. */
+  /* Das Gold des Wappens. Traegt auf Weiss KEINEN Text (3,86:1) — nur Linien. */
   --color-or: #a07c3c;
-  /* Gold fuer Schrift auf Marine (6,9:1). */
+  /* Gold fuer Schrift auf Marine (7,1:1). */
   --color-or-clair: #cdb27f;
-  /* Zweitschrift auf Marine (7,8:1). */
+  /* Zweitschrift auf Marine (8,2:1). */
   --color-marine-texte: #b9c3d3;
+  /* Formular: Fehlermeldungen (7,5:1) und Feldrahmen (3,3:1, WCAG 1.4.11). */
+  --color-erreur: #a32020;
+  --color-bordure: #858e9b;
 
   --font-titre: 'Spectral', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
   --font-texte: 'Hanken Grotesk', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial,
