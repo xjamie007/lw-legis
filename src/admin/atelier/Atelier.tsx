@@ -113,14 +113,16 @@ const cleLigne = (c: Cle) => `${c.table}|${c.id}`;
 
 /** Die Seiten mit eigenen Angaben fuer Google (`seo_meta.id`). */
 const PAGES_SEO: NomSegment[] = [
-  'services',
-  'situations',
-  'etude',
-  'publications',
-  'honoraires',
+  'avocats',
+  'activites',
+  'dossiers',
+  'conferences',
+  'partenaires',
+  'index',
   'contact',
   'mentions',
   'donnees',
+  'cookies',
   'conditions',
 ];
 function idSeo(chemin: string, lang: Lang): string | null {

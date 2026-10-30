@@ -1,0 +1,170 @@
+---
+/**
+ * src/vues/IndexMatieres.astro — Index des matières.
+ *
+ * Neu auf der Seite: alle Taetigkeiten, Dossiers und Konferenzen von A bis
+ * Z, wie das Sachregister eines Kommentars. Wer einen Begriff sucht, findet
+ * ihn hier ohne zu wissen, unter welcher Rubrik er steht. Es kommt kein
+ * neuer Inhalt dazu — nur die vorhandenen Titel, alphabetisch.
+ */
+import type { Lang } from '../lib/langs';
+import { txt, txtOuFrancais } from '../lib/langs';
+import { t } from '../lib/i18n';
+import { activites, conferences, dossiers, dossierParId } from '../lib/content';
+import { adresse, type Route } from '../lib/pages';
+import { prefixer } from '../lib/base';
+import Tete from '../components/Tete.astro';
+
+interface Props {
+  lang: Lang;
+  route: Route;
+}
+const { lang, route } = Astro.props;
+
+type Entree = { titre: string; titreLang?: string; href: string; rubrique: string; telechargement?: boolean };
+
+const entrees: Entree[] = [
+  ...activites(lang).map((a) => ({
+    titre: txt(a.terme, lang),
+    href: adresse(`activite:${a.id}`, lang)!,
+    rubrique: t(lang, 'nav.activites'),
+  })),
+  ...dossiers(lang).map((d) => ({
+    titre: txt(d.titre, lang),
+    href: adresse(`dossier:${d.id}`, lang)!,
+    rubrique: t(lang, 'nav.dossiers'),
+  })),
+  ...conferences()
+    .map((c): Entree | null => {
+      const titre = txtOuFrancais(c.titre, lang);
+      const dossier = dossierParId(c.dossier, lang);
+      const href = c.pdf ? prefixer(c.pdf.chemin) : dossier ? adresse(`dossier:${dossier.id}`, lang) : null;
+      if (!href) return null;
+      return {
+        titre: titre.valeur,
+        titreLang: titre.lang !== lang ? titre.lang : undefined,
+        href,
+        rubrique: t(lang, 'nav.conferences'),
+        telechargement: Boolean(c.pdf),
+      };
+    })
+    .filter((e): e is Entree => e !== null),
+];
+
+/** Sortiert ohne Akzente und ohne fuehrende Artikel („Le“, „La“, „L’“, „The“). */
+const cle = (s: string) =>
+  s
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/^(l['’]|le |la |les |the )/i, '')
+    .toLocaleLowerCase(lang);
+
+const groupes = new Map<string, Entree[]>();
+for (const e of entrees.sort((a, b) => cle(a.titre).localeCompare(cle(b.titre), lang))) {
+  const lettre = cle(e.titre).charAt(0).toUpperCase();
+  groupes.set(lettre, [...(groupes.get(lettre) ?? []), e]);
+}
+const lettres = [...groupes.keys()];
+---
+
+<Tete lang={lang} fil={route.fil} titre={route.nom} chapeau={t(lang, 'index.intro')}>
+  <nav class="alphabet" aria-label={route.nom}>
+    {lettres.map((l) => <a href={`#lettre-${l}`}>{l}</a>)}
+  </nav>
+</Tete>
+
+<section class="section">
+  <div class="enveloppe">
+    {
+      lettres.map((l) => (
+        <section class="lettre" id={`lettre-${l}`} aria-labelledby={`titre-${l}`}>
+          <h2 id={`titre-${l}`}>{l}</h2>
+          <ul>
+            {groupes.get(l)!.map((e) => (
+              <li>
+                <a href={e.href} lang={e.titreLang} download={e.telechargement || undefined}>
+                  {e.titre}
+                </a>
+                <span>{e.rubrique}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .alphabet {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-top: 2rem;
+  }
+  .alphabet a {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--color-trait);
+    background: var(--color-blanc);
+    font-family: var(--font-titre);
+    font-size: 1.125rem;
+    color: var(--color-marine);
+    text-decoration: none;
+    transition:
+      background-color 200ms ease-out,
+      color 200ms ease-out;
+  }
+  .alphabet a:hover {
+    background: var(--color-marine);
+    color: var(--color-blanc);
+  }
+  .lettre {
+    display: grid;
+    gap: 1rem 3rem;
+    padding-block: 2rem;
+    border-top: 1px solid var(--color-trait);
+  }
+  .lettre h2 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--color-or);
+    line-height: 1;
+  }
+  .lettre li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.25rem 2rem;
+    padding-block: 0.6rem;
+  }
+  .lettre li + li {
+    border-top: 1px dotted var(--color-trait);
+  }
+  .lettre a {
+    font-size: 1.0625rem;
+    color: var(--color-encre);
+    text-decoration: none;
+  }
+  .lettre a:hover {
+    color: var(--color-marine);
+    text-decoration: underline;
+    text-decoration-color: var(--color-or);
+    text-underline-offset: 3px;
+  }
+  .lettre span {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-gris);
+  }
+  @media (min-width: 48rem) {
+    .lettre {
+      grid-template-columns: 5rem minmax(0, 1fr);
+    }
+  }
+</style>

@@ -2,537 +2,562 @@
 /**
  * src/vues/Accueil.astro — Startseite.
  *
- * Reihenfolge und Sichtbarkeit der Sektionen kommen aus den Inhalten
- * (`sections_accueil`) und sind im Adminbereich aenderbar. Hero und
- * Kontakt sind gesperrt: ohne sie ergibt die Seite keinen Sinn.
+ * Reihenfolge: Hero (wer, was, Termin), die Kanzlei mit Me Lorang, die
+ * Taetigkeiten als Register, die Staerken, Netzwerke und Vertretungen,
+ * Dossiers und Konferenzen, „Pourquoi un avocat“, Kontakt.
+ * Alle Texte stammen von der alten Seite (content/source/pages.mjs).
  */
 import type { Lang } from '../lib/langs';
-import { txt } from '../lib/langs';
+import { txt, txtOuFrancais, txtHtml } from '../lib/langs';
 import { t } from '../lib/i18n';
-import { contenu, familles, publicationsPubliees, faqToutes, faqPubliable } from '../lib/content';
-import { seg } from '../lib/routes';
-import Hero from '../components/Hero.astro';
-import Leiste from '../components/Leiste.astro';
-import Marge from '../components/Marge.astro';
-import Lacune from '../components/Lacune.astro';
-import Depliant from '../components/Depliant.astro';
-import Formulaire from '../components/Formulaire.astro';
-import Bild from '../components/Bild.astro';
-import { ed, edAvocat, edFamille, edPage } from '../lib/edition';
+import { activites, conferences, contenu, dossiers, equipe } from '../lib/content';
+import { adresse } from '../lib/pages';
+import { ed, edPage } from '../lib/edition';
+import { formaterTaille } from '../lib/i18n';
 import { prefixer } from '../lib/base';
+import Bild from '../components/Bild.astro';
+import Icone from '../components/Icone.astro';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
+const p = contenu.pages.accueil;
+const s = contenu.settings;
 
-const sections = contenu.sections_accueil
-  .filter((s) => s.visible)
-  .sort((a, b) => a.ordre - b.ordre)
-  .map((s) => s.id);
+const lorang = equipe(lang).find((m) => m.id === 'alain-lorang');
+const liste = activites(lang);
+const derniersDossiers = dossiers(lang).slice(0, 4);
+const dernieresConferences = conferences().filter((c) => c.pdf).slice(0, 4);
 
-const acc = contenu.pages.accueil.sections;
-const nosFamilles = familles(lang);
-const derniers = publicationsPubliees(lang).slice(0, 4);
-const questions = faqToutes(lang);
-
-const lien = (n: Parameters<typeof seg>[0]) => {
-  const x = seg(n, lang);
-  return x ? prefixer(`/${lang}/${x}/`) : null;
-};
-const versServices = lien('services');
-const versEtude = lien('etude');
-const versPublications = lien('publications');
-const versHonoraires = lien('honoraires');
-const versContact = lien('contact');
-
-const avocat = contenu.avocat;
-const honoraires = contenu.pages.honoraires;
+const urlContact = adresse('contact', lang);
+const urlAvocats = adresse('avocats', lang);
+const urlActivites = adresse('activites', lang);
+const urlDossiers = adresse('dossiers', lang);
+const urlConferences = adresse('conferences', lang);
 ---
 
-{
-  sections.map((id) => {
-    switch (id) {
-      // ===================================================================
-      case 'hero':
-        return (
-          <>
-            <Hero lang={lang} />
-            {/* Die Schnellleiste gehört zum Hero und ist deshalb nicht
-                einzeln abschaltbar: Ohne sie fehlt die Antwort auf die
-                erste Frage, die jeder Besucher hat. */}
-            <Leiste lang={lang} />
-          </>
-        );
+<section class="hero">
+  <div class="hero__texte">
+    <h1 {...edPage('accueil.titre')}>{txt(p.titre, lang)}</h1>
+    <p class="hero__intro" {...edPage('accueil.intro')}>{txt(p.intro, lang)}</p>
+    <div class="hero__actions">
+      {
+        urlContact && (
+          <a class="bouton bouton--or" href={urlContact}>
+            {t(lang, 'accueil.rendez_vous')}
+            <Icone nom="fleche" />
+          </a>
+        )
+      }
+      <a class="hero__tel" href={`tel:${s.telephone.lien}`}>
+        <span>{t(lang, 'accueil.ou_appeler')}</span>
+        {s.telephone.affiche}
+      </a>
+    </div>
+  </div>
+  <div class="hero__image">
+    <Bild platz="bureau_1" lang={lang} sizes="(min-width: 62rem) 45vw, 100vw" eifrig />
+  </div>
+  <ul class="hero__preuves">
+    <li>{t(lang, 'accueil.preuve_1')}</li>
+    <li>{t(lang, 'accueil.preuve_2')}</li>
+    <li>{t(lang, 'accueil.preuve_3')}</li>
+  </ul>
+</section>
 
-      // ===================================================================
-      case 'services':
-        return (
-          <section class="section" aria-labelledby="titre-services">
-            <div class="enveloppe">
-              <div class="colonne">
-                <h2 class="titre-2" id="titre-services" data-revele="titre" {...edPage('accueil.sections.services.titre')}>
-                  {txt(acc.services.titre, lang)}
-                </h2>
-                <p class="chapeau discret" data-revele="texte" {...edPage('accueil.sections.services.chapeau')}>{txt(acc.services.chapeau, lang)}</p>
-
-                <dl class="definitions" data-revele="definitions">
-                  {nosFamilles.map((f) => (
-                    <>
-                      <dt class="definitions__terme">
-                        {versServices ? (
-                          <a href={`${versServices}${txt(f.slug, lang)}/`} {...edFamille(f.id, 'terme')}>{txt(f.terme, lang)}</a>
-                        ) : (
-                          txt(f.terme, lang)
-                        )}
-                      </dt>
-                      <dd class="definitions__texte">
-                        <p class="definitions__definition" {...edFamille(f.id, 'definition')}>{txt(f.definition, lang)}</p>
-                        <p {...edFamille(f.id, 'texte')}>{txt(f.texte, lang)}</p>
-                      </dd>
-                    </>
-                  ))}
-                </dl>
-
-                <Marge
-                  terme={txt(nosFamilles[0]?.marge.terme, lang)}
-                  edTerme={edFamille(nosFamilles[0]?.id, 'marge.terme')}
-                  edTexte={edFamille(nosFamilles[0]?.id, 'marge.texte')}
-                >
-                  {txt(nosFamilles[0]?.marge.texte, lang)}
-                </Marge>
-
-                {versServices && (
-                  <p class="apres">
-                    <a href={versServices}>{t(lang, 'services.tous')}</a>
-                  </p>
-                )}
-              </div>
-            </div>
-          </section>
-        );
-
-      // ===================================================================
-      case 'avocat':
-        return (
-          <section class="section section--craie" aria-labelledby="titre-avocat">
-            <div class="enveloppe">
-              {/* Zwei Spalten: links das Gesicht, rechts der Mensch dazu.
-                  Das ist die Stelle, an der die Seite aufhört, eine
-                  Broschüre zu sein. */}
-              <div class="personne">
-                <div class="personne__bild" data-revele="bild">
-                  <Bild
-                    platz="portrait"
-                    lang={lang}
-                    sizes="(min-width: 62rem) 24rem, 100vw"
-                  />
-                </div>
-
-                <div class="personne__texte">
-                  <h2 class="titre-2" id="titre-avocat" data-revele="titre" {...edPage('accueil.sections.avocat.titre')}>
-                    {txt(acc.avocat.titre, lang)}
-                  </h2>
-
-                  <p class="personne__nom" data-revele="texte">
-                    {avocat.civilite} {avocat.nom_complet}
-                  </p>
-                  <p class="personne__titre" data-revele="texte">
-                    <span {...edAvocat('titre')}>{txt(avocat.titre, lang)}</span> · {t(lang, 'commun.depuis')} {avocat.barreau_depuis}
-                  </p>
-
-                  <p class="corps personne__corps" data-revele="texte" {...edPage('accueil.sections.avocat.texte')}>
-                    {txt(acc.avocat.texte, lang)}
-                  </p>
-
-                  {/* Die Durchwahl, groß und direkt. Wer hier anruft,
-                      spricht mit ihm — das ist die Zusage der ganzen
-                      Seite, also steht sie auch so da. */}
-                  <p class="personne__appel" data-revele="texte">
-                    <span class="personne__appel-label" {...edPage('accueil.sections.avocat.appel')}>
-                      {txt(acc.avocat.appel, lang)}
-                    </span>
-                    <a class="personne__numero" href={`tel:${avocat.telephone.replace(/[^+0-9]/g, '')}`}>
-                      {avocat.telephone}
-                    </a>
-                  </p>
-
-                  {versEtude && (
-                    <p class="apres">
-                      <a href={versEtude} {...edPage('accueil.sections.avocat.lien')}>{txt(acc.avocat.lien, lang)}</a>
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </section>
-        );
-
-      // ===================================================================
-      case 'bureau':
-        return (
-          <section class="section" aria-labelledby="titre-bureau">
-            <div class="enveloppe">
-              <div class="colonne">
-                <h2 class="titre-2" id="titre-bureau" data-revele="titre" {...edPage('accueil.sections.bureau.titre')}>
-                  {txt(acc.bureau.titre, lang)}
-                </h2>
-                <p class="chapeau discret" data-revele="texte" {...edPage('accueil.sections.bureau.chapeau')}>
-                  {txt(acc.bureau.chapeau, lang)}
-                </p>
-              </div>
-            </div>
-
-            {/* Drei Aufnahmen, ungleich breit — ein gleichmäßiges Raster
-                sähe nach Bildagentur aus. */}
-            <div class="enveloppe">
-              {/* Zwei Aufnahmen, ungleich: eine liegende und eine stehende.
-                  Zwei gleich große nebeneinander sähen nach Katalog aus. */}
-              <div class="bureau" data-revele="liste">
-                <div class="bureau__gross">
-                  <Bild platz="bureau_1" lang={lang} sizes="(min-width: 50rem) 36rem, 100vw" />
-                </div>
-                <div class="bureau__klein">
-                  <Bild platz="bureau_2" lang={lang} sizes="(min-width: 50rem) 17rem, 100vw" />
-                </div>
-              </div>
-            </div>
-          </section>
-        );
-
-      // ===================================================================
-      case 'publications':
-        return (
-          <section class="section" aria-labelledby="titre-publications">
-            <div class="enveloppe">
-              <div class="colonne">
-                <h2 class="titre-2" id="titre-publications" data-revele="titre" {...edPage('accueil.sections.publications.titre')}>
-                  {txt(acc.publications.titre, lang)}
-                </h2>
-                <p class="chapeau discret" data-revele="texte" {...edPage('accueil.sections.publications.chapeau')}>{txt(acc.publications.chapeau, lang)}</p>
-
-                {derniers.length > 0 ? (
-                  <ul class="liste-documents" data-revele="liste">
-                    {derniers.map((p) => (
-                      <li class="rang">
-                        <a href={`${versPublications}${txt(p.slug, lang)}/`} {...ed('publications', p.id, 'titre')}>
-                          {txt(p.titre, lang)}
-                        </a>
-                        {p.etat_du_droit && (
-                          <span class="liste-documents__etat">
-                            {t(lang, 'publications.etat_du_droit')} {p.etat_du_droit}
-                          </span>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p class="note">
-                    {t(lang, 'publications.en_preparation')} <Lacune id="documents_texte" lang={lang} />
-                  </p>
-                )}
-
-                {versPublications && (
-                  <p class="apres">
-                    <a href={versPublications} {...edPage('accueil.sections.publications.lien')}>{txt(acc.publications.lien, lang)}</a>
-                  </p>
-                )}
-              </div>
-            </div>
-          </section>
-        );
-
-      // ===================================================================
-      case 'honoraires':
-        return (
-          <section class="section section--craie" aria-labelledby="titre-honoraires">
-            <div class="enveloppe">
-              <div class="colonne">
-                <h2 class="titre-2" id="titre-honoraires" data-revele="titre" {...edPage('accueil.sections.honoraires.titre')}>
-                  {txt(acc.honoraires.titre, lang)}
-                </h2>
-                <p class="chapeau discret" data-revele="texte" {...edPage('accueil.sections.honoraires.chapeau')}>{txt(acc.honoraires.chapeau, lang)}</p>
-                <dl class="postes" data-revele="definitions">
-                  {honoraires.postes.map((poste: { id: string; ouvert: string }) => (
-                    <>
-                      <dt>{t(lang, `honoraires.${poste.id}` as never)}</dt>
-                      <dd>
-                        <Lacune id={poste.ouvert} lang={lang} />
-                      </dd>
-                    </>
-                  ))}
-                </dl>
-                <p class="corps">{t(lang, 'honoraires.convention')}</p>
-                {versHonoraires && (
-                  <p class="apres">
-                    <a href={versHonoraires} {...edPage('accueil.sections.honoraires.lien')}>{txt(acc.honoraires.lien, lang)}</a>
-                  </p>
-                )}
-              </div>
-            </div>
-          </section>
-        );
-
-      // ===================================================================
-      case 'faq':
-        return (
-          <section class="section" aria-labelledby="titre-faq">
-            <div class="enveloppe">
-              <div class="colonne">
-                <h2 class="titre-2" id="titre-faq" data-revele="titre">
-                  {t(lang, 'faq.titre')}
-                </h2>
-                <div class="faq" data-revele="liste">
-                  {questions.map((q) => (
-                    <Depliant
-                      question={txt(q.question, lang)}
-                      id={`faq-${q.id}`}
-                      edQuestion={ed('faq', q.id, 'question')}
-                    >
-                      {faqPubliable(q, lang) ? (
-                        <p set:html={txt(q.reponse, lang)} {...ed('faq', q.id, 'reponse', true)} />
-                      ) : (
-                        <p {...ed('faq', q.id, 'reponse', true)}>
-                          <Lacune id={q.ouvert ?? 'situations_contenu'} lang={lang} />
-                        </p>
-                      )}
-                      {q.complement_ouvert && (
-                        <p>
-                          <Lacune id={q.complement_ouvert} lang={lang} />
-                        </p>
-                      )}
-                    </Depliant>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        );
-
-      // ===================================================================
-      case 'contact':
-        return (
-          <section class="section section--craie" id="contact" aria-labelledby="titre-contact">
-            <div class="enveloppe">
-              <div class="colonne">
-                <h2 class="titre-2" id="titre-contact" data-revele="titre" {...edPage('accueil.sections.contact.titre')}>
-                  {txt(acc.contact.titre, lang)}
-                </h2>
-                <p class="chapeau discret" data-revele="texte" {...edPage('accueil.sections.contact.chapeau')}>{txt(acc.contact.chapeau, lang)}</p>
-                <Formulaire lang={lang} niveau={3} id="formulaire-accueil" />
-                {versContact && (
-                  <p class="apres">
-                    <a href={versContact}>{t(lang, 'contact.titre')}</a>
-                  </p>
-                )}
-              </div>
-            </div>
-          </section>
-        );
-
-      default:
-        return null;
+<section class="section">
+  <div class="enveloppe etude">
+    <div class="etude__texte">
+      <h2 class="titre-section filet" {...edPage('accueil.cabinet_titre')}>{txt(p.cabinet_titre, lang)}</h2>
+      <div class="prose" set:html={txtHtml(p.cabinet_texte, lang)} {...edPage('accueil.cabinet_texte', true)} />
+    </div>
+    {
+      lorang && (
+        <figure class="etude__portrait">
+          <Bild platz="portrait" lang={lang} sizes="(min-width: 62rem) 24rem, 80vw" />
+          <figcaption>
+            <span class="etude__nom">
+              {lorang.titre_civil} {lorang.nom}
+            </span>
+            <span {...ed('team', lorang.id, 'fonction')}>{txt(lorang.fonction, lang)}</span>
+            {
+              urlAvocats && (
+                <a class="lien-fleche" href={urlAvocats}>
+                  {t(lang, 'nav.avocats')}
+                  <Icone nom="fleche" />
+                </a>
+              )
+            }
+          </figcaption>
+        </figure>
+      )
     }
-  })
-}
+  </div>
+</section>
+
+<section class="section section--brume">
+  <div class="enveloppe">
+    <div class="entete-section">
+      <h2 class="titre-section filet">{t(lang, 'accueil.activites_titre')}</h2>
+      <p class="chapeau" {...edPage('activites.intro')}>{txt(contenu.pages.activites.intro, lang)}</p>
+    </div>
+    <ul class="registre registre--deux">
+      {
+        liste.map((a) => (
+          <li class="registre__ligne">
+            <a class="registre__lien" href={adresse(`activite:${a.id}`, lang)}>
+              <span class="registre__titre" {...ed('services', a.id, 'terme')}>
+                {txt(a.terme, lang)}
+              </span>
+              <span class="registre__texte">{txt(a.definition, lang)}</span>
+              <Icone nom="fleche" class="registre__fleche" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<section class="section section--marine atouts">
+  <div class="enveloppe">
+    <h2 class="titre-section filet" {...edPage('accueil.atouts_titre')}>{txt(p.atouts_titre, lang)}</h2>
+    <ol class="atouts__liste">
+      {
+        p.atouts.map((a: any, i: number) => (
+          <li>
+            <span class="atouts__titre" {...edPage(`accueil.atouts.${i}.titre`)}>
+              {txt(a.titre, lang)}
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<section class="section">
+  <div class="enveloppe specialiste">
+    <div>
+      <h2 class="titre-section filet" {...edPage('accueil.specialiste_titre')}>{txt(p.specialiste_titre, lang)}</h2>
+      <div class="prose" set:html={txtHtml(p.specialiste_texte, lang)} {...edPage('accueil.specialiste_texte', true)} />
+    </div>
+    <aside class="reseaux" aria-labelledby="titre-reseaux">
+      <h3 id="titre-reseaux">{t(lang, 'accueil.reseaux_titre')}</h3>
+      <dl>
+        {
+          s.reseaux.map((r: any) => (
+            <div>
+              <dt>{r.nom}</dt>
+              <dd>{txt(r.role, lang)}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </aside>
+  </div>
+</section>
+
+<section class="section section--brume">
+  <div class="enveloppe publications">
+    <div>
+      <h2 class="titre-section filet">{t(lang, 'nav.dossiers')}</h2>
+      <ul class="registre">
+        {
+          derniersDossiers.map((d) => (
+            <li class="registre__ligne">
+              <a class="registre__lien" href={adresse(`dossier:${d.id}`, lang)}>
+                <span class="registre__titre">{txt(d.titre, lang)}</span>
+                <span class="registre__texte">{txt(d.resume, lang)}</span>
+                <Icone nom="fleche" class="registre__fleche" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      {
+        urlDossiers && (
+          <a class="lien-fleche publications__tous" href={urlDossiers}>
+            {t(lang, 'accueil.dossiers_tous')}
+            <Icone nom="fleche" />
+          </a>
+        )
+      }
+    </div>
+    <div>
+      <h2 class="titre-section filet">{t(lang, 'nav.conferences')}</h2>
+      <p class="chapeau" {...edPage('accueil.conferences_texte')}>{txt(p.conferences_texte, lang)}</p>
+      <ul class="registre publications__conf">
+        {
+          dernieresConferences.map((c) => {
+            const titre = txtOuFrancais(c.titre, lang);
+            return (
+              <li class="registre__ligne">
+                <a class="registre__lien" href={prefixer(c.pdf!.chemin)} download>
+                  <span class="registre__titre" lang={titre.lang !== lang ? titre.lang : undefined}>
+                    {titre.valeur}
+                  </span>
+                  <span class="etiquettes">
+                    <span>PDF · {formaterTaille(c.pdf!.octets, lang)}</span>
+                    {titre.lang !== lang && <span>{t(lang, 'conferences.en_francais')}</span>}
+                  </span>
+                  <Icone nom="telecharger" class="registre__fleche" />
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+      {
+        urlConferences && (
+          <a class="lien-fleche publications__tous" href={urlConferences}>
+            {t(lang, 'accueil.conferences_toutes')}
+            <Icone nom="fleche" />
+          </a>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="enveloppe pourquoi">
+    <h2 class="titre-section filet" {...edPage('accueil.pourquoi_titre')}>{txt(p.pourquoi_titre, lang)}</h2>
+    <div class="prose pourquoi__texte" set:html={txtHtml(p.pourquoi_texte, lang)} {...edPage('accueil.pourquoi_texte', true)} />
+  </div>
+</section>
+
+<section class="section section--marine rdv">
+  <div class="enveloppe rdv__grille">
+    <h2 class="titre-section">{t(lang, 'accueil.rdv_titre')}</h2>
+    <div class="rdv__coordonnees">
+      <address>
+        {s.adresse.rue}<br />
+        {`${s.adresse.code_postal} ${s.adresse.ville}`}
+      </address>
+      <a class="rdv__tel" href={`tel:${s.telephone.lien}`}>{s.telephone.affiche}</a>
+      <a href={`mailto:${s.courriel}`}>{s.courriel}</a>
+      {
+        urlContact && (
+          <a class="bouton bouton--or" href={urlContact}>
+            {t(lang, 'accueil.rendez_vous')}
+            <Icone nom="fleche" />
+          </a>
+        )
+      }
+    </div>
+  </div>
+</section>
 
 <style>
-  .definitions__terme a {
-    color: var(--color-encre);
-    text-decoration: none;
-    border-bottom: 1.5px solid var(--color-laiton);
+  /* --- Hero ---------------------------------------------------------------
+     Marineblau ueber die ganze Breite: links Titel, Satz und Termin,
+     rechts das Foto des Salons, randlos bis an die Kante. */
+  .hero {
+    display: grid;
+    background: var(--color-marine);
+    color: var(--color-marine-texte);
   }
-  .definitions__terme a:hover {
-    color: var(--color-frontiere-tief);
+  .hero__texte {
+    padding: clamp(3.5rem, 2rem + 6vw, 7rem) var(--gouttiere) clamp(3rem, 2rem + 4vw, 5rem);
+    animation: hero-entree 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
-  .definitions__definition {
-    color: var(--color-pierre);
-    margin-bottom: 0.4rem;
+  .hero h1 {
+    font-size: var(--text-affiche);
+    font-weight: 300;
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    color: var(--color-blanc);
+    max-width: 12ch;
   }
-
-  .apres {
+  .hero__intro {
     margin-top: 2rem;
-    font-family: var(--font-commande);
-    font-size: var(--text-commande);
+    max-width: 48ch;
+    font-size: var(--text-chapeau);
+    line-height: 1.6;
   }
-
-  .liste-documents {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    max-width: var(--mesure);
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem 2rem;
+    margin-top: 2.75rem;
   }
-  .liste-documents li {
-    padding-block: 0.9rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--color-pierre) 22%, transparent);
-  }
-  .liste-documents li:first-child {
-    border-top: 1px solid color-mix(in srgb, var(--color-pierre) 22%, transparent);
-  }
-  .liste-documents a {
-    font-family: var(--font-lecture);
-    font-size: var(--text-h3);
-    color: var(--color-encre);
+  .hero__tel {
+    display: inline-flex;
+    flex-direction: column;
+    color: var(--color-blanc);
+    font-family: var(--font-titre);
+    font-size: 1.375rem;
     text-decoration: none;
+    line-height: 1.2;
   }
-  .liste-documents a:hover {
-    color: var(--color-frontiere-tief);
-    text-decoration: underline;
+  .hero__tel span {
+    font-family: var(--font-texte);
+    font-size: 0.8125rem;
+    color: var(--color-marine-texte);
   }
-  .liste-documents__etat {
+  .hero__tel:hover {
+    color: var(--color-or-clair);
+  }
+  .hero__image :global(picture),
+  .hero__image :global(img) {
     display: block;
-    font-family: var(--font-commande);
-    font-size: var(--text-marge);
-    color: var(--color-pierre);
-    margin-top: 0.25rem;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero__image {
+    aspect-ratio: 4 / 3;
+  }
+  .hero__preuves {
+    display: grid;
+    gap: 0.75rem 2.5rem;
+    padding: 1.75rem var(--gouttiere);
+    border-top: 1px solid color-mix(in srgb, var(--color-marine-texte) 22%, transparent);
+    font-size: 0.875rem;
+    color: var(--color-or-clair);
+  }
+  @media (min-width: 62rem) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+      grid-template-rows: 1fr auto;
+      min-height: min(88vh, 50rem);
+    }
+    .hero__texte {
+      align-self: center;
+      padding-left: max(var(--gouttiere), calc((100vw - var(--largeur)) / 2));
+      padding-right: clamp(2rem, 5vw, 5rem);
+    }
+    .hero__image {
+      grid-row: 1 / span 2;
+      grid-column: 2;
+      aspect-ratio: auto;
+    }
+    .hero__preuves {
+      grid-template-columns: repeat(3, auto);
+      justify-content: start;
+      padding-left: max(var(--gouttiere), calc((100vw - var(--largeur)) / 2));
+    }
+  }
+  /* Nur Bewegung, keine Ausblendung: Der Text ist vom ersten Bild an
+     lesbar, auch wenn der Browser Animationen anhaelt. */
+  @keyframes hero-entree {
+    from {
+      transform: translateY(0.75rem);
+    }
   }
 
-  .postes {
-    margin: 1.5rem 0 0;
+  /* --- Die Kanzlei ---------------------------------------------------------- */
+  .etude {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.35rem 1.5rem;
-    max-width: var(--mesure);
+    gap: 3.5rem;
   }
-  .postes dt {
-    font-family: var(--font-commande);
-    font-size: var(--text-commande);
-    font-weight: 500;
+  .etude .prose {
+    margin-top: 2rem;
   }
-  .postes dd {
-    margin: 0 0 1rem;
+  .etude__portrait {
+    margin: 0;
+    max-width: 24rem;
   }
-  @media (min-width: 40rem) {
-    .postes {
-      grid-template-columns: minmax(10rem, 14rem) 1fr;
+  .etude__portrait :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+  .etude__portrait figcaption {
+    display: grid;
+    gap: 0.15rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 2px solid var(--color-or);
+    color: var(--color-gris);
+    font-size: 0.9375rem;
+  }
+  .etude__nom {
+    font-family: var(--font-titre);
+    font-size: 1.375rem;
+    color: var(--color-encre);
+  }
+  .etude__portrait .lien-fleche {
+    justify-self: start;
+    margin-top: 1rem;
+  }
+  @media (min-width: 62rem) {
+    .etude {
+      grid-template-columns: minmax(0, 1fr) 24rem;
+      gap: clamp(4rem, 8vw, 8rem);
+      align-items: start;
     }
-    .postes dt {
-      padding-top: 0.15rem;
-    }
-    .postes dd {
-      margin-bottom: 0.5rem;
+    .etude__portrait {
+      margin-top: 4.5rem;
     }
   }
 
-  .faq {
-    margin-top: 1.75rem;
-    max-width: var(--mesure);
-  }
-  /* --- Wer antwortet: Gesicht und Mensch ---------------------------------
-     Zwei ungleiche Spalten. Das Porträt ist schmaler als der Text — es
-     soll begleiten, nicht dominieren. Am Handy steht es oben, weil ein
-     Gesicht am Anfang mehr sagt als eine Überschrift.
-     ---------------------------------------------------------------------- */
-  .personne {
+  /* --- Taetigkeiten ---------------------------------------------------------- */
+  .entete-section {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    align-items: start;
+    gap: 1.25rem 4rem;
+    margin-bottom: 3rem;
   }
-  .personne__bild {
-    max-width: 20rem;
+  @media (min-width: 62rem) {
+    .entete-section {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: end;
+    }
   }
-  .personne__texte {
-    min-width: 0;
-    max-width: var(--mesure);
+
+  /* --- Staerken ----------------------------------------------------------- */
+  .atouts__liste {
+    display: grid;
+    gap: 2.5rem 3rem;
+    margin-top: 3.5rem;
   }
-  .personne__nom {
-    font-family: var(--font-lecture);
-    font-size: var(--text-h3);
+  .atouts__liste li {
+    padding-top: 1.5rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-marine-texte) 30%, transparent);
+  }
+  .atouts__titre {
+    font-family: var(--font-titre);
+    font-size: 1.5rem;
+    line-height: 1.3;
+    color: var(--color-blanc);
+  }
+  @media (min-width: 48rem) {
+    .atouts__liste {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 72rem) {
+    .atouts__liste {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  /* --- Netzwerke ----------------------------------------------------------- */
+  .specialiste {
+    display: grid;
+    gap: 3.5rem;
+  }
+  .specialiste .prose {
+    margin-top: 2rem;
+  }
+  .reseaux h3 {
+    font-family: var(--font-texte);
+    font-size: 0.8125rem;
     font-weight: 600;
-    margin-top: 1.5rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-gris);
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--color-or);
   }
-  .personne__titre {
-    font-family: var(--font-commande);
-    font-size: var(--text-commande);
-    color: var(--color-pierre);
-    margin-top: 0.15rem;
+  .reseaux dl > div {
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--color-trait);
   }
-  .personne__corps {
+  .reseaux dt {
+    font-family: var(--font-titre);
+    font-size: 1.5rem;
+    color: var(--color-marine);
+  }
+  .reseaux dd {
+    margin-top: 0.25rem;
+    font-size: 0.9375rem;
+    color: var(--color-gris);
+  }
+  @media (min-width: 62rem) {
+    .specialiste {
+      grid-template-columns: minmax(0, 1fr) 22rem;
+      gap: clamp(4rem, 8vw, 8rem);
+    }
+    .reseaux {
+      margin-top: 4.5rem;
+    }
+  }
+
+  /* --- Dossiers und Konferenzen --------------------------------------------- */
+  .publications {
+    display: grid;
+    gap: 4.5rem;
+  }
+  .publications .registre {
+    margin-top: 2.5rem;
+  }
+  .publications .chapeau {
     margin-top: 1.25rem;
   }
-
-  /* Die Durchwahl. Kein Knopf, kein Kasten — eine Zahl, groß gesetzt,
-     mit der Messinglinie darunter, die überall sonst auch steht. */
-  .personne__appel {
+  .publications__tous {
     margin-top: 2rem;
-    padding-top: 1.25rem;
-    border-top: var(--trait);
   }
-  .personne__appel-label {
-    display: block;
-    font-family: var(--font-commande);
-    font-size: var(--text-marge);
-    color: var(--color-pierre);
-    margin-bottom: 0.3rem;
+  .publications__conf .registre__titre {
+    font-size: 1.1875rem;
   }
-  .personne__numero {
-    font-family: var(--font-lecture);
-    font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2rem);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--color-frontiere);
-    text-decoration: none;
-    display: inline-block;
-    background-image: linear-gradient(var(--color-laiton), var(--color-laiton));
-    background-repeat: no-repeat;
-    background-position: 0 100%;
-    background-size: 0% 2px;
-    transition:
-      background-size 380ms cubic-bezier(0.22, 0.61, 0.36, 1),
-      color 200ms ease-out;
+  .publications__conf .etiquettes {
+    grid-column: 1;
   }
-  @media (hover: hover) and (pointer: fine) {
-    .personne__numero:hover {
-      color: var(--color-frontiere-tief);
-      background-size: 100% 2px;
-    }
-  }
-  @media (hover: none) {
-    .personne__numero {
-      background-size: 100% 2px;
-    }
-  }
-
   @media (min-width: 62rem) {
-    .personne {
-      grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
-      gap: 3.5rem;
-    }
-    .personne__bild {
-      max-width: none;
-      /* Etwas tiefer als die Überschrift ansetzen: das Bild trägt den
-         Blick nach unten in den Text hinein. */
-      margin-top: 0.5rem;
-    }
-    .personne__nom {
-      margin-top: 1.75rem;
+    .publications {
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(3rem, 6vw, 6rem);
     }
   }
 
-  /* --- Das Büro -----------------------------------------------------------
-     Eine große Aufnahme, zwei kleinere daneben. Ein gleichmäßiges Raster
-     aus drei gleich großen Bildern sähe nach Bildagentur aus.
-     ---------------------------------------------------------------------- */
-  .bureau {
+  /* --- Pourquoi ------------------------------------------------------------- */
+  .pourquoi__texte {
+    max-width: none;
     margin-top: 2.5rem;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
   }
-  @media (min-width: 50rem) {
-    .bureau {
-      grid-template-columns: 1.75fr 1fr;
-      gap: 1.25rem;
-      align-items: stretch;
+  @media (min-width: 62rem) {
+    .pourquoi__texte {
+      columns: 2;
+      column-gap: clamp(3rem, 6vw, 6rem);
     }
-    /* Beide Spalten enden auf derselben Höhe. Das liegende Bild folgt
-       dafür der Höhe des stehenden statt seinem eigenen Verhältnis —
-       sonst franst das Band unten aus. */
-    .bureau__gross,
-    .bureau__gross :global(.bild) {
-      height: 100%;
-      aspect-ratio: auto;
+    .pourquoi__texte :global(p) {
+      break-inside: avoid;
+    }
+  }
+
+  /* --- Termin --------------------------------------------------------------- */
+  .rdv__grille {
+    display: grid;
+    gap: 2.5rem 6rem;
+  }
+  .rdv__coordonnees {
+    display: grid;
+    gap: 0.5rem;
+    justify-items: start;
+    font-size: 1.0625rem;
+  }
+  .rdv__coordonnees address {
+    font-style: normal;
+    line-height: 1.6;
+    color: var(--color-blanc);
+  }
+  .rdv__coordonnees a {
+    text-decoration: none;
+  }
+  .rdv__coordonnees a:not(.bouton):hover {
+    color: var(--color-blanc);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .rdv__tel {
+    margin-top: 0.75rem;
+    font-family: var(--font-titre);
+    font-size: 1.75rem;
+    color: var(--color-or-clair);
+  }
+  .rdv .bouton {
+    margin-top: 1.5rem;
+  }
+  @media (min-width: 62rem) {
+    .rdv__grille {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      align-items: center;
     }
   }
 </style>

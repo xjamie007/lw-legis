@@ -1,493 +1,244 @@
 ---
 /**
- * src/components/Formulaire.astro — Anfrageformular.
+ * src/components/Formulaire.astro — Das Kontaktformular.
  *
- * So wenige Felder wie moeglich — und genau die, die eine Antwort ohne
- * Rueckfrage ermoeglichen. Bei einer grenzueberschreitenden Kanzlei sind
- * das Wohnsitzland (entscheidet ueber anwendbares Recht und Doppel-
- * besteuerung) und eine etwaige Frist (entscheidet, ob die Kanzlei
- * ueberhaupt noch annehmen kann).
+ * Felder und Beschriftungen wie auf der alten Seite (Nom et prénom,
+ * Société, Adresse, Téléphone, Email, Demande, Einwilligung), dazu die
+ * Auswahl der Taetigkeit. Kommt man von einer Taetigkeitsseite
+ * (?domaine=<id>), ist sie vorbelegt.
  *
- * Ohne JavaScript: das Formular wird ganz gewoehnlich abgeschickt. Die
- * Edge Function nimmt es entgegen und leitet mit 303 auf die
- * Bestaetigungsseite weiter.
- * Mit JavaScript: Pruefung am Feld, Fehlermeldungen direkt daneben, und
- * der Versand laeuft ohne Seitenwechsel.
- *
- * BEWUSST KEIN DATEI-UPLOAD. Vertraege, Schreiben und Urteile sind
- * berufsgeheimnisgeschuetzt; ein offenes Upload-Feld auf einer Website ist
- * dafuer der falsche Kanal.
- *
- * Spamschutz: Honeypot plus serverseitige Pruefung. Kein Captcha —
- * Captchas kosten echte Anfragen, und bei einem Publikum jenseits der 60
- * kosten sie besonders viele.
+ * Ohne JavaScript geht das Formular als gewoehnlicher POST an die Edge
+ * Function `send-inquiry`, die mit 303 auf die Bestaetigungsseite
+ * weiterleitet. Mit JavaScript wird am Feld geprueft und ohne
+ * Seitenwechsel gesendet (src/scripts/formulaire.ts).
  */
 import type { Lang } from '../lib/langs';
 import { txt } from '../lib/langs';
-import { t } from '../lib/i18n';
-import { paysOptions, projetOptions } from '../lib/content';
-import { seg } from '../lib/routes';
-import { prefixer } from '../lib/base';
+import { t, type Cle } from '../lib/i18n';
+import { activites, contenu } from '../lib/content';
+import { adresse } from '../lib/pages';
+import { absolu } from '../lib/seo';
 
 interface Props {
   lang: Lang;
-  /** Vorauswahl, wenn das Formular aus einer Konstellation heraus kommt. */
-  paysPrechoisi?: string | null;
-  projetPrechoisi?: string | null;
-  /** Ueberschriftenebene, damit die Hierarchie je Seite stimmt. */
-  niveau?: 2 | 3;
-  id?: string;
 }
-
-const {
-  lang,
-  paysPrechoisi = null,
-  projetPrechoisi = null,
-  niveau = 2,
-  id = 'formulaire',
-} = Astro.props;
-
-const pays = paysOptions(lang);
-const projets = projetOptions(lang);
-
-const segDonnees = seg('donnees', lang);
-const segRecu = seg('recu', lang);
-const lienDonnees = segDonnees ? prefixer(`/${lang}/${segDonnees}/`) : null;
-const urlRecu = segRecu ? prefixer(`/${lang}/${segRecu}/`) : prefixer(`/${lang}/`);
-
-/** Die Edge Function nimmt die Anfrage entgegen. */
+const { lang } = Astro.props;
+const p = contenu.pages.contact;
+const recu = adresse('recu', lang) ?? '/';
+const urlDonnees = adresse('donnees', lang) ?? adresse('donnees', 'fr');
 const pointDeReception = `${import.meta.env.PUBLIC_SUPABASE_URL ?? ''}/functions/v1/send-inquiry`;
 
-/**
- * Nur die Meldungen, die das Skript im Browser wirklich braucht — und nur
- * in der Sprache dieser Seite. Auch Formularfehler werden uebersetzt.
- */
 const messages = Object.fromEntries(
   (
     [
       'formulaire.erreur_nom',
       'formulaire.erreur_courriel',
-      'formulaire.erreur_pays',
-      'formulaire.erreur_projet',
-      'formulaire.erreur_echeance',
-      'formulaire.erreur_message',
+      'formulaire.erreur_telephone',
+      'formulaire.erreur_demande',
       'formulaire.erreur_consentement',
-      'formulaire.erreur_generale',
+      'formulaire.erreur_envoi',
+      'formulaire.envoi',
       'formulaire.envoyer',
-      'formulaire.envoi_en_cours',
-    ] as const
+    ] as Cle[]
   ).map((c) => [c, t(lang, c)]),
 );
-
-const Titre = niveau === 2 ? 'h2' : 'h3';
+const obligatoire = t(lang, 'formulaire.obligatoire');
 ---
 
-<div class="formulaire" id={id}>
-  <Titre class="titre-2">{t(lang, 'formulaire.titre')}</Titre>
-
-  {/* Fehlerzusammenfassung. Bekommt bei einem Fehler den Fokus, damit
-      Screenreader und Tastaturnutzer sofort dort landen. */}
-  <div
-    class="formulaire__resume"
-    id={`${id}-resume`}
-    role="alert"
-    tabindex="-1"
-    hidden
-    data-resume
-  >
-    <p class="formulaire__resume-titre">{t(lang, 'formulaire.erreur_titre')}</p>
-    <ul class="formulaire__resume-liste" data-resume-liste></ul>
+<form
+  class="formulaire"
+  id="formulaire"
+  method="post"
+  action={pointDeReception}
+  novalidate
+  data-formulaire
+  data-recu={recu}
+  data-messages={JSON.stringify(messages)}
+>
+  <div class="formulaire__resume" role="alert" tabindex="-1" data-resume hidden>
+    <p>{t(lang, 'formulaire.erreur_titre')}</p>
+    <ul data-resume-liste></ul>
   </div>
 
-  <form
-    class="formulaire__corps"
-    method="post"
-    action={pointDeReception}
-    data-formulaire
-    data-recu={urlRecu}
-    data-lang={lang}
-    data-messages={JSON.stringify(messages)}
-    novalidate
-  >
-    <input type="hidden" name="langue" value={lang} />
-    <input type="hidden" name="page" value={Astro.url.pathname} />
+  <input type="hidden" name="langue" value={lang} />
+  <input type="hidden" name="page" value={Astro.url.pathname} />
+  <input type="hidden" name="recu" value={absolu(recu)} />
 
-    {/* Honeypot: fuer Menschen unsichtbar und aus der Tabulatorreihenfolge
-        genommen, fuer Screenreader ausgeblendet. Ausgefuellt = Maschine. */}
-    <div class="formulaire__piege" aria-hidden="true">
-      <label for={`${id}-societe`}>Ne pas remplir</label>
-      <input
-        type="text"
-        id={`${id}-societe`}
-        name="societe"
-        tabindex="-1"
-        autocomplete="off"
-      />
+  {/* Falle fuer Formular-Roboter: Menschen sehen das Feld nicht. */}
+  <div class="formulaire__piege" aria-hidden="true">
+    <label for="site_web">Site web</label>
+    <input id="site_web" name="site_web" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="formulaire__grille">
+    <div class="champ champ--large">
+      <label for="nom">{t(lang, 'formulaire.nom')} <abbr title={obligatoire}>*</abbr></label>
+      <input id="nom" name="nom" autocomplete="name" required aria-describedby="erreur-nom" />
+      <p class="champ__erreur" id="erreur-nom" data-erreur="nom" hidden></p>
     </div>
-
     <div class="champ">
-      <label class="champ__label" for={`${id}-nom`}>
-        {t(lang, 'formulaire.nom')}
-      </label>
-      <input
-        class="champ__saisie"
-        type="text"
-        id={`${id}-nom`}
-        name="nom"
-        autocomplete="name"
-        required
-        aria-describedby={`${id}-nom-err`}
-      />
-      <p class="champ__erreur" id={`${id}-nom-err`} data-erreur></p>
+      <label for="societe">{t(lang, 'formulaire.societe')}</label>
+      <input id="societe" name="societe" autocomplete="organization" />
     </div>
-
     <div class="champ">
-      <label class="champ__label" for={`${id}-courriel`}>
-        {t(lang, 'formulaire.courriel')}
-      </label>
-      <input
-        class="champ__saisie"
-        type="email"
-        id={`${id}-courriel`}
-        name="courriel"
-        autocomplete="email"
-        inputmode="email"
-        required
-        aria-describedby={`${id}-courriel-err`}
-      />
-      <p class="champ__erreur" id={`${id}-courriel-err`} data-erreur></p>
+      <label for="adresse">{t(lang, 'formulaire.adresse')}</label>
+      <input id="adresse" name="adresse" autocomplete="street-address" />
     </div>
-
     <div class="champ">
-      <label class="champ__label" for={`${id}-telephone`}>
-        {t(lang, 'formulaire.telephone')}
-        <span class="champ__note">{t(lang, 'formulaire.facultatif')}</span>
-      </label>
-      <input
-        class="champ__saisie"
-        type="tel"
-        id={`${id}-telephone`}
-        name="telephone"
-        autocomplete="tel"
-        inputmode="tel"
-        aria-describedby={`${id}-telephone-aide`}
-      />
-      <p class="champ__aide" id={`${id}-telephone-aide`}>
-        {t(lang, 'formulaire.telephone_aide')}
-      </p>
+      <label for="telephone">{t(lang, 'formulaire.telephone')} <abbr title={obligatoire}>*</abbr></label>
+      <input id="telephone" name="telephone" type="tel" autocomplete="tel" required aria-describedby="erreur-telephone" />
+      <p class="champ__erreur" id="erreur-telephone" data-erreur="telephone" hidden></p>
     </div>
-
     <div class="champ">
-      <label class="champ__label" for={`${id}-pays`}>
-        {t(lang, 'formulaire.pays')}
-      </label>
-      <select
-        class="champ__saisie champ__saisie--choix"
-        id={`${id}-pays`}
-        name="pays"
-        required
-        aria-describedby={`${id}-pays-err`}
-      >
-        <option value="">{t(lang, 'formulaire.choisir')}</option>
-        {
-          pays.map((p) => (
-            <option value={p.id} selected={p.id === paysPrechoisi}>
-              {txt(p.etiquette, lang)}
-            </option>
-          ))
-        }
+      <label for="courriel">{t(lang, 'formulaire.courriel')} <abbr title={obligatoire}>*</abbr></label>
+      <input id="courriel" name="courriel" type="email" autocomplete="email" required aria-describedby="erreur-courriel" />
+      <p class="champ__erreur" id="erreur-courriel" data-erreur="courriel" hidden></p>
+    </div>
+    <div class="champ champ--large">
+      <label for="domaine">{t(lang, 'formulaire.domaine')}</label>
+      <select id="domaine" name="domaine" data-domaine>
+        <option value="">{t(lang, 'formulaire.domaine_aucun')}</option>
+        {activites(lang).map((a) => <option value={a.id}>{txt(a.terme, lang)}</option>)}
       </select>
-      <p class="champ__erreur" id={`${id}-pays-err`} data-erreur></p>
     </div>
-
-    <div class="champ">
-      <label class="champ__label" for={`${id}-projet`}>
-        {t(lang, 'formulaire.projet')}
-      </label>
-      <select
-        class="champ__saisie champ__saisie--choix"
-        id={`${id}-projet`}
-        name="projet"
-        required
-        aria-describedby={`${id}-projet-err`}
-      >
-        <option value="">{t(lang, 'formulaire.choisir')}</option>
-        {
-          projets.map((p) => (
-            <option value={p.id} selected={p.id === projetPrechoisi}>
-              {txt(p.etiquette, lang)}
-            </option>
-          ))
-        }
-      </select>
-      <p class="champ__erreur" id={`${id}-projet-err`} data-erreur></p>
+    <div class="champ champ--large">
+      <label for="message">{t(lang, 'formulaire.demande')} <abbr title={obligatoire}>*</abbr></label>
+      <textarea id="message" name="message" rows="7" required aria-describedby="erreur-message"></textarea>
+      <p class="champ__erreur" id="erreur-message" data-erreur="message" hidden></p>
     </div>
+  </div>
 
-    <fieldset class="champ champ--groupe">
-      <legend class="champ__label">{t(lang, 'formulaire.echeance')}</legend>
-      <p class="champ__aide" id={`${id}-echeance-aide`}>
-        {t(lang, 'formulaire.echeance_aide')}
-      </p>
-      <div class="champ__bascule">
-        <input
-          type="checkbox"
-          id={`${id}-sans-echeance`}
-          name="sans_echeance"
-          value="1"
-          data-sans-echeance
-        />
-        <label for={`${id}-sans-echeance`}>{t(lang, 'formulaire.echeance_aucune')}</label>
-      </div>
-      <label class="champ__label champ__label--petit" for={`${id}-echeance`}>
-        {t(lang, 'formulaire.echeance_date')}
-      </label>
-      <input
-        class="champ__saisie champ__saisie--date"
-        type="date"
-        id={`${id}-echeance`}
-        name="echeance"
-        aria-describedby={`${id}-echeance-aide ${id}-echeance-err`}
-        data-echeance
-      />
-      <p class="champ__erreur" id={`${id}-echeance-err`} data-erreur></p>
-    </fieldset>
+  <div class="consentement">
+    <input id="consentement" name="consentement" type="checkbox" value="1" required aria-describedby="erreur-consentement" />
+    <label for="consentement">{txt(p.consentement, lang)}</label>
+  </div>
+  <p class="champ__erreur" id="erreur-consentement" data-erreur="consentement" hidden></p>
 
-    <div class="champ">
-      <label class="champ__label" for={`${id}-message`}>
-        {t(lang, 'formulaire.message')}
-      </label>
-      <textarea
-        class="champ__saisie champ__saisie--texte"
-        id={`${id}-message`}
-        name="message"
-        rows="7"
-        required
-        aria-describedby={`${id}-message-err`}></textarea>
-      <p class="champ__erreur" id={`${id}-message-err`} data-erreur></p>
-    </div>
+  <p class="formulaire__note">
+    {
+      urlDonnees ? (
+        <a href={urlDonnees}>{txt(p.note_droits, lang)}</a>
+      ) : (
+        txt(p.note_droits, lang)
+      )
+    }
+  </p>
 
-    <p class="note formulaire__pieces">{t(lang, 'formulaire.pieces')}</p>
-
-    <div class="champ champ--case">
-      <input
-        type="checkbox"
-        id={`${id}-consentement`}
-        name="consentement"
-        value="1"
-        required
-        aria-describedby={`${id}-consentement-err`}
-      />
-      <label class="champ__label champ__label--case" for={`${id}-consentement`}>
-        {t(lang, 'formulaire.consentement')}
-        {
-          lienDonnees && (
-            <>
-              {' '}
-              <a href={lienDonnees}>{t(lang, 'formulaire.consentement_lien')}</a>
-            </>
-          )
-        }
-      </label>
-      <p class="champ__erreur" id={`${id}-consentement-err`} data-erreur></p>
-    </div>
-
-    {/* Pflichthinweis unmittelbar ueber dem Absendeknopf. */}
-    <p class="note formulaire__mandat">{t(lang, 'formulaire.avertissement_mandat')}</p>
-
-    <button class="bouton formulaire__envoi" type="submit" data-envoi>
-      {t(lang, 'formulaire.envoyer')}
-    </button>
-  </form>
-</div>
+  <button class="bouton" type="submit" data-envoi>{t(lang, 'formulaire.envoyer')}</button>
+</form>
 
 <script>
   import '../scripts/formulaire.ts';
 </script>
 
 <style>
-  .formulaire__corps {
-    margin-top: 1.75rem;
-    max-width: 38rem;
-  }
-
-  .champ {
-    margin-bottom: 1.5rem;
-  }
-  .champ--groupe {
-    border: 0;
-    padding: 0;
-    margin-inline: 0;
-  }
-
-  .champ__label {
-    display: block;
-    font-family: var(--font-commande);
-    font-size: var(--text-commande);
-    font-weight: 500;
-    color: var(--color-encre);
-    margin-bottom: 0.4rem;
-    padding: 0;
-  }
-  .champ__label--petit {
-    font-weight: 400;
-    color: var(--color-pierre);
-    margin-top: 0.9rem;
-  }
-  .champ__note {
-    font-weight: 400;
-    color: var(--color-pierre);
-    margin-left: 0.4rem;
-  }
-
-  .champ__saisie {
-    display: block;
-    width: 100%;
-    min-height: 2.75rem;
-    padding: 0.65rem 0.8rem;
-    font-family: var(--font-commande);
-    font-size: 1rem;
-    line-height: 1.4;
-    color: var(--color-encre);
-    background-color: var(--color-craie);
-    border: 1.5px solid color-mix(in srgb, var(--color-pierre) 45%, transparent);
-    border-radius: var(--radius-commande);
-  }
-  .champ__saisie:hover {
-    border-color: var(--color-pierre);
-  }
-  .champ__saisie:focus-visible {
-    border-color: var(--color-frontiere);
-  }
-  .champ__saisie--texte {
-    min-height: 8rem;
-    resize: vertical;
-  }
-  .champ__saisie--date {
-    max-width: 14rem;
-  }
-  .champ__saisie--choix {
-    /* Am Handy oeffnet das die native, bildschirmfuellende Auswahlliste. */
-    appearance: none;
-    background-image: linear-gradient(45deg, transparent 50%, var(--color-laiton-texte) 50%),
-      linear-gradient(135deg, var(--color-laiton-texte) 50%, transparent 50%);
-    background-position:
-      calc(100% - 1.1rem) 1.25rem,
-      calc(100% - 0.75rem) 1.25rem;
-    background-size:
-      0.35rem 0.35rem,
-      0.35rem 0.35rem;
-    background-repeat: no-repeat;
-    padding-right: 2.5rem;
-  }
-
-  .champ__aide {
-    font-family: var(--font-commande);
-    font-size: var(--text-marge);
-    color: var(--color-pierre);
-    margin-top: 0.35rem;
-  }
-
-  /* Fehler stehen am Feld, sagen was falsch ist und wie man es behebt.
-     Farbe ist nicht der einzige Traeger: es steht Text da, das Feld
-     bekommt aria-invalid, und der Rahmen wird dicker. */
-  .champ__erreur {
-    font-family: var(--font-commande);
-    font-size: var(--text-marge);
-    color: var(--color-encre);
-    margin-top: 0.35rem;
-  }
-  .champ__erreur:empty {
-    display: none;
-  }
-  .champ__erreur::before {
-    content: '';
-    display: inline-block;
-    width: 0.75rem;
-    border-top: 1.5px solid var(--color-laiton);
-    margin-right: 0.5rem;
-    vertical-align: 0.3em;
-  }
-  .champ__saisie[aria-invalid='true'] {
-    border-width: 2px;
-    border-color: var(--color-laiton-texte);
-  }
-
-  .champ--case {
+  .formulaire__grille {
     display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0.25rem 0.7rem;
-    align-items: start;
+    gap: 1.5rem;
   }
-  .champ--case input,
-  .champ__bascule input {
-    /* 24x24 Mindestgroesse fuer die Klickflaeche. */
-    width: 1.5rem;
-    height: 1.5rem;
-    margin: 0.1rem 0 0;
-    accent-color: var(--color-frontiere);
-    flex: none;
+  @media (min-width: 40rem) {
+    .formulaire__grille {
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem 1.75rem;
+    }
+    .champ--large {
+      grid-column: 1 / -1;
+    }
   }
-  .champ__label--case {
-    margin-bottom: 0;
-    font-weight: 400;
-    line-height: 1.45;
+  .champ label {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-size: 0.9063rem;
+    font-weight: 600;
+    color: var(--color-encre);
   }
-  .champ--case .champ__erreur {
-    grid-column: 2;
+  .champ abbr {
+    color: var(--color-gris);
+    text-decoration: none;
   }
-
-  .champ__bascule {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    margin-bottom: 0.4rem;
+  .champ input,
+  .champ select,
+  .champ textarea {
+    width: 100%;
+    min-height: 3.1rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid #858e9b;
+    border-radius: 0;
+    background: var(--color-blanc);
+    color: var(--color-encre);
+    transition:
+      border-color 200ms ease-out,
+      box-shadow 200ms ease-out;
   }
-  .champ__bascule label {
-    font-family: var(--font-commande);
-    font-size: var(--text-commande);
+  .champ textarea {
+    resize: vertical;
+    line-height: 1.55;
   }
-
-  .formulaire__pieces {
-    margin-bottom: 1.5rem;
+  .champ input:hover,
+  .champ select:hover,
+  .champ textarea:hover {
+    border-color: var(--color-gris);
   }
-  .formulaire__mandat {
-    margin-block: 1.75rem;
+  .champ input:focus,
+  .champ select:focus,
+  .champ textarea:focus {
+    outline: none;
+    border-color: var(--color-marine);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-marine) 18%, transparent);
   }
-  .formulaire__envoi {
-    min-width: 12rem;
+  .champ [aria-invalid='true'] {
+    border-color: #a32020;
   }
-  .formulaire__envoi[aria-disabled='true'] {
-    opacity: 0.7;
-    cursor: progress;
-  }
-
-  .formulaire__resume {
-    margin-top: 1.5rem;
-    border-left: var(--trait);
-    padding: 0.2rem 0 0.2rem 1.1rem;
-    max-width: 38rem;
-  }
-  .formulaire__resume-titre {
-    font-family: var(--font-commande);
+  .champ__erreur {
+    margin-top: 0.4rem;
+    color: #a32020;
+    font-size: 0.875rem;
     font-weight: 500;
   }
-  .formulaire__resume-liste {
-    margin: 0.5rem 0 0;
-    padding-left: 1.1rem;
-    font-family: var(--font-commande);
-    font-size: var(--text-commande);
+  .consentement {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    margin-top: 1.75rem;
+    font-size: 0.9063rem;
+    line-height: 1.55;
   }
-  .formulaire__resume-liste li + li {
-    margin-top: 0.3rem;
+  .consentement input {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.15rem;
+    accent-color: var(--color-marine);
   }
-
-  /* Honeypot: fuer Menschen unsichtbar, fuer Maschinen verlockend. */
+  .formulaire__note {
+    margin-top: 1rem;
+    font-size: 0.8125rem;
+    color: var(--color-gris);
+  }
+  .formulaire__note a {
+    color: inherit;
+    text-underline-offset: 3px;
+  }
+  .formulaire .bouton {
+    margin-top: 2rem;
+  }
+  .formulaire__resume {
+    margin-bottom: 2rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid #a32020;
+    color: #a32020;
+    font-size: 0.9375rem;
+  }
+  .formulaire__resume ul {
+    margin-top: 0.5rem;
+    padding-left: 1.2rem;
+    list-style: disc;
+  }
   .formulaire__piege {
     position: absolute;
+    left: -9999px;
     width: 1px;
     height: 1px;
     overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
   }
 </style>

@@ -127,7 +127,7 @@ export default function Editeur({
 
   // --- Offene Stellen je Sprache ------------------------------------------
   const ouvertesParLangue = useMemo(() => {
-    const out: Record<LangueContenu, number> = { fr: 0, de: 0, en: 0, lb: 0 };
+    const out: Record<LangueContenu, number> = { fr: 0, en: 0 };
     if (!donnees) return out;
     const champsMulti = collection.champs.filter((c) =>
       ['texte', 'texte_long', 'seo_titre', 'seo_description'].includes(c.type),

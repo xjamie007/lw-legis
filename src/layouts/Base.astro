@@ -79,14 +79,14 @@ const descriptionCourte = couper(description, 200);
         weitere laedt der Browser, wenn er es braucht. */}
     <link
       rel="preload"
-      href={prefixer('/fonts/literata-roman-latin.woff2')}
+      href={prefixer('/fonts/spectral-roman-300-latin.woff2')}
       as="font"
       type="font/woff2"
       crossorigin
     />
     <link
       rel="preload"
-      href={prefixer('/fonts/atkinson-hyperlegible-next-roman-latin.woff2')}
+      href={prefixer('/fonts/hanken-grotesk-roman-400-700-latin.woff2')}
       as="font"
       type="font/woff2"
       crossorigin
@@ -108,7 +108,7 @@ const descriptionCourte = couper(description, 200);
 
     <link rel="icon" href={prefixer('/favicon.svg')} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={prefixer('/apple-touch-icon.png')} />
-    <meta name="theme-color" content="#2F5D50" />
+    <meta name="theme-color" content="#13294B" />
 
     {jsonld && <script type="application/ld+json" is:inline set:html={jsonld} />}
   </head>
@@ -118,17 +118,12 @@ const descriptionCourte = couper(description, 200);
 
     <Entete lang={lang} chemin={chemin} alternatifs={alternatifs} />
 
-    <main id="contenu" tabindex="-1" class={animerEntree ? 'lever' : undefined}>
+    <main id="contenu" tabindex="-1">
       <slot />
     </main>
 
     <Pied lang={lang} chemin={chemin} />
 
-    {/* Einblenden beim Scrollen. Ohne dieses Skript ist alles sichtbar —
-        es versteckt erst und zeigt dann. */}
-    <script>
-      import '../scripts/revele.ts';
-    </script>
   </body>
 </html>
 

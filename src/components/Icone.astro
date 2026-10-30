@@ -1,0 +1,38 @@
+---
+/**
+ * src/components/Icone.astro — Die wenigen Symbole der Seite.
+ *
+ * Eigene Zeichnungen auf einem 24er-Raster, eine Strichstaerke (1,5),
+ * runde Enden. Kein Icon-Paket fuer sieben Zeichen.
+ */
+interface Props {
+  nom: 'fleche' | 'telephone' | 'courriel' | 'telecharger' | 'lieu' | 'carte' | 'imprimer' | 'menu' | 'fermer' | 'externe';
+  class?: string;
+}
+const { nom, class: klass } = Astro.props;
+
+const TRACES: Record<Props['nom'], string> = {
+  fleche: 'M4 12h15M13 6l6 6-6 6',
+  telephone:
+    'M5 4h3.5l1.5 4-2 1.5a11 11 0 0 0 6.5 6.5L16 14l4 1.5V19a1 1 0 0 1-1 1A15 15 0 0 1 4 5a1 1 0 0 1 1-1z',
+  courriel: 'M3.5 6h17v12h-17zM3.5 6.5l8.5 7 8.5-7',
+  telecharger: 'M12 4v11M7 10l5 5 5-5M5 19.5h14',
+  lieu: 'M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11zM12 12.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4z',
+  carte: 'M4.5 5.5h15v13h-15zM8 10h4M8 13.5h8M15.5 9.5h1',
+  imprimer: 'M7 9V4h10v5M7 17H4.5V9h15v8H17M7 14h10v6H7z',
+  menu: 'M4 7h16M4 12h16M4 17h16',
+  fermer: 'M6 6l12 12M18 6L6 18',
+  externe: 'M14 5h5v5M19 5l-8 8M17 14v5H5V7h5',
+};
+---
+
+<svg
+  class={klass}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"><path d={TRACES[nom]}></path></svg>

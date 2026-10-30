@@ -1,17 +1,12 @@
 ---
 /**
- * src/components/Bild.astro — Ein Bild, oder der Platz dafür.
+ * src/components/Bild.astro — Ein Bild aus content/source/bilder.mjs.
  *
- * Liegt die Datei vor, entsteht ein <picture> mit AVIF, WebP und dem
- * Original, mit `srcset` über die erzeugten Breiten, mit `width` und
- * `height` im Markup (damit beim Laden nichts springt) und mit dem
- * Bildausschnitt aus dem Redaktionsbereich.
- *
- * Liegt sie NICHT vor, entsteht ein gestalteter Platzhalter, der sagt, was
- * dort hingehört. Kein graues Feld mit Kamerasymbol: ein Rahmen in
- * Messing, der Name des Bildes und der Hinweis, dass die Datei fehlt.
- * So sieht die Seite bis zur Lieferung der Fotos gewollt aus statt kaputt
- * — und die Kanzlei sieht auf einen Blick, welche Aufnahme wohin gehört.
+ * Ein <picture> mit AVIF, WebP und dem Original, `srcset` ueber die
+ * erzeugten Breiten, `width` und `height` im Markup (damit beim Laden
+ * nichts springt) und dem Bildausschnitt aus dem Redaktionsbereich.
+ * Fehlt die Datei, wird nichts ausgegeben: eine Kanzleiseite zeigt lieber
+ * kein Bild als einen Platzhalter.
  */
 import type { Lang } from '../lib/langs';
 import { txt } from '../lib/langs';
@@ -19,34 +14,24 @@ import { contenu } from '../lib/content';
 import { prefixer } from '../lib/base';
 
 interface Props {
-  /** Schlüssel aus content/source/bilder.mjs */
+  /** Schluessel aus content/source/bilder.mjs */
   platz: string;
   lang: Lang;
-  /** Breiten-Hinweis für den Browser, z. B. '(min-width: 62rem) 22rem, 100vw' */
+  /** Breiten-Hinweis fuer den Browser, z. B. '(min-width: 62rem) 22rem, 100vw' */
   sizes?: string;
-  /** Über der Falz? Dann nicht faul laden. */
+  /** Ueber der Falz? Dann nicht faul laden. */
   eifrig?: boolean;
   class?: string;
 }
 
 const { platz, lang, sizes = '100vw', eifrig = false, class: klass } = Astro.props;
 
-const bild = (contenu as any).bilder?.[platz];
-const vorhanden = Boolean(bild?.datei);
-
-/**
- * Die Breiten stehen je Bild in den Inhalten, nicht fest im Code: Ein
- * Original mit 579 Pixeln hat keine 1800er Fassung, und ein srcset, das
- * auf nicht vorhandene Dateien zeigt, bringt dem Browser 404 statt Bilder.
- */
+const bild = contenu.bilder?.[platz];
 const breiten: number[] = bild?.breiten ?? [480, 768, 1200, 1800];
 const basis = bild?.datei ? prefixer(String(bild.datei).replace(/\.[^.]+$/, '')) : '';
-const endung = bild?.datei ? String(bild.datei).match(/\.[^.]+$/)?.[0] ?? '.jpg' : '.jpg';
+const endung = bild?.datei ? (String(bild.datei).match(/\.[^.]+$/)?.[0] ?? '.jpg') : '.jpg';
+const srcset = (format: string) => breiten.map((b) => `${basis}-${b}.${format} ${b}w`).join(', ');
 
-const srcset = (format: string) =>
-  breiten.map((b) => `${basis}-${b}.${format} ${b}w`).join(', ');
-
-/** Aus '4 / 5' werden die Attribute width und height. */
 const [rw, rh] = String(bild?.seitenverhaeltnis ?? '3 / 2')
   .split('/')
   .map((n) => Number(n.trim()));
@@ -55,111 +40,20 @@ const hoehe = Math.round((breite / rw) * rh);
 ---
 
 {
-  vorhanden ? (
-    <figure class:list={['bild', klass]} style={`--verhaeltnis: ${bild.seitenverhaeltnis}`}>
-      <picture>
-        <source type="image/avif" srcset={srcset('avif')} sizes={sizes} />
-        <source type="image/webp" srcset={srcset('webp')} sizes={sizes} />
-        <img
-          src={`${basis}${endung}`}
-          alt={txt(bild.alt, lang)}
-          width={breite}
-          height={hoehe}
-          loading={eifrig ? 'eager' : 'lazy'}
-          decoding={eifrig ? 'sync' : 'async'}
-          fetchpriority={eifrig ? 'high' : undefined}
-          style={`object-position: ${bild.point_x}% ${bild.point_y}%`}
-        />
-      </picture>
-    </figure>
-  ) : (
-    <figure
-      class:list={['bild', 'bild--offen', klass]}
-      style={`--verhaeltnis: ${bild?.seitenverhaeltnis ?? '3 / 2'}`}
-      role="img"
-      aria-label={bild ? txt(bild.beschreibung, lang) : platz}
-    >
-      <span class="bild__marke" aria-hidden="true" />
-      <span class="bild__was">{bild ? txt(bild.beschreibung, lang) : platz}</span>
-      <span class="bild__hinweis">
-        {lang === 'de'
-          ? 'Aufnahme fehlt noch'
-          : lang === 'en'
-            ? 'photograph still missing'
-            : 'photographie encore manquante'}
-      </span>
-    </figure>
+  bild?.datei && (
+    <picture class={klass}>
+      <source type="image/avif" srcset={srcset('avif')} sizes={sizes} />
+      <source type="image/webp" srcset={srcset('webp')} sizes={sizes} />
+      <img
+        src={`${basis}${endung}`}
+        alt={txt(bild.alt, lang)}
+        width={breite}
+        height={hoehe}
+        loading={eifrig ? 'eager' : 'lazy'}
+        decoding={eifrig ? 'sync' : 'async'}
+        fetchpriority={eifrig ? 'high' : undefined}
+        style={`object-position: ${bild.point_x ?? 50}% ${bild.point_y ?? 50}%`}
+      />
+    </picture>
   )
 }
-
-<style>
-  .bild {
-    margin: 0;
-    aspect-ratio: var(--verhaeltnis);
-    overflow: hidden;
-    border-radius: var(--radius-commande);
-    background-color: color-mix(in srgb, var(--color-pierre) 8%, var(--color-papier));
-  }
-
-  .bild picture,
-  .bild img {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-  .bild img {
-    object-fit: cover;
-    /* Eine sehr ruhige Bewegung beim Überfahren: das Bild atmet, es
-       springt nicht. 1,5 % über 700 ms sieht man kaum — man spürt es. */
-    transition: transform 700ms cubic-bezier(0.22, 0.61, 0.36, 1);
-  }
-  .bild:hover img {
-    transform: scale(1.015);
-  }
-
-  /* --- Der Platzhalter ---------------------------------------------------
-     Ein Rahmen in Messing, der Name der Aufnahme, ein leiser Hinweis.
-     Absichtlich kein graues Feld mit Kamerasymbol — das sieht nach Fehler
-     aus, und das hier ist keiner, sondern eine offene Lieferung.
-     ---------------------------------------------------------------------- */
-  .bild--offen {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
-    gap: 0.2rem;
-    padding: 1.25rem;
-    border: 1.5px solid color-mix(in srgb, var(--color-laiton) 55%, transparent);
-    background-color: color-mix(in srgb, var(--color-laiton) 6%, var(--color-craie));
-  }
-  .bild__marke {
-    position: absolute;
-    inset: 0.75rem;
-    border-top: 1.5px solid color-mix(in srgb, var(--color-laiton) 40%, transparent);
-    border-left: 1.5px solid color-mix(in srgb, var(--color-laiton) 40%, transparent);
-    width: 1.75rem;
-    height: 1.75rem;
-  }
-  .bild__was {
-    font-family: var(--font-lecture);
-    font-size: 1rem;
-    line-height: 1.3;
-    color: var(--color-encre);
-    max-width: 22ch;
-  }
-  .bild__hinweis {
-    font-family: var(--font-commande);
-    font-size: var(--text-marge);
-    color: var(--color-laiton-texte);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .bild img {
-      transition: none;
-    }
-    .bild:hover img {
-      transform: none;
-    }
-  }
-</style>

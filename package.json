@@ -22,12 +22,12 @@
     "check:links": "node scripts/check-links.mjs",
     "check:all": "node scripts/check-contrast.mjs && node scripts/check-content.mjs && node scripts/check-links.mjs",
     "typecheck": "astro check",
-    "content:offen": "node scripts/offene-punkte.mjs",
     "bilder": "node scripts/bilder-aufbereiten.mjs",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
-    "konto": "node scripts/erstes-konto.mjs"
+    "konto": "node scripts/erstes-konto.mjs",
+    "content:build": "node scripts/build-snapshot.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.6",

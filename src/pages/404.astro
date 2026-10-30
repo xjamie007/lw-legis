@@ -2,26 +2,27 @@
 /**
  * src/pages/404.astro — Seite nicht gefunden.
  *
- * Eine einzige Datei fuer alle Sprachen: wer auf einer falschen Adresse
- * landet, hat oft keine Sprache gewaehlt, und der Server weiss nicht,
- * welche gemeint war. Deshalb steht hier jede gebaute Sprache mit ihren
- * kuerzesten Wegen — und nicht eine Sprache, die vielleicht die falsche ist.
+ * Eine Datei fuer beide Sprachen: Wer auf einer falschen Adresse landet,
+ * hat oft keine Sprache gewaehlt, und der Server weiss nicht, welche
+ * gemeint war. Deshalb steht hier jede gebaute Sprache mit ihren
+ * wichtigsten Wegen.
  */
 import '../styles/global.css';
-import { LANG_BALISE, LANG_NOMS, txt, type Lang } from '../lib/langs';
-import { t } from '../lib/i18n';
+import { LANG_BALISE, type Lang } from '../lib/langs';
+import { t, type Cle } from '../lib/i18n';
 import { contenu, languesDuSite } from '../lib/content';
-import { seg, urlAccueil } from '../lib/routes';
+import { adresse } from '../lib/pages';
+import { urlAccueil } from '../lib/routes';
 import { prefixer } from '../lib/base';
 
 const pretes = languesDuSite();
 const s = contenu.settings;
 
 const chemins = (l: Lang) =>
-  (['situations', 'services', 'publications', 'contact'] as const)
+  (['activites', 'dossiers', 'conferences', 'contact'] as const)
     .map((n) => {
-      const x = seg(n, l);
-      return x ? { nom: t(l, `nav.${n}` as never), href: prefixer(`/${l}/${x}/`) } : null;
+      const href = adresse(n, l);
+      return href ? { nom: t(l, `nav.${n}` as Cle), href } : null;
     })
     .filter((x): x is { nom: string; href: string } => x !== null);
 ---
@@ -31,105 +32,86 @@ const chemins = (l: Lang) =>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Page introuvable — Seite nicht gefunden — Page not found | LW LEGIS</title>
+    <title>Page introuvable — Page not found | LW LEGIS</title>
     <meta name="robots" content="noindex, follow" />
     <link rel="icon" href={prefixer('/favicon.svg')} type="image/svg+xml" />
-    <meta name="theme-color" content="#2F5D50" />
-    <link
-      rel="preload"
-      href={prefixer('/fonts/literata-roman-latin.woff2')}
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
+    <meta name="theme-color" content="#13294B" />
   </head>
   <body>
-    <main id="contenu" class="section">
-      <div class="enveloppe">
-        <div class="colonne">
-          {/* Sprachneutral: die Zahl gilt in jeder Sprache. Die
-              sprachspezifischen Ueberschriften darunter sind h2. */}
-          <h1 class="code">404</h1>
-          <div class="langues-404">
-            {
-              pretes.map((l) => (
-                <section class="langue" lang={LANG_BALISE[l]}>
-                  <h2 class="titre-3">{t(l, 'erreur404.titre')}</h2>
-                  <p class="corps">{t(l, 'erreur404.texte')}</p>
-                  <ul class="chemins">
-                    <li>
-                      <a href={urlAccueil(l)}>{t(l, 'erreur404.accueil')}</a>
-                    </li>
-                    {chemins(l).map((c) => (
-                      <li>
-                        <a href={c.href}>{c.nom}</a>
-                      </li>
-                    ))}
-                  </ul>
-                  <p class="langue__nom">{LANG_NOMS[l]}</p>
-                </section>
-              ))
-            }
-          </div>
-
-          <p class="secours">
-            {s.nom} · {s.adresse.une_ligne} ·{' '}
-            <a href={`tel:${s.telephone.central_lien}`}>{s.telephone.central}</a>
-          </p>
-        </div>
-      </div>
-    </main>
-
-    <style>
-      .code {
-        font-family: var(--font-commande);
-        font-size: var(--text-marge);
-        color: var(--color-laiton-texte);
-        border-bottom: var(--trait);
-        display: inline-block;
-        padding-bottom: 0.3rem;
-        margin-bottom: 2rem;
-      }
-      .langues-404 {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 2.5rem;
-      }
-      .langue__nom {
-        font-family: var(--font-commande);
-        font-size: var(--text-marge);
-        color: var(--color-pierre);
-        margin-top: 0.75rem;
-      }
-      .chemins {
-        list-style: none;
-        margin: 1rem 0 0;
-        padding: 0;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.35rem 1.5rem;
-        font-family: var(--font-commande);
-        font-size: var(--text-commande);
-      }
-      .chemins a {
-        display: inline-block;
-        min-height: 2.25rem;
-        padding-block: 0.4rem;
-      }
-      .secours {
-        margin-top: 3rem;
-        padding-top: 1.25rem;
-        border-top: 1px solid color-mix(in srgb, var(--color-pierre) 25%, transparent);
-        font-family: var(--font-commande);
-        font-size: var(--text-marge);
-        color: var(--color-pierre);
-      }
-      @media (min-width: 52rem) {
-        .langues-404 {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 3rem;
+    <main class="erreur">
+      <a href={urlAccueil('fr')}><img src={prefixer('/bilder/wappen.png')} alt={s.nom} width="694" height="240" /></a>
+      <h1 class="visuellement-cache">Page introuvable — Page not found</h1>
+      <div class="erreur__langues">
+        {
+          pretes.map((l) => (
+            <section lang={LANG_BALISE[l]}>
+              <h2>{t(l, 'erreur.titre')}</h2>
+              <p>{t(l, 'erreur.texte')}</p>
+              <ul>
+                <li>
+                  <a href={urlAccueil(l)}>{t(l, 'erreur.retour')}</a>
+                </li>
+                {chemins(l).map((c) => (
+                  <li>
+                    <a href={c.href}>{c.nom}</a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
         }
-      }
-    </style>
+      </div>
+      <p class="erreur__pied">
+        {s.nom} · {s.adresse.une_ligne} · <a href={`tel:${s.telephone.lien}`}>{s.telephone.affiche}</a>
+      </p>
+    </main>
   </body>
 </html>
+
+<style>
+  .erreur {
+    max-width: 64rem;
+    margin-inline: auto;
+    padding: clamp(3rem, 8vw, 7rem) var(--gouttiere);
+  }
+  .erreur img {
+    height: 3rem;
+    width: auto;
+  }
+  .erreur__langues {
+    display: grid;
+    gap: 3rem;
+    margin-top: 4rem;
+  }
+  .erreur h2 {
+    font-size: var(--text-titre);
+    font-weight: 300;
+  }
+  .erreur p {
+    margin-top: 1rem;
+    color: var(--color-gris);
+    max-width: 40ch;
+  }
+  .erreur ul {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: 1.5rem;
+  }
+  .erreur a {
+    color: var(--color-marine);
+    text-decoration-color: var(--color-or);
+    text-underline-offset: 3px;
+  }
+  .erreur__pied {
+    margin-top: 4rem !important;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-trait);
+    font-size: 0.875rem;
+    max-width: none !important;
+  }
+  @media (min-width: 48rem) {
+    .erreur__langues {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

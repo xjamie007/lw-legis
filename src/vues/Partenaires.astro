@@ -1,0 +1,85 @@
+---
+/**
+ * src/vues/Partenaires.astro — Partenaires: die Kanzleien, mit denen
+ * LW LEGIS zusammenarbeitet, mit dem Text der alten Seite.
+ */
+import type { Lang } from '../lib/langs';
+import { txt, txtHtml } from '../lib/langs';
+import { t } from '../lib/i18n';
+import { contenu } from '../lib/content';
+import type { Route } from '../lib/pages';
+import { edPage } from '../lib/edition';
+import Tete from '../components/Tete.astro';
+import Icone from '../components/Icone.astro';
+
+interface Props {
+  lang: Lang;
+  route: Route;
+}
+const { lang, route } = Astro.props;
+const p = contenu.pages.partenaires;
+---
+
+<Tete
+  lang={lang}
+  fil={route.fil}
+  titre={route.nom}
+  chapeau={txt(p.intro, lang)}
+  edTitre={edPage('partenaires.titre')}
+  edChapeau={edPage('partenaires.intro')}
+/>
+
+<section class="section">
+  <div class="enveloppe">
+    {
+      p.partenaires.map((x: any, i: number) => (
+        <article class="partenaire">
+          <header>
+            <h2 {...edPage(`partenaires.partenaires.${i}.nom`)}>{txt(x.nom, lang)}</h2>
+            <p class="partenaire__lieux" {...edPage(`partenaires.partenaires.${i}.lieux`)}>
+              {txt(x.lieux, lang)}
+            </p>
+            {x.site && (
+              <a class="lien-fleche" href={x.site} rel="noopener">
+                {t(lang, 'partenaires.site')}
+                <Icone nom="externe" />
+              </a>
+            )}
+          </header>
+          <div class="prose" set:html={txtHtml(x.texte, lang)} {...edPage(`partenaires.partenaires.${i}.texte`, true)} />
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .partenaire {
+    display: grid;
+    gap: 2rem;
+  }
+  .partenaire + .partenaire {
+    margin-top: 4rem;
+    padding-top: 4rem;
+    border-top: 1px solid var(--color-trait);
+  }
+  .partenaire h2 {
+    font-size: var(--text-h2);
+    font-weight: 300;
+  }
+  .partenaire__lieux {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 2px solid var(--color-or);
+    color: var(--color-gris);
+  }
+  .partenaire .lien-fleche {
+    margin-top: 1.5rem;
+  }
+  @media (min-width: 62rem) {
+    .partenaire {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: clamp(3rem, 6vw, 6rem);
+    }
+  }
+</style>

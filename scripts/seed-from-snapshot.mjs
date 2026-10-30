@@ -53,7 +53,6 @@ dit(``);
 dit(`-- Stammdaten, Person und Seitentexte liegen als jsonb in settings.`);
 dit(`insert into public.settings (cle, valeur, reserve_owner) values`);
 dit(`  ('stammdaten', ${j(s.settings)}, true),`);
-dit(`  ('avocat', ${j(s.avocat)}, true),`);
 dit(`  ('pages', ${j(s.pages)}, false)`);
 dit(`on conflict (cle) do update set valeur = excluded.valeur;`);
 dit(``);
@@ -82,14 +81,6 @@ dit(
     '\non conflict (id) do nothing;',
 );
 dit(``);
-dit(`insert into public.sections (id, page_id, ordre, visible, verrouille) values`);
-dit(
-  s.sections_accueil
-    .map((x) => `  (${q(x.id)}, 'accueil', ${n(x.ordre)}, ${b(x.visible)}, ${b(x.verrouille)})`)
-    .join(',\n') + '\non conflict (id) do nothing;',
-);
-dit(``);
-
 // --- Taetigkeitsgebiete ----------------------------------------------------
 dit(`insert into public.services (id, slug, terme, definition, texte, kurz, marge_terme, marge_texte, matieres, ordre, statut) values`);
 dit(
@@ -103,38 +94,6 @@ dit(
 );
 dit(``);
 
-// --- Achsen der Matrix -----------------------------------------------------
-dit(`insert into public.situation_options (id, axe, slug, etiquette, dans_la_phrase, code, themes, ordre) values`);
-const options = [
-  ...s.situation_options.pays.map((o) => ({ ...o, axe: 'pays' })),
-  ...s.situation_options.projets.map((o) => ({ ...o, axe: 'projet' })),
-];
-dit(
-  options
-    .map(
-      (o) =>
-        `  (${q(o.id)}, ${q(o.axe)}, ${j(o.slug)}, ${j(o.etiquette)}, ${j(o.dans_la_phrase)}, ` +
-        `${q(o.code ?? null)}, ${j(o.themes ?? [])}, ${n(o.ordre)})`,
-    )
-    .join(',\n') + '\non conflict (id) do nothing;',
-);
-dit(``);
-
-// --- Konstellationen -------------------------------------------------------
-dit(`-- Alle ${s.situations.length} Konstellationen als Entwurf. Die drei`);
-dit(`-- Rechtsabschnitte sind leer und werden im Redaktionsbereich gefuellt.`);
-dit(`insert into public.situations (id, pays, projet, titre, worum, cadre, notre_role, vos_pieces, themes, famille, ordre, statut) values`);
-dit(
-  s.situations
-    .map(
-      (x) =>
-        `  (${q(x.id)}, ${q(x.pays)}, ${q(x.projet)}, ${j(x.titre)}, ${j(x.worum)}, ${j(x.cadre)}, ` +
-        `${j(x.notre_role)}, ${j(x.vos_pieces)}, ${j(x.themes)}, ${q(x.famille)}, ${n(x.ordre)}, ${statut(x.statut)})`,
-    )
-    .join(',\n') + '\non conflict (id) do nothing;',
-);
-dit(``);
-
 // --- Themen und Dokumente --------------------------------------------------
 dit(`insert into public.publication_tags (id, slug, etiquette, ordre) values`);
 dit(
@@ -143,28 +102,16 @@ dit(
     .join(',\n') + '\non conflict (id) do nothing;',
 );
 dit(``);
-dit(`-- Die ${s.publications.length} Dokumente. Rechtsstand und Volltext fehlen und`);
-dit(`-- sind Pflicht fuer die Veroeffentlichung — der Trigger laesst sie sonst`);
-dit(`-- nicht auf 'veroeffentlicht'.`);
-dit(`insert into public.publications (id, type, slug, titre, resume, corps, etat_du_droit, auteur, langue_originale, themes, ordre, statut) values`);
+dit(`-- ${s.publications.length} Dossiers und Konferenzen der alten Website.`);
+dit(`insert into public.publications (id, type, slug, titre, resume, corps, date_publication, auteur, langue_originale, pdf_chemin, pdf_octets, dossier, lien_externe, themes, ordre, statut) values`);
 dit(
   s.publications
     .map(
       (p) =>
         `  (${q(p.id)}, ${q(p.type)}, ${j(p.slug)}, ${j(p.titre)}, ${j(p.resume)}, ${j(p.corps)}, ` +
-        `${p.etat_du_droit ? q(p.etat_du_droit) : 'null'}, ${q(p.auteur)}, ${q(p.langue_originale)}, ` +
+        `${p.date_publication ? q(p.date_publication) : 'null'}, ${q(p.auteur)}, ${q(p.langue_originale)}, ` +
+        `${q(p.pdf?.chemin ?? null)}, ${n(p.pdf?.octets ?? null)}, ${q(p.dossier)}, ${q(p.lien_externe)}, ` +
         `${j(p.themes)}, ${n(p.ordre)}, ${statut(p.statut)})`,
-    )
-    .join(',\n') + '\non conflict (id) do nothing;',
-);
-dit(``);
-
-// --- FAQ -------------------------------------------------------------------
-dit(`insert into public.faq (id, question, reponse, ordre, statut) values`);
-dit(
-  s.faq
-    .map(
-      (f) => `  (${q(f.id)}, ${j(f.question)}, ${j(f.reponse)}, ${n(f.ordre)}, ${statut(f.statut)})`,
     )
     .join(',\n') + '\non conflict (id) do nothing;',
 );
@@ -175,10 +122,14 @@ if (s.team.length === 0) {
   dit(`-- Keine Teammitglieder: Namen, Funktionen und Fotos liegen nicht vor.`);
   dit(`-- Die Sektion ist fertig und erscheint, sobald der erste Datensatz da ist.`);
 } else {
-  dit(`insert into public.team (id, nom, fonction, ordre, statut) values`);
+  dit(`insert into public.team (id, titre_civil, nom, fonction, bio, barreau_depuis, photo, ordre, statut) values`);
   dit(
     s.team
-      .map((m) => `  (${q(m.id)}, ${q(m.nom)}, ${j(m.fonction)}, ${n(m.ordre)}, ${statut(m.statut)})`)
+      .map(
+        (m) =>
+          `  (${q(m.id)}, ${q(m.titre_civil)}, ${q(m.nom)}, ${j(m.fonction)}, ${j(m.bio)}, ${n(m.barreau_depuis)}, ` +
+          `${q(m.photo)}, ${n(m.ordre)}, ${statut(m.statut)})`,
+      )
       .join(',\n') + '\non conflict (id) do nothing;',
   );
 }
@@ -210,6 +161,5 @@ dit(``);
 await writeFile(join(ROOT, 'supabase', 'seed.sql'), lignes.join('\n'), 'utf8');
 console.log(
   `supabase/seed.sql geschrieben (${lignes.length} Zeilen).\n` +
-    `  ${s.familles.length} Tätigkeitsgebiete, ${s.situations.length} Konstellationen,\n` +
-    `  ${s.publications.length} Dokumente, ${s.faq.length} Fragen, ${s.team.length} Teammitglieder.`,
+    `  ${s.familles.length} Tätigkeiten, ${s.publications.length} Dossiers und Konferenzen, ${s.team.length} Anwälte.`,
 );

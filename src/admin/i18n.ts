@@ -107,7 +107,7 @@ const DE = {
   'medias.ziehen': 'Bild hierher ziehen oder auswählen',
   'medias.alt': 'Bildbeschreibung',
   'medias.alt_hilfe':
-    'Beschreiben Sie, was auf dem Bild zu sehen ist. Blinde Besucher hören diesen Text. In allen vier Sprachen nötig, sonst lässt sich das Bild nicht veröffentlichen.',
+    'Beschreiben Sie, was auf dem Bild zu sehen ist. Blinde Besucher hören diesen Text. In beiden Sprachen nötig, sonst lässt sich das Bild nicht veröffentlichen.',
   'medias.ausschnitt': 'Bildausschnitt',
   'medias.ausschnitt_hilfe': 'Klicken Sie auf die Stelle, die immer sichtbar bleiben soll.',
   'medias.masse': 'Maße',
@@ -330,7 +330,7 @@ const FR: Record<keyof typeof DE, string> = {
   'medias.ziehen': 'Glissez une image ici ou choisissez-en une',
   'medias.alt': 'Description de l’image',
   'medias.alt_hilfe':
-    'Décrivez ce que montre l’image. Les visiteurs aveugles entendent ce texte. Nécessaire dans les quatre langues, sinon l’image ne peut pas être publiée.',
+    'Décrivez ce que montre l’image. Les visiteurs aveugles entendent ce texte. Nécessaire dans les deux langues, sinon l’image ne peut pas être publiée.',
   'medias.ausschnitt': 'Cadrage',
   'medias.ausschnitt_hilfe': 'Cliquez sur l’endroit qui doit rester visible.',
   'medias.masse': 'Dimensions',

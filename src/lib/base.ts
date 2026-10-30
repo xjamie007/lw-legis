@@ -24,3 +24,11 @@ export const BASE = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '');
 export function prefixer(p: string): string {
   return p.startsWith('/') ? `${BASE}${p}` : p;
 }
+
+/**
+ * Dasselbe fuer Links in Fliesstexten aus den Inhalten (etwa die PDFs in
+ * den Dossiers): `href="/…"` bekommt den Praefix.
+ */
+export function prefixerHtml(html: string): string {
+  return BASE ? html.replace(/(href|src)="\/(?!\/)/g, `$1="${BASE}/`) : html;
+}

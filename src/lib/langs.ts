@@ -10,25 +10,24 @@
  * (entscheidet, ob eine Sprachfassung gebaut werden darf).
  */
 
-export const LANGS = ['fr', 'de', 'en', 'lb'] as const;
+/** Wie auf der alten Website: Franzoesisch und Englisch. */
+export const LANGS = ['fr', 'en'] as const;
 export type Lang = (typeof LANGS)[number];
+
+import { prefixerHtml } from './base';
 
 /** Franzoesisch ist die Referenzfassung und die Standardsprache. */
 export const LANG_DEFAUT: Lang = 'fr';
 
 export const LANG_NOMS: Record<Lang, string> = {
   fr: 'Français',
-  de: 'Deutsch',
   en: 'English',
-  lb: 'Lëtzebuergesch',
 };
 
 /** Wert des `lang`-Attributs und der hreflang-Angabe. */
 export const LANG_BALISE: Record<Lang, string> = {
   fr: 'fr',
-  de: 'de',
   en: 'en',
-  lb: 'lb',
 };
 
 export function isLang(value: string): value is Lang {
@@ -98,4 +97,21 @@ export function isComplete(lang: Lang, ...champs: (Multi | null | undefined)[]):
 /** Sammelt die Sprachen, in denen alle Felder belegt sind. */
 export function languesCompletes(...champs: (Multi | null | undefined)[]): Lang[] {
   return LANGS.filter((l) => isComplete(l, ...champs));
+}
+
+/**
+ * Text in dieser Sprache, sonst offen auf Franzoesisch — mit Angabe, in
+ * welcher Sprache er tatsaechlich steht. Fuer die Konferenzunterlagen:
+ * Sie sind Franzoesisch, und die englische Seite sagt das, statt sie
+ * stillschweigend oder gar nicht zu zeigen.
+ */
+export function txtOuFrancais(champ: Multi | null | undefined, lang: Lang): { valeur: string; lang: Lang } {
+  if (aValeur(champ, lang)) return { valeur: champ![lang] as string, lang };
+  if (aValeur(champ, LANG_DEFAUT)) return { valeur: champ![LANG_DEFAUT] as string, lang: LANG_DEFAUT };
+  return { valeur: '', lang };
+}
+
+/** Wie `txt()`, fuer HTML-Felder: Adressen bekommen den Auslieferungspraefix. */
+export function txtHtml(champ: Multi | null | undefined, lang: Lang): string {
+  return prefixerHtml(txt(champ, lang));
 }

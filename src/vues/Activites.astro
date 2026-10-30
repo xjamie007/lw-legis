@@ -1,0 +1,105 @@
+---
+/**
+ * src/vues/Activites.astro — Uebersicht und Detailseite der Taetigkeiten.
+ *
+ * Ohne `activite`: das Register aller Taetigkeiten.
+ * Mit `activite`: der Text der Taetigkeit, daneben ein Kasten, der das
+ * Kontaktformular mit dieser Taetigkeit vorbelegt, und die Liste der
+ * anderen Taetigkeiten.
+ */
+import type { Lang } from '../lib/langs';
+import { txt, txtHtml } from '../lib/langs';
+import { t } from '../lib/i18n';
+import { activites, contenu, type Activite } from '../lib/content';
+import { adresse, type Route } from '../lib/pages';
+import { ed, edPage } from '../lib/edition';
+import Tete from '../components/Tete.astro';
+import Icone from '../components/Icone.astro';
+
+interface Props {
+  lang: Lang;
+  route: Route;
+  activite?: Activite;
+}
+const { lang, route, activite } = Astro.props;
+const s = contenu.settings;
+const toutes = activites(lang);
+const urlContact = adresse('contact', lang);
+---
+
+{
+  !activite && (
+    <>
+      <Tete
+        lang={lang}
+        fil={route.fil}
+        titre={route.nom}
+        chapeau={txt(contenu.pages.activites.intro, lang)}
+        edTitre={edPage('activites.titre')}
+        edChapeau={edPage('activites.intro')}
+      />
+      <section class="section">
+        <div class="enveloppe">
+          <ul class="registre registre--deux">
+            {toutes.map((a) => (
+              <li class="registre__ligne">
+                <a class="registre__lien" href={adresse(`activite:${a.id}`, lang)}>
+                  <span class="registre__titre" {...ed('services', a.id, 'terme')}>
+                    {txt(a.terme, lang)}
+                  </span>
+                  <span class="registre__texte" {...ed('services', a.id, 'definition')}>
+                    {txt(a.definition, lang)}
+                  </span>
+                  <Icone nom="fleche" class="registre__fleche" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </>
+  )
+}
+
+{
+  activite && (
+    <>
+      <Tete
+        lang={lang}
+        fil={route.fil}
+        titre={route.nom}
+        chapeau={txt(activite.definition, lang)}
+        edTitre={ed('services', activite.id, 'terme')}
+        edChapeau={ed('services', activite.id, 'definition')}
+      />
+      <section class="section">
+        <div class="enveloppe avec-aside">
+          <article class="prose" set:html={txtHtml(activite.texte, lang)} {...ed('services', activite.id, 'texte', true)} />
+          <aside class="sans-impression">
+            <div class="encadre">
+              <h2>{t(lang, 'activite.contacter')}</h2>
+              <p>{t(lang, 'activite.contacter_texte')}</p>
+              {urlContact && (
+                <a class="bouton bouton--or" href={`${urlContact}?domaine=${activite.id}#formulaire`}>
+                  {t(lang, 'contact.ecrire')}
+                  <Icone nom="fleche" />
+                </a>
+              )}
+              <a class="encadre__tel" href={`tel:${s.telephone.lien}`}>
+                {s.telephone.affiche}
+              </a>
+            </div>
+            <nav class="liste-aside" aria-labelledby="autres-activites">
+              <h2 id="autres-activites">{t(lang, 'activite.autres')}</h2>
+              {toutes.map((a) => (
+                <a href={adresse(`activite:${a.id}`, lang)} aria-current={a.id === activite.id ? 'page' : undefined}>
+                  {txt(a.terme, lang)}
+                </a>
+              ))}
+            </nav>
+          </aside>
+        </div>
+      </section>
+    </>
+  )
+}
