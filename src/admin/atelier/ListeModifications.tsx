@@ -7,7 +7,7 @@
  */
 import { useState } from 'react';
 import { traduire, type LangueAdmin } from '../i18n';
-import { apercu, lieu, nomChamp, nomLangue } from './chemins';
+import { apercu, lieu, nomChamp, nomLangue, libelleParDefaut } from './chemins';
 import type { Modification } from './modifications';
 
 interface Props {
@@ -52,7 +52,9 @@ export default function ListeModifications({
             {!m.nouveau && (
               <dl className="modif__textes">
                 <dt>{t('atelier.vorher')}</dt>
-                <dd className="modif__avant">{apercu(m.avant) || t('atelier.leer')}</dd>
+                <dd className="modif__avant">
+                  {apercu(m.avant) || libelleParDefaut(m.table, m.id, m.chemin) || t('atelier.leer')}
+                </dd>
                 <dt>{t('atelier.jetzt')}</dt>
                 <dd className="modif__apres">{apercu(m.apres) || t('atelier.leer')}</dd>
               </dl>

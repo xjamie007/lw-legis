@@ -13,6 +13,8 @@ import { SEGMENTS, type NomSegment } from '../../lib/routes';
 import { LANGS, LANG_NOMS, type Lang } from '../../lib/langs';
 import type { LangueAdmin } from '../i18n';
 import { prefixer } from '../../lib/base';
+import fr from '../../i18n/fr.json';
+import en from '../../i18n/en.json';
 
 type Ligne = Record<string, any>;
 
@@ -249,6 +251,7 @@ export function lieu(table: string, id: string, chemin: string[], ligne: Ligne |
         return base;
       }
       if (id === 'avocat') return la === 'de' ? 'Angaben zu Me Lorang' : 'Données sur Me Lorang';
+      if (id === 'libelles') return la === 'de' ? 'Fester Text der Website' : 'Texte fixe du site';
       return la === 'de' ? 'Kanzleidaten' : 'Données de l’Étude';
     }
     case 'services':
@@ -339,6 +342,7 @@ export function adresseDe(table: string, id: string, chemin: string[], ligne: Li
         if (page === 'accueil' || !(page in SEGMENTS)) return prefixer(`/${lang}/`);
         return adresse(lang, seg(page as NomSegment, lang));
       }
+      if (id === 'libelles') return prefixer(`/${lang}/`);
       return adresse(lang, seg('contact', lang));
     case 'services':
       return adresse(lang, seg('activites', lang), slug());
@@ -370,4 +374,17 @@ export function apercu(v: unknown, max = 140): string {
     .replace(/\s+/g, ' ')
     .trim();
   return brut.length > max ? `${brut.slice(0, max - 1)}…` : brut;
+}
+
+/**
+ * Ein fester Text (`settings.libelles`), der vorher nie geaendert war,
+ * hat in der Datenbank keinen alten Wert. „Vorher“ ist dann der Text aus
+ * src/i18n/<sprache>.json — so steht dort nicht „leer“.
+ */
+export function libelleParDefaut(table: string, id: string, chemin: string[]): string {
+  if (table !== 'settings' || id !== 'libelles' || chemin.length < 3) return '';
+  const lang = chemin[chemin.length - 1];
+  const cle = chemin.slice(1, -1).join('.');
+  const tables: Record<string, Record<string, string>> = { fr, en };
+  return tables[lang]?.[cle] ?? '';
 }

@@ -11,7 +11,7 @@ import type { Lang } from '../lib/langs';
 import { t } from '../lib/i18n';
 import { contenu } from '../lib/content';
 import type { Route } from '../lib/pages';
-import { edPage } from '../lib/edition';
+import { edPage, edLibelle } from '../lib/edition';
 import { prefixer } from '../lib/base';
 import Tete from '../components/Tete.astro';
 import Icone from '../components/Icone.astro';
@@ -24,6 +24,8 @@ interface Props {
 const { lang, route } = Astro.props;
 const s = contenu.settings;
 const itineraire = `https://www.openstreetmap.org/search?query=${encodeURIComponent(s.adresse.une_ligne)}`;
+import T from '../components/T.astro';
+import S from '../components/S.astro';
 ---
 
 <Tete lang={lang} fil={route.fil} titre={route.nom} edTitre={edPage('contact.titre')} />
@@ -31,40 +33,40 @@ const itineraire = `https://www.openstreetmap.org/search?query=${encodeURICompon
 <section class="section">
   <div class="enveloppe contact">
     <div class="coordonnees">
-      <p class="coordonnees__nom">{s.nom}</p>
+      <p class="coordonnees__nom"><S k="nom" /></p>
       <dl>
         <div>
-          <dt>{t(lang, 'contact.adresse')}</dt>
+          <dt {...edLibelle('contact.adresse')}>{t(lang, 'contact.adresse')}</dt>
           <dd>
-            {s.adresse.rue}<br />
-            {`${s.adresse.code_postal} ${s.adresse.ville}`}
+            <S k="adresse.rue" /><br />
+            <S k="adresse.code_postal" /> <S k="adresse.ville" />
           </dd>
         </div>
         <div>
-          <dt>{t(lang, 'contact.postale')}</dt>
-          <dd>{s.postfach.une_ligne}</dd>
+          <dt {...edLibelle('contact.postale')}>{t(lang, 'contact.postale')}</dt>
+          <dd><S k="postfach.boite" />, <S k="adresse.code_postal" /> <S k="adresse.ville" /></dd>
         </div>
         <div>
-          <dt>{t(lang, 'contact.telephone')}</dt>
-          <dd><a class="coordonnees__tel" href={`tel:${s.telephone.lien}`}>{s.telephone.affiche}</a></dd>
+          <dt {...edLibelle('contact.telephone')}>{t(lang, 'contact.telephone')}</dt>
+          <dd><a class="coordonnees__tel" href={`tel:${s.telephone.lien}`}><S k="telephone.affiche" /></a></dd>
         </div>
         <div>
-          <dt>{t(lang, 'contact.courriel')}</dt>
-          <dd><a href={`mailto:${s.courriel}`}>{s.courriel}</a></dd>
+          <dt {...edLibelle('contact.courriel')}>{t(lang, 'contact.courriel')}</dt>
+          <dd><a href={`mailto:${s.courriel}`}><S k="courriel" /></a></dd>
         </div>
       </dl>
       <ul class="coordonnees__actions">
         <li>
-          <a href={itineraire} rel="noopener"><Icone nom="lieu" />{t(lang, 'contact.itineraire')}</a>
+          <a href={itineraire} rel="noopener"><Icone nom="lieu" /><T lang={lang} k={'contact.itineraire'} /></a>
         </li>
         <li>
-          <a href={prefixer('/lw-legis.vcf')} download="LW-LEGIS.vcf"><Icone nom="carte" />{t(lang, 'contact.vcard')}</a>
+          <a href={prefixer('/lw-legis.vcf')} download="LW-LEGIS.vcf"><Icone nom="carte" /><T lang={lang} k={'contact.vcard'} /></a>
         </li>
       </ul>
     </div>
 
     <div class="contact__formulaire">
-      <h2>{t(lang, 'contact.ecrire')}</h2>
+      <h2 {...edLibelle('contact.ecrire')}>{t(lang, 'contact.ecrire')}</h2>
       <Formulaire lang={lang} />
     </div>
   </div>

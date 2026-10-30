@@ -76,9 +76,11 @@ class Requete implements PromiseLike<{
   private tri: { col: string; asc: boolean } | null = null;
   private max: number | null = null;
   private mode: 'liste' | 'un' | 'peutetre' = 'liste';
-  private operation: { type: 'select' } | { type: 'update'; valeurs: Ligne } | { type: 'insert'; valeurs: Ligne } = {
-    type: 'select',
-  };
+  private operation:
+    | { type: 'select' }
+    | { type: 'delete' }
+    | { type: 'update'; valeurs: Ligne }
+    | { type: 'insert'; valeurs: Ligne } = { type: 'select' };
   private compte = false;
   private seulementCompte = false;
 
@@ -95,6 +97,10 @@ class Requete implements PromiseLike<{
   }
   insert(valeurs: Ligne) {
     this.operation = { type: 'insert', valeurs };
+    return this;
+  }
+  delete() {
+    this.operation = { type: 'delete' };
     return this;
   }
   eq(col: string, v: unknown) {
@@ -132,17 +138,27 @@ class Requete implements PromiseLike<{
     const maintenant = new Date().toISOString();
 
     if (this.operation.type === 'insert') {
-      const nouvelle = {
+      const nouvelle: Ligne = {
         id: crypto.randomUUID(),
         updated_at: maintenant,
         ...this.operation.valeurs,
       };
+      const col = colonneCle(this.table);
+      if (lignes.some((l) => l[col] === nouvelle[col])) {
+        return { data: null, error: { message: 'Diese Kennung gibt es schon.' } };
+      }
       lignes.push(nouvelle);
       enregistrer();
       return this.resultat([copie(nouvelle)]);
     }
 
     let touchees = lignes.filter((l) => this.filtres.every((f) => f(l)));
+
+    if (this.operation.type === 'delete') {
+      db()[this.table] = lignes.filter((l) => !touchees.includes(l));
+      enregistrer();
+      return this.resultat(touchees.map(copie));
+    }
 
     if (this.operation.type === 'update') {
       for (const l of touchees) {
@@ -256,17 +272,60 @@ const auth = {
   },
 };
 
+// ---------------------------------------------------------------------------
+// Dateien: in IndexedDB, nicht im localStorage — ein PDF hat schnell mehr
+// als die fuenf Megabyte, die der localStorage fasst. Die Adresse einer
+// Datei lautet `demo:<ablage>/<name>`; urlFichier() macht daraus eine
+// Adresse, die der Browser oeffnen kann.
+// ---------------------------------------------------------------------------
+const PREFIXE = 'demo:';
+
+function base(): Promise<IDBDatabase> {
+  return new Promise((ok, ko) => {
+    const r = indexedDB.open('lw-legis-demo-fichiers', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('fichiers');
+    r.onsuccess = () => ok(r.result);
+    r.onerror = () => ko(r.error);
+  });
+}
+
+async function fichiers<T>(mode: IDBTransactionMode, f: (s: IDBObjectStore) => IDBRequest<T>): Promise<T> {
+  const b = await base();
+  return new Promise((ok, ko) => {
+    const r = f(b.transaction('fichiers', mode).objectStore('fichiers'));
+    r.onsuccess = () => ok(r.result);
+    r.onerror = () => ko(r.error);
+  });
+}
+
+const adresses = new Map<string, string>();
+
+/** Eine Datei der Demo als oeffnebare Adresse; alles andere bleibt, wie es ist. */
+export async function urlFichier(chemin: string): Promise<string> {
+  if (!chemin.startsWith(PREFIXE)) return chemin;
+  if (!adresses.has(chemin)) {
+    const blob = await fichiers<Blob | undefined>('readonly', (s) => s.get(chemin.slice(PREFIXE.length)));
+    if (!blob) return '#';
+    adresses.set(chemin, URL.createObjectURL(blob));
+  }
+  return adresses.get(chemin)!;
+}
+
 export function creerClientDemo() {
   return {
     from: (table: string) => new Requete(table),
     auth,
     storage: {
-      from: () => ({
-        upload: async () => ({
-          error: {
-            message: 'In der Demo lassen sich keine Bilder hochladen. Das geht mit der echten Datenbank.',
-          },
-        }),
+      from: (ablage: string) => ({
+        async upload(nom: string, fichier: Blob) {
+          try {
+            await fichiers('readwrite', (s) => s.put(fichier, `${ablage}/${nom}`));
+            return { data: { path: nom }, error: null };
+          } catch (e) {
+            return { data: null, error: { message: String(e) } };
+          }
+        },
+        getPublicUrl: (nom: string) => ({ data: { publicUrl: `${PREFIXE}${ablage}/${nom}` } }),
       }),
     },
     async rpc(nom: string, args: { revision_id: string }) {
@@ -281,11 +340,12 @@ export function creerClientDemo() {
 }
 
 /** Alles auf die Startinhalte zuruecksetzen (Knopf unter „Mehr“). */
-export function reinitialiserDemo() {
+export async function reinitialiserDemo() {
   try {
     localStorage.removeItem(CLE);
   } catch {
     /* egal */
   }
   tables = null;
+  await fichiers('readwrite', (s) => s.clear()).catch(() => undefined);
 }

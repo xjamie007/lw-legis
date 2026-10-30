@@ -22,6 +22,7 @@ interface Props {
 }
 const { lang, route } = Astro.props;
 const p = contenu.pages.partenaires;
+import T from '../components/T.astro';
 ---
 
 <Tete
@@ -50,7 +51,7 @@ const p = contenu.pages.partenaires;
             </p>
             {x.site && (
               <a class="lien-fleche" href={x.site} rel="noopener">
-                {t(lang, 'partenaires.site')}
+                <T lang={lang} k={'partenaires.site'} />
                 <Icone nom="externe" />
               </a>
             )}

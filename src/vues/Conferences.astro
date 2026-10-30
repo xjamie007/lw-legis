@@ -12,7 +12,7 @@ import { txt, txtOuFrancais } from '../lib/langs';
 import { t, formaterTaille } from '../lib/i18n';
 import { conferences, contenu, dossierParId, themeParId, themesDe } from '../lib/content';
 import { adresse, type Route } from '../lib/pages';
-import { ed, edPage } from '../lib/edition';
+import { ed, edPage, edLibelle } from '../lib/edition';
 import { prefixer } from '../lib/base';
 import Tete from '../components/Tete.astro';
 import Icone from '../components/Icone.astro';
@@ -33,14 +33,15 @@ const mois = (iso: string) =>
 const entrees = toutes.map((c) => {
   const dossier = dossierParId(c.dossier, lang);
   const lien = c.pdf
-    ? { href: prefixer(c.pdf.chemin), libelle: t(lang, 'conferences.telecharger'), icone: 'telecharger' as const, download: true, extra: `PDF · ${formaterTaille(c.pdf.octets, lang)}` }
+    ? { href: prefixer(c.pdf.chemin), cle: 'conferences.telecharger' as const, icone: 'telecharger' as const, download: true, extra: `PDF · ${formaterTaille(c.pdf.octets, lang)}` }
     : dossier
-      ? { href: adresse(`dossier:${dossier.id}`, lang)!, libelle: t(lang, 'conferences.lire'), icone: 'fleche' as const, download: false, extra: null }
+      ? { href: adresse(`dossier:${dossier.id}`, lang)!, cle: 'conferences.lire' as const, icone: 'fleche' as const, download: false, extra: null }
       : c.lien_externe
-        ? { href: c.lien_externe, libelle: t(lang, 'conferences.evenement'), icone: 'externe' as const, download: false, extra: null }
+        ? { href: c.lien_externe, cle: 'conferences.evenement' as const, icone: 'externe' as const, download: false, extra: null }
         : null;
   return { c, lien, titre: txtOuFrancais(c.titre, lang), resume: txtOuFrancais(c.resume, lang) };
 });
+import T from '../components/T.astro';
 ---
 
 <Tete
@@ -58,30 +59,30 @@ const entrees = toutes.map((c) => {
       themes.length > 1 && (
         <div class="filtres" data-filtres hidden role="group" aria-label={t(lang, 'conferences.filtrer')}>
           <button type="button" aria-pressed="true" data-theme="">
-            {t(lang, 'conferences.tous')} <span class="filtres__nombre">{toutes.length}</span>
+            <T lang={lang} k={'conferences.tous'} /> <span class="filtres__nombre">{toutes.length}</span>
           </button>
           {themes.map((th) => (
             <button type="button" aria-pressed="false" data-theme={th.id}>
-              {txt(th.etiquette, lang)}{' '}
+              <span {...ed('publication_tags', th.id, 'etiquette')}>{txt(th.etiquette, lang)}</span>{' '}
               <span class="filtres__nombre">{toutes.filter((c) => c.themes.includes(th.id)).length}</span>
             </button>
           ))}
         </div>
       )
     }
-    <ol class="conferences" data-liste>
+    <ol class="conferences" data-liste data-lw-liste="conference" data-lw-ajouter>
       {
         entrees.map(({ c, lien, titre, resume }, i) => (
-          <li class="conference" data-themes={c.themes.join(' ')} data-revele>
+          <li class="conference" data-themes={c.themes.join(' ')} data-revele data-lw-item={c.id}>
             <span class="conference__date">{c.date_publication ? mois(c.date_publication) : ''}</span>
             <div class="conference__texte">
               <h2 lang={titre.lang !== lang ? titre.lang : undefined} {...ed('publications', c.id, 'titre')}>
                 {titre.valeur}
               </h2>
-              {resume.valeur && <p lang={resume.lang !== lang ? resume.lang : undefined}>{resume.valeur}</p>}
+              {resume.valeur && <p lang={resume.lang !== lang ? resume.lang : undefined} {...ed('publications', c.id, 'resume')}>{resume.valeur}</p>}
               <span class="etiquettes">
-                {c.themes.map((th) => themeParId(th)).filter(Boolean).map((th) => <span>{txt(th!.etiquette, lang)}</span>)}
-                {titre.lang !== lang && <span>{t(lang, 'conferences.en_francais')}</span>}
+                {c.themes.map((th) => themeParId(th)).filter(Boolean).map((th) => <span {...ed('publication_tags', th!.id, 'etiquette')}>{txt(th!.etiquette, lang)}</span>)}
+                {titre.lang !== lang && <span {...edLibelle('conferences.en_francais')}>{t(lang, 'conferences.en_francais')}</span>}
               </span>
             </div>
             {lien && (
@@ -93,7 +94,7 @@ const entrees = toutes.map((c) => {
               >
                 <Icone nom={lien.download ? 'pdf' : lien.icone} />
                 <span>
-                  {lien.download ? 'PDF' : lien.libelle}
+                  {lien.download ? 'PDF' : <T lang={lang} k={lien.cle} />}
                   {lien.extra && <small>{lien.extra.replace('PDF · ', '')}</small>}
                 </span>
               </a>
@@ -102,7 +103,7 @@ const entrees = toutes.map((c) => {
         ))
       }
     </ol>
-    <p class="conferences__vide" data-vide hidden>{t(lang, 'conferences.aucune')}</p>
+    <p class="conferences__vide" data-vide hidden {...edLibelle('conferences.aucune')}>{t(lang, 'conferences.aucune')}</p>
   </div>
 </section>
 

@@ -46,6 +46,9 @@ const legaux = contenu.pied
 
 const index = enLangue('index');
 const annee = new Date().getFullYear();
+import T from './T.astro';
+import { edLibelle } from '../lib/edition';
+import S from './S.astro';
 ---
 
 <footer class="pied">
@@ -55,25 +58,25 @@ const annee = new Date().getFullYear();
     </div>
 
     <div>
-      <h2 class="pied__titre">{t(lang, 'pied.adresse')}</h2>
+      <h2 class="pied__titre" {...edLibelle('pied.adresse')}>{t(lang, 'pied.adresse')}</h2>
       <address>
-        {s.adresse.rue}<br />
-        {`${s.adresse.code_postal} ${s.adresse.ville}`}<br />
-        <span class="pied__discret">{s.postfach.boite}</span>
+        <S k="adresse.rue" /><br />
+        <S k="adresse.code_postal" /> <S k="adresse.ville" /><br />
+        <span class="pied__discret"><S k="postfach.boite" /></span>
       </address>
     </div>
 
     <div>
-      <h2 class="pied__titre">{t(lang, 'pied.joindre')}</h2>
-      <p><a href={`tel:${s.telephone.lien}`}>{s.telephone.affiche}</a></p>
-      <p><a href={`mailto:${s.courriel}`}>{s.courriel}</a></p>
+      <h2 class="pied__titre" {...edLibelle('pied.joindre')}>{t(lang, 'pied.joindre')}</h2>
+      <p><a href={`tel:${s.telephone.lien}`}><S k="telephone.affiche" /></a></p>
+      <p><a href={`mailto:${s.courriel}`}><S k="courriel" /></a></p>
     </div>
 
     <nav aria-label={t(lang, 'pied.navigation')}>
-      <h2 class="pied__titre">{t(lang, 'pied.navigation')}</h2>
+      <h2 class="pied__titre" {...edLibelle('pied.navigation')}>{t(lang, 'pied.navigation')}</h2>
       <ul>
-        {pages.map((p) => <li><a href={p.lien!.href}>{t(lang, p.cle)}</a></li>)}
-        {index && <li><a href={index.href}>{t(lang, 'nav.index')}</a></li>}
+        {pages.map((p) => <li><a href={p.lien!.href} {...edLibelle(p.cle)}>{t(lang, p.cle)}</a></li>)}
+        {index && <li><a href={index.href} {...edLibelle('nav.index')}>{t(lang, 'nav.index')}</a></li>}
       </ul>
     </nav>
   </div>
@@ -83,7 +86,7 @@ const annee = new Date().getFullYear();
       {
         legaux.map((l) => (
           <li>
-            <a href={l.lien!.href} hreflang={l.lien!.hreflang}>
+            <a href={l.lien!.href} hreflang={l.lien!.hreflang} {...edLibelle(l.cle)}>
               {t(lang, l.cle)}
             </a>
           </li>
@@ -91,11 +94,11 @@ const annee = new Date().getFullYear();
       }
     </ul>
     <p>
-      © {annee} {s.nom}. {t(lang, 'pied.droits')}.
+      © {annee} <S k="nom" />. <T lang={lang} k={'pied.droits'} />.
       <a class="k-login" href={`${prefixer('/admin/')}?seite=${encodeURIComponent(chemin)}`} rel="nofollow">Login</a>
     </p>
     <p class="pied__nave">
-      {t(lang, 'pied.realisation')} <a href="https://nave.lu" rel="noopener">Nave</a>
+      <T lang={lang} k={'pied.realisation'} /> <a href="https://nave.lu" rel="noopener">Nave</a>
     </p>
   </div>
 </footer>

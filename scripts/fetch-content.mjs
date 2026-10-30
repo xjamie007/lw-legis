@@ -66,7 +66,8 @@ async function table(nom, colonnes = '*') {
 /** Aus den flachen Datenbankzeilen die Form bauen, die Astro erwartet. */
 function assembler(brut, ancien) {
   const parId = (liste) => Object.fromEntries(liste.map((l) => [l.id, l]));
-  const reglages = parId(brut.settings ?? []);
+  // `settings` ist ueber `cle` geschluesselt, nicht ueber `id`.
+  const reglages = Object.fromEntries((brut.settings ?? []).map((l) => [l.cle, l]));
 
   return {
     meta: {
@@ -105,6 +106,7 @@ function assembler(brut, ancien) {
         kurz: s.kurz,
         marge: { terme: s.marge_terme, texte: s.marge_texte },
         matieres: s.matieres,
+        groupe: s.groupe ?? null,
       })),
     themes: brut.publication_tags ?? [],
     publications: (brut.publications ?? []).map((p) => ({
@@ -120,6 +122,7 @@ function assembler(brut, ancien) {
     seo: parId(brut.seo_meta ?? []),
     seo_modeles: ancien.seo_modeles,
     seo_limites: ancien.seo_limites,
+    libelles: reglages.libelles?.valeur ?? {},
   };
 }
 

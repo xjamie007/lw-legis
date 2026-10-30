@@ -53,7 +53,8 @@ dit(``);
 dit(`-- Stammdaten, Person und Seitentexte liegen als jsonb in settings.`);
 dit(`insert into public.settings (cle, valeur, reserve_owner) values`);
 dit(`  ('stammdaten', ${j(s.settings)}, true),`);
-dit(`  ('pages', ${j(s.pages)}, false)`);
+dit(`  ('pages', ${j(s.pages)}, false),`);
+dit(`  ('libelles', ${j(s.libelles ?? {})}, false)`);
 dit(`on conflict (cle) do update set valeur = excluded.valeur;`);
 dit(``);
 

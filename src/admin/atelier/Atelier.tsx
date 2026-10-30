@@ -51,6 +51,17 @@ import {
   type Cle,
 } from './chemins';
 import { annulerModification, chargerModifications, type Modification } from './modifications';
+import {
+  PARAM,
+  adresseNouveau,
+  chargerNouveaux,
+  completerListes,
+  lireSite,
+  marquerCourant,
+  preparerPageNouvelle,
+  type Sorte,
+} from './nouveau';
+import FenetreNouveau, { NOMS_SORTES } from './FenetreNouveau';
 import { prefixer } from '../../lib/base';
 
 type Ligne = Record<string, any>;
@@ -106,6 +117,28 @@ const STYLE_VORSCHAU = `
   @keyframes lw-blinken { 0%, 100% { outline-color: transparent; } 50% { outline-color: #f5a524; } }
   .lw-blinken { outline: 3px solid #f5a524; outline-offset: 3px; animation: lw-blinken 0.7s ease 3; }
   astro-dev-toolbar { display: none !important; }
+  .lw-ui {
+    font: 600 14px/1.2 system-ui, sans-serif; letter-spacing: 0; text-transform: none;
+    cursor: pointer; border-radius: 8px; z-index: 70;
+  }
+  .lw-ajouter {
+    display: flex; align-items: center; gap: .5rem; width: 100%; justify-content: center;
+    margin: 1rem 0; padding: .9rem 1rem; border: 2px dashed #a07c3c;
+    background: #fffaf0; color: #5b4320;
+  }
+  .lw-ajouter:hover { background: #fff3dc; }
+  .lw-reglages {
+    position: fixed; right: 16px; bottom: 96px; padding: .7rem 1rem;
+    border: 0; background: #151d26; color: #fff; box-shadow: 0 6px 20px rgba(0,0,0,.25);
+  }
+  .lw-reglages-item {
+    margin-top: .5rem; padding: .35rem .7rem; border: 1px solid #a07c3c; background: #fffaf0; color: #5b4320;
+    font-size: 13px;
+  }
+  .lw-ouvrir {
+    position: absolute; padding: .4rem .7rem; border: 0; background: #151d26; color: #fff;
+    box-shadow: 0 4px 14px rgba(0,0,0,.25); font-size: 13px;
+  }
 `;
 
 const norm = (s: string) => s.replace(/\s+/g, ' ').trim();
@@ -154,6 +187,8 @@ export default function Atelier({
   const [nouvelles, setNouvelles] = useState(0);
   const [occupe, setOccupe] = useState(false);
   const [inhalte, setInhalte] = useState<{ cle?: string; id?: string }>({});
+  const [nouveau, setNouveau] = useState<{ sorte: Sorte; groupe?: string } | null>(null);
+  const site = useRef(lireSite());
 
   /** Getippt, aber noch nicht gespeichert. Die Ref ist die Wahrheit. */
   const attentes = useRef<Attentes>({});
@@ -387,8 +422,52 @@ export default function Atelier({
   }
 
   // Die Ereignisse in der Website rufen immer die neueste Fassung auf.
-  const aktuell = useRef({ vormerken, ouvrirRiche, montrerToast, enregistrer, lectureSeule, t, abmelden });
-  aktuell.current = { vormerken, ouvrirRiche, montrerToast, enregistrer, lectureSeule, t, abmelden };
+  const aktuell = useRef({
+    vormerken,
+    ouvrirRiche,
+    montrerToast,
+    enregistrer,
+    lectureSeule,
+    t,
+    abmelden,
+    ouvrirNouveau,
+    ouvrirDetails,
+    aller,
+  });
+  aktuell.current = {
+    vormerken,
+    ouvrirRiche,
+    montrerToast,
+    enregistrer,
+    lectureSeule,
+    t,
+    abmelden,
+    ouvrirNouveau,
+    ouvrirDetails,
+    aller,
+  };
+
+  function ouvrirNouveau(sorte: Sorte, groupe?: string) {
+    setFenster(null);
+    setNouveau({ sorte, groupe });
+  }
+
+  /** Datum, Themen, PDF, Status, Loeschen: das Formular des Eintrags. */
+  function ouvrirDetails(table: string, id: string) {
+    setInhalte({ cle: table, id });
+    setFenster('inhalte');
+  }
+
+  function nouvelleCree(sorte: Sorte, id: string) {
+    setNouveau(null);
+    lignes.current.clear();
+    void rafraichirModifs();
+    const lang = ici?.lang ?? langues[0];
+    const cible = adresseNouveau(site.current, sorte, id, lang);
+    if (sorte === 'conference') aMontrer.current = `publications|${id}|titre`;
+    montrerToast(t('atelier.neue_seite_ok'), 6000);
+    if (cible) aller(cible, true);
+  }
 
   function abmelden() {
     const chemin = ici?.chemin ?? depart;
@@ -406,8 +485,13 @@ export default function Atelier({
     if (!d || !fenetre) return;
 
     const chemin = fenetre.location.pathname;
+    const idNouveau = new URLSearchParams(fenetre.location.search).get(PARAM);
     // Neu laden fuehrt auf dieselbe Seite zurueck.
-    window.history.replaceState(null, '', `?seite=${encodeURIComponent(chemin)}`);
+    window.history.replaceState(
+      null,
+      '',
+      `?seite=${encodeURIComponent(chemin + fenetre.location.search)}`,
+    );
     const lang = langueDe(d);
     setIci({ chemin, lang, nom: nomDeLaPage(chemin, d.querySelector('h1')?.textContent ?? '', langueAdmin) });
 
@@ -424,6 +508,18 @@ export default function Atelier({
         aktuell.current.abmelden();
       });
     }
+
+    // --- Seit dem Bauen Angelegtes zeigen ----------------------------------
+    // Vor dem Merken der Originaltexte: Kopierte Eintraege beginnen leer.
+    const [nouveaux, { data: themes }] = await Promise.all([
+      chargerNouveaux(site.current),
+      supabase.from('publication_tags').select('*'),
+    ]);
+    if (doc() !== d) return;
+    const pageNouvelle = idNouveau ? await preparerPageNouvelle(d, idNouveau, lang, themes ?? []) : false;
+    await completerListes(d, lang, nouveaux, themes ?? []);
+    if (pageNouvelle) marquerCourant(d, idNouveau!);
+    injecterBoutons(d);
 
     const elements = Array.from(d.querySelectorAll('[data-lw]'));
     for (const el of elements) {
@@ -466,12 +562,38 @@ export default function Atelier({
       },
       true,
     );
+    // Ein Text in einem Link wird beim Anklicken bearbeitet. Zum Oeffnen
+    // der Seite erscheint darunter ein eigener Knopf.
+    let puce: HTMLButtonElement | null = null;
     d.addEventListener('focusin', (e) => {
       const el = editable(e.target);
       if (el) (el as any)._avant = norm(el.textContent ?? '');
+      puce?.remove();
+      puce = null;
+      const a = el?.closest('a[href]') as HTMLAnchorElement | null;
+      if (!el || !a || a.origin !== fenetre.location.origin || a.hasAttribute('download')) return;
+      const r = el.getBoundingClientRect();
+      puce = d.createElement('button');
+      puce.type = 'button';
+      puce.className = 'lw-ui lw-ouvrir';
+      puce.textContent = aktuell.current.t('atelier.seite_oeffnen');
+      puce.style.left = `${r.left + fenetre.scrollX}px`;
+      puce.style.top = `${r.bottom + fenetre.scrollY + 8}px`;
+      // mousedown: vor dem Verlassen des Textes, sonst ist der Knopf schon weg.
+      puce.addEventListener('mousedown', (ev) => {
+        ev.preventDefault();
+        aktuell.current.aller(a.pathname + a.search + a.hash);
+      });
+      d.body.append(puce);
     });
     d.addEventListener('focusout', (e) => {
       const el = editable(e.target);
+      window.setTimeout(() => {
+        if (!editable(d.activeElement)) {
+          puce?.remove();
+          puce = null;
+        }
+      }, 150);
       if (!el) return;
       const texte = norm(el.textContent ?? '');
       if ((el as any)._avant === texte) return;
@@ -545,7 +667,59 @@ export default function Atelier({
       }
     }
 
+    if (pageNouvelle) {
+      const titre = d.querySelector('h1')?.textContent ?? '';
+      d.title = titre;
+      setIci({ chemin, lang, nom: nomDeLaPage(chemin, titre, langueAdmin) });
+    }
     if (aMontrer.current) sauter();
+  }
+
+  /** Knoepfe in der Vorschau: Neues anlegen, Einstellungen einer Seite. */
+  function injecterBoutons(d: Document) {
+    const fr = langueAdmin === 'fr';
+    const bouton = (classe: string, texte: string, quand: () => void) => {
+      const b = d.createElement('button');
+      b.type = 'button';
+      b.className = `lw-ui ${classe}`;
+      b.textContent = texte;
+      b.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        quand();
+      });
+      return b;
+    };
+    const libelles: Record<Sorte, string> = {
+      services: fr ? '＋ Ajouter une activité dans ce domaine' : '＋ Neue Tätigkeit in diesem Bereich',
+      dossier: fr ? '＋ Ajouter un dossier thématique' : '＋ Neues Fachdossier',
+      conference: fr ? '＋ Ajouter une conférence (PDF)' : '＋ Neue Konferenz (PDF)',
+    };
+    for (const liste of Array.from(d.querySelectorAll<HTMLElement>('[data-lw-ajouter]'))) {
+      const sorte = liste.dataset.lwListe as Sorte;
+      const b = bouton('lw-ajouter', libelles[sorte], () =>
+        aktuell.current.ouvrirNouveau(sorte, liste.dataset.lwGroupe),
+      );
+      if (sorte === 'services') liste.after(b);
+      else liste.before(b);
+    }
+    // Die Seite eines Eintrags: Datum, Themen, PDF, Entwurf, Loeschen.
+    const h1 = d.querySelector('h1[data-lw]');
+    const [table, id] = h1?.getAttribute('data-lw')?.split('|') ?? [];
+    if (table === 'services' || table === 'publications') {
+      d.body.append(
+        bouton('lw-reglages', fr ? '⚙ Réglages de cette page' : '⚙ Einstellungen dieser Seite', () =>
+          aktuell.current.ouvrirDetails(table, id),
+        ),
+      );
+    }
+    for (const li of Array.from(d.querySelectorAll<HTMLElement>('.conference[data-lw-item]'))) {
+      li.querySelector('.conference__texte')?.append(
+        bouton('lw-reglages-item', fr ? '⚙ Date, thèmes, PDF' : '⚙ Datum, Themen, PDF', () =>
+          aktuell.current.ouvrirDetails('publications', li.dataset.lwItem!),
+        ),
+      );
+    }
   }
 
   function sauter() {
@@ -559,10 +733,13 @@ export default function Atelier({
   }
 
   // --- Navigation ------------------------------------------------------------
-  function aller(chemin: string) {
+  function aller(chemin: string, neuLaden = false) {
     const f = cadre.current?.contentWindow;
     if (!f) return;
-    if (f.location.pathname === chemin) return sauter();
+    if (f.location.pathname + f.location.search === chemin) {
+      if (neuLaden) return f.location.reload();
+      return sauter();
+    }
     f.location.assign(chemin);
   }
 
@@ -705,6 +882,14 @@ export default function Atelier({
               </button>
             ))}
           </div>
+          <h3 className="kx-h3">{t('seiten.hinzufuegen')}</h3>
+          <div className="kx-list">
+            {(['services', 'dossier', 'conference'] as const).map((s) => (
+              <button key={s} type="button" className="kx-li" onClick={() => ouvrirNouveau(s)}>
+                ＋ {NOMS_SORTES[s][langueAdmin]}
+              </button>
+            ))}
+          </div>
           {langues.length > 1 && (
             <>
               <h3 className="kx-h3">{t('atelier.sprache_website')}</h3>
@@ -727,6 +912,17 @@ export default function Atelier({
             </>
           )}
         </Feuille>
+      )}
+
+      {nouveau && (
+        <FenetreNouveau
+          sorte={nouveau.sorte}
+          groupe={nouveau.groupe}
+          lang={lang}
+          langueAdmin={langueAdmin}
+          onCree={(id) => nouvelleCree(nouveau.sorte, id)}
+          onFermer={() => setNouveau(null)}
+        />
       )}
 
       {fenster === 'google' && ici && (
@@ -794,8 +990,7 @@ export default function Atelier({
                 className="kx-li"
                 onClick={() => {
                   if (!window.confirm(t('mehr.demo_sicher'))) return;
-                  reinitialiserDemo();
-                  window.location.reload();
+                  void reinitialiserDemo().then(() => window.location.reload());
                 }}
               >
                 ⟲ {t('mehr.demo_zuruecksetzen')}
@@ -875,6 +1070,17 @@ export default function Atelier({
               <button type="button" className="kx-btn kx-ghost kx-abstand" onClick={() => setInhalte({})}>
                 ← {t('nav.mehr')}
               </button>
+              {(inhalte.cle === 'services' || inhalte.cle === 'publications') && (
+                <div className="kx-row kx-row--start kx-abstand">
+                  {(inhalte.cle === 'services' ? (['services'] as const) : (['dossier', 'conference'] as const)).map(
+                    (s) => (
+                      <button key={s} type="button" className="kx-btn kx-primary" onClick={() => ouvrirNouveau(s)}>
+                        ＋ {NOMS_SORTES[s][langueAdmin]}
+                      </button>
+                    ),
+                  )}
+                </div>
+              )}
               <Liste
                 collection={COLLECTIONS[inhalte.cle]}
                 langueAdmin={langueAdmin}
@@ -889,6 +1095,18 @@ export default function Atelier({
               langueAdmin={langueAdmin}
               estOwner={estOwner}
               onRetour={() => setInhalte({ cle: inhalte.cle })}
+              onSupprime={() => {
+                // Die Seite gibt es nicht mehr: zur Uebersicht.
+                const a = site.current.adresses[ici?.lang ?? langues[0]];
+                const liste = inhalte.cle === 'services' ? a?.activites : ici?.chemin.includes(a?.dossiers ?? '\0') ? a?.dossiers : a?.conferences;
+                setFenster(null);
+                setInhalte({});
+                lignes.current.clear();
+                void rafraichirModifs();
+                montrerToast(t('atelier.seite_geloescht'));
+                if (liste) aller(liste, true);
+                else recharger();
+              }}
             />
           )}
         </Feuille>

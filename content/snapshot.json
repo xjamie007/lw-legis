@@ -1,6 +1,6 @@
 {
   "meta": {
-    "genere_le": "2026-10-30T11:37:22.587Z",
+    "genere_le": "2026-10-30T18:17:58.888Z",
     "source": "content/source",
     "version": 2
   },
@@ -2075,5 +2075,6 @@
       "min": 70,
       "max": 160
     }
-  }
+  },
+  "libelles": {}
 }

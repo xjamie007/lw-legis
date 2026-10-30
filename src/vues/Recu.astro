@@ -15,15 +15,17 @@ interface Props {
 }
 const { lang, route } = Astro.props;
 const s = contenu.settings;
+import { edLibelle } from '../lib/edition';
+import S from '../components/S.astro';
 ---
 
-<Tete lang={lang} fil={route.fil} titre={route.nom} chapeau={t(lang, 'recu.texte')} />
+<Tete lang={lang} fil={route.fil} titre={route.nom} chapeau={t(lang, 'recu.texte')} edChapeau={edLibelle('recu.texte')} />
 
 <section class="section">
   <div class="enveloppe recu">
-    <p>{s.nom}, {s.adresse.une_ligne}</p>
-    <p><a href={`tel:${s.telephone.lien}`}>{s.telephone.affiche}</a> · <a href={`mailto:${s.courriel}`}>{s.courriel}</a></p>
-    <a class="bouton bouton--contour" href={urlAccueil(lang)}>{t(lang, 'recu.retour')}</a>
+    <p><S k="nom" />, <S k="adresse.rue" />, <S k="adresse.code_postal" /> <S k="adresse.ville" /></p>
+    <p><a href={`tel:${s.telephone.lien}`}><S k="telephone.affiche" /></a> · <a href={`mailto:${s.courriel}`}><S k="courriel" /></a></p>
+    <a class="bouton bouton--contour" href={urlAccueil(lang)} {...edLibelle('recu.retour')}>{t(lang, 'recu.retour')}</a>
   </div>
 </section>
 

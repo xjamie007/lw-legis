@@ -11,7 +11,7 @@ import { txt, txtOuFrancais, txtHtml } from '../lib/langs';
 import { t, formaterTaille } from '../lib/i18n';
 import { conferences, contenu, dossiers, mots, themeParId, themesDe, type Publication } from '../lib/content';
 import { adresse, type Route } from '../lib/pages';
-import { ed, edPage } from '../lib/edition';
+import { ed, edPage, edLibelle } from '../lib/edition';
 import { prefixer, prefixerHtml } from '../lib/base';
 import { sommaire } from '../lib/sommaire';
 import Sommaire from '../components/Sommaire.astro';
@@ -29,11 +29,16 @@ const themes = themesDe(tous, lang);
 
 const minutes = dossier ? Math.max(1, Math.round(mots(txt(dossier.corps, lang)) / 220)) : 0;
 const texte = dossier ? sommaire(txt(dossier.corps, lang)) : null;
+// Das PDF des Dossiers selbst (im Redaktionsbereich hochgeladen) steht vorn.
+if (texte && dossier?.pdf && !texte.pdfs.some((p) => p.href === dossier.pdf!.chemin)) {
+  texte.pdfs.unshift({ href: dossier.pdf.chemin, libelle: '', octets: dossier.pdf.octets || null });
+}
 const liees = dossier
   ? conferences()
       .filter((c) => c.pdf && c.themes.some((th) => dossier.themes.includes(th)))
       .slice(0, 5)
   : [];
+import T from '../components/T.astro';
 ---
 
 {
@@ -52,25 +57,25 @@ const liees = dossier
           {themes.length > 1 && (
             <div class="filtres" data-filtres hidden role="group" aria-label={t(lang, 'conferences.filtrer')}>
               <button type="button" aria-pressed="true" data-theme="">
-                {t(lang, 'conferences.tous')}
+                <T lang={lang} k={'conferences.tous'} />
               </button>
               {themes.map((th) => (
                 <button type="button" aria-pressed="false" data-theme={th.id}>
-                  {txt(th.etiquette, lang)}
+                  <span {...ed('publication_tags', th.id, 'etiquette')}>{txt(th.etiquette, lang)}</span>
                 </button>
               ))}
             </div>
           )}
-          <ul class="registre liste-filtree" data-liste>
+          <ul class="registre liste-filtree" data-liste data-lw-liste="dossier" data-lw-ajouter>
             {tous.map((d) => (
-              <li class="registre__ligne" data-themes={d.themes.join(' ')}>
+              <li class="registre__ligne" data-themes={d.themes.join(' ')} data-lw-item={d.id}>
                 <a class="registre__lien" href={adresse(`dossier:${d.id}`, lang)}>
                   <span class="registre__titre" {...ed('publications', d.id, 'titre')}>
                     {txt(d.titre, lang)}
                   </span>
-                  <span class="registre__texte">{txt(d.resume, lang)}</span>
+                  <span class="registre__texte" {...ed('publications', d.id, 'resume')}>{txt(d.resume, lang)}</span>
                   <span class="etiquettes">
-                    {d.themes.map((th) => themeParId(th)).filter(Boolean).map((th) => <span>{txt(th!.etiquette, lang)}</span>)}
+                    {d.themes.map((th) => themeParId(th)).filter(Boolean).map((th) => <span {...ed('publication_tags', th!.id, 'etiquette')}>{txt(th!.etiquette, lang)}</span>)}
                   </span>
                   <Icone nom="fleche" class="registre__fleche" />
                 </a>
@@ -94,20 +99,31 @@ const liees = dossier
         edTitre={ed('publications', dossier.id, 'titre')}
         edChapeau={ed('publications', dossier.id, 'resume')}
       >
-        <div class="dossier__meta">
+        <div class="dossier__meta" data-lw-pdfs>
           {texte!.pdfs.map((pdf) => (
             <a class="bouton dossier__pdf" href={prefixer(pdf.href)} download>
               <Icone nom="pdf" />
               <span>
-                {t(lang, 'dossier.pdf')}
+                <T lang={lang} k={'dossier.pdf'} />
                 <small>PDF{pdf.octets ? ` · ${formaterTaille(pdf.octets, lang)}` : ''}</small>
               </span>
             </a>
           ))}
+          {/* Vorlage fuer den Redaktionsbereich: ein PDF, das gerade erst
+              hochgeladen wurde, erscheint so in der Vorschau. */}
+          <template data-lw-modele-pdf>
+            <a class="bouton dossier__pdf" href="#" download>
+              <Icone nom="pdf" />
+              <span>
+                <T lang={lang} k={'dossier.pdf'} />
+                <small>PDF</small>
+              </span>
+            </a>
+          </template>
           <span class="etiquettes">
-            {dossier.themes.map((th) => themeParId(th)).filter(Boolean).map((th) => <span>{txt(th!.etiquette, lang)}</span>)}
+            {dossier.themes.map((th) => themeParId(th)).filter(Boolean).map((th) => <span {...ed('publication_tags', th!.id, 'etiquette')}>{txt(th!.etiquette, lang)}</span>)}
             <span>
-              {minutes} {t(lang, 'dossier.lecture')}
+              {minutes} <T lang={lang} k={'dossier.lecture'} />
             </span>
           </span>
         </div>
@@ -121,23 +137,23 @@ const liees = dossier
           <aside class="sans-impression">
             {liees.length > 0 && (
               <nav class="liste-aside liste-aside--premiere" aria-labelledby="conf-liees">
-                <h2 id="conf-liees">{t(lang, 'dossier.conferences_liees')}</h2>
+                <h2 id="conf-liees" {...edLibelle('dossier.conferences_liees')}>{t(lang, 'dossier.conferences_liees')}</h2>
                 {liees.map((c) => {
                   const titre = txtOuFrancais(c.titre, lang);
                   return (
                     <a href={prefixer(c.pdf!.chemin)} download lang={titre.lang !== lang ? titre.lang : undefined}>
-                      {titre.valeur}
+                      <span {...ed('publications', c.id, 'titre')}>{titre.valeur}</span>
                       <small>PDF · {formaterTaille(c.pdf!.octets, lang)}</small>
                     </a>
                   );
                 })}
               </nav>
             )}
-            <nav class="liste-aside" aria-labelledby="autres-dossiers">
-              <h2 id="autres-dossiers">{t(lang, 'dossier.tous')}</h2>
+            <nav class="liste-aside" aria-labelledby="autres-dossiers" data-lw-liste="dossier">
+              <h2 id="autres-dossiers" {...edLibelle('dossier.tous')}>{t(lang, 'dossier.tous')}</h2>
               {tous.map((d) => (
-                <a href={adresse(`dossier:${d.id}`, lang)} aria-current={d.id === dossier.id ? 'page' : undefined}>
-                  {txt(d.titre, lang)}
+                <a href={adresse(`dossier:${d.id}`, lang)} aria-current={d.id === dossier.id ? 'page' : undefined} data-lw-item={d.id}>
+                  <span {...ed('publications', d.id, 'titre')}>{txt(d.titre, lang)}</span>
                 </a>
               ))}
             </nav>

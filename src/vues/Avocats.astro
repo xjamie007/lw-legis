@@ -22,6 +22,7 @@ interface Props {
 const { lang, route } = Astro.props;
 const p = contenu.pages.avocats;
 const urlContact = adresse('contact', lang);
+import T from '../components/T.astro';
 ---
 
 <Tete
@@ -48,20 +49,21 @@ const urlContact = adresse('contact', lang);
           )}
           <div>
             <h2>
-              {m.titre_civil} {m.nom}
+              <span {...ed('team', m.id, 'titre_civil')}>{m.titre_civil}</span>{' '}
+              <span {...ed('team', m.id, 'nom')}>{m.nom}</span>
             </h2>
             <p class="avocat__fonction">
               <span {...ed('team', m.id, 'fonction')}>{txt(m.fonction, lang)}</span>
               {m.barreau_depuis && (
                 <span>
-                  {t(lang, 'avocats.barreau_depuis')} {m.barreau_depuis}
+                  <T lang={lang} k={'avocats.barreau_depuis'} /> {m.barreau_depuis}
                 </span>
               )}
             </p>
             <div class="prose" set:html={txtHtml(m.bio, lang)} {...ed('team', m.id, 'bio', true)} />
             {urlContact && (
               <a class="bouton" href={urlContact}>
-                {t(lang, 'avocats.prendre_rdv')}
+                <T lang={lang} k={'avocats.prendre_rdv'} />
                 <Icone nom="fleche" />
               </a>
             )}

@@ -8,7 +8,7 @@
  *   - den Zugang zu frueheren Fassungen
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { supabase } from '../supabase';
+import { supabase, televerserDocument, urlFichier } from '../supabase';
 import { traduire, type LangueAdmin } from '../i18n';
 import type { Collection } from '../schema';
 import ChampMulti, {
@@ -27,6 +27,8 @@ interface Props {
   langueAdmin: LangueAdmin;
   estOwner: boolean;
   onRetour: () => void;
+  /** Nach dem Loeschen: zurueck zur Liste, Vorschau neu laden. */
+  onSupprime?: () => void;
 }
 
 const LIMITES = {
@@ -49,6 +51,7 @@ export default function Editeur({
   langueAdmin,
   estOwner,
   onRetour,
+  onSupprime,
 }: Props) {
   const t = (c: Parameters<typeof traduire>[1], v?: Record<string, string | number>) =>
     traduire(langueAdmin, c, v);
@@ -61,6 +64,36 @@ export default function Editeur({
   const minuterie = useRef<number | null>(null);
 
   const lectureSeule = Boolean(collection.reserveOwner && !estOwner);
+  const fr = langueAdmin === 'fr';
+
+  /** Themen fuer das Feld `etiquettes`. */
+  const [themes, setThemes] = useState<Enregistrement[]>([]);
+  const [envoi, setEnvoi] = useState(false);
+  const [lienPdf, setLienPdf] = useState('');
+  useEffect(() => {
+    if (!collection.champs.some((c) => c.type === 'etiquettes')) return;
+    void supabase
+      .from('publication_tags')
+      .select('*')
+      .order('ordre', { ascending: true })
+      .then(({ data }) => setThemes(data ?? []));
+  }, [collection]);
+  useEffect(() => {
+    const chemin = donnees?.pdf_chemin;
+    if (typeof chemin === 'string' && chemin) void urlFichier(chemin).then(setLienPdf);
+    else setLienPdf('');
+  }, [donnees?.pdf_chemin]);
+
+  async function supprimer() {
+    if (!window.confirm(fr ? 'Supprimer définitivement cette page ?' : 'Diese Seite endgültig löschen?')) return;
+    const { error } = await supabase.from(collection.table).delete().eq('id', id);
+    if (error) {
+      setMessageErreur(error.message);
+      setEtat('erreur');
+      return;
+    }
+    (onSupprime ?? onRetour)();
+  }
 
   // --- Laden ---------------------------------------------------------------
   useEffect(() => {
@@ -441,11 +474,93 @@ export default function Editeur({
                 </div>
               );
 
+            case 'etiquettes': {
+              const choisis: string[] = Array.isArray(donnees[champ.nom]) ? donnees[champ.nom] : [];
+              return (
+                <fieldset key={champ.nom} className="champ-multi">
+                  <legend className="champ-multi__label">{champ.etiquette[langueAdmin]}</legend>
+                  {themes.map((th) => (
+                    <label key={th.id} className="champ-bascule">
+                      <input
+                        type="checkbox"
+                        checked={choisis.includes(th.id)}
+                        onChange={(e) =>
+                          modifier(
+                            champ.nom,
+                            e.target.checked ? [...choisis, th.id] : choisis.filter((x) => x !== th.id),
+                          )
+                        }
+                      />{' '}
+                      {th.etiquette?.fr || th.etiquette?.en || th.id}
+                    </label>
+                  ))}
+                </fieldset>
+              );
+            }
+
+            case 'fichier':
+              return (
+                <div key={champ.nom} className="champ-multi">
+                  <label className="champ-multi__label" htmlFor={idc}>
+                    {champ.etiquette[langueAdmin]}
+                  </label>
+                  {lienPdf ? (
+                    <p className="champ-multi__aide">
+                      <a href={lienPdf} target="_blank" rel="noopener">
+                        {fr ? 'Ouvrir le PDF actuel' : 'Aktuelles PDF öffnen'}
+                      </a>{' '}
+                      ·{' '}
+                      <button
+                        type="button"
+                        className="bouton-fin"
+                        onClick={() => {
+                          modifier('pdf_chemin', null);
+                          modifier('pdf_octets', null);
+                        }}
+                      >
+                        {fr ? 'Retirer' : 'Entfernen'}
+                      </button>
+                    </p>
+                  ) : (
+                    <p className="champ-multi__aide">{fr ? 'Aucun PDF pour l’instant.' : 'Noch kein PDF.'}</p>
+                  )}
+                  <input
+                    id={idc}
+                    type="file"
+                    accept="application/pdf"
+                    disabled={envoi}
+                    onChange={async (e) => {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      setEnvoi(true);
+                      try {
+                        const { chemin, octets } = await televerserDocument(f);
+                        modifier('pdf_chemin', chemin);
+                        modifier('pdf_octets', octets);
+                      } catch (err) {
+                        setMessageErreur(String((err as Error).message ?? err));
+                        setEtat('erreur');
+                      }
+                      setEnvoi(false);
+                    }}
+                  />
+                  {envoi && <p className="champ-multi__aide">{t('app.laden')}</p>}
+                </div>
+              );
+
             default:
               return null;
           }
         })}
       </fieldset>
+
+      {collection.supprimable && !lectureSeule && (
+        <p className="editeur__supprimer">
+          <button type="button" className="bouton-fin bouton-fin--danger" onClick={() => void supprimer()}>
+            {fr ? 'Supprimer cette page' : 'Diese Seite löschen'}
+          </button>
+        </p>
+      )}
 
       {/* --- Frühere Fassungen -------------------------------------------- */}
       <div className="editeur__pied">

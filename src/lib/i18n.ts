@@ -8,9 +8,15 @@
  * Fehlt ein Schluessel in einer Sprache, wird er gemeldet und die
  * Sprachfassung gilt als unvollstaendig — es wird nichts stillschweigend
  * durch Franzoesisch ersetzt.
+ *
+ * Im Redaktionsbereich geaenderte Texte liegen in `settings`, Zeile
+ * `libelles` (im Schnappschuss `libelles`), verschachtelt wie der
+ * Schluessel: `sommaire.titre` -> { sommaire: { titre: { fr, en } } }.
+ * Sie gehen den JSON-Dateien vor; dort steht nur, was nie geaendert wurde.
  */
 import fr from '../i18n/fr.json';
 import en from '../i18n/en.json';
+import snapshot from '../../content/snapshot.json';
 import { LANGS, LANG_DEFAUT, type Lang } from './langs';
 
 const TABLES: Record<Lang, Record<string, string>> = { fr, en };
@@ -25,9 +31,17 @@ function estOuvert(valeur: string | undefined): boolean {
   );
 }
 
+const LIBELLES: Record<string, any> = (snapshot as { libelles?: Record<string, any> }).libelles ?? {};
+
+/** Im Redaktionsbereich geaendert? Dann gilt dieser Text. */
+function libelle(lang: Lang, cle: string): string | undefined {
+  const v = cle.split('.').reduce<any>((x, k) => x?.[k], LIBELLES)?.[lang];
+  return typeof v === 'string' && v.trim() ? v : undefined;
+}
+
 /** Uebersetzung holen. Fehlt sie, kommt die Lueckenmarkierung zurueck. */
 export function t(lang: Lang, cle: Cle): string {
-  const v = TABLES[lang]?.[cle as string];
+  const v = libelle(lang, cle as string) ?? TABLES[lang]?.[cle as string];
   if (estOuvert(v)) return `[${lang.toUpperCase()} FEHLT]`;
   return v as string;
 }

@@ -1,0 +1,17 @@
+---
+/**
+ * src/components/S.astro — Eine Kanzleiangabe (Name, Adresse, Telefon,
+ * E-Mail) aus `settings`, Zeile `stammdaten`, im Redaktionsbereich
+ * anklickbar. `k` ist der Weg hinein, etwa `adresse.rue`.
+ */
+import { contenu } from '../lib/content';
+import { ed } from '../lib/edition';
+
+interface Props {
+  k: string;
+}
+const { k } = Astro.props;
+const valeur = k.split('.').reduce<any>((x, c) => x?.[c], contenu.settings) ?? '';
+---
+
+<span {...ed('settings', 'stammdaten', `valeur.${k}`)}>{valeur}</span>

@@ -21,18 +21,20 @@ interface Props {
 }
 const { lang, route } = Astro.props;
 
-type Entree = { titre: string; titreLang?: string; href: string; rubrique: string; telechargement?: boolean };
+type Entree = { titre: string; titreLang?: string; href: string; rubrique: Cle; telechargement?: boolean; ed: Edition };
 
 const entrees: Entree[] = [
   ...activites(lang).map((a) => ({
     titre: txt(a.terme, lang),
     href: adresse(`activite:${a.id}`, lang)!,
-    rubrique: t(lang, 'nav.activites'),
+    rubrique: 'nav.activites' as Cle,
+    ed: ed('services', a.id, 'terme'),
   })),
   ...dossiers(lang).map((d) => ({
     titre: txt(d.titre, lang),
     href: adresse(`dossier:${d.id}`, lang)!,
-    rubrique: t(lang, 'nav.dossiers'),
+    rubrique: 'nav.dossiers' as Cle,
+    ed: ed('publications', d.id, 'titre'),
   })),
   ...conferences()
     .map((c): Entree | null => {
@@ -44,7 +46,8 @@ const entrees: Entree[] = [
         titre: titre.valeur,
         titreLang: titre.lang !== lang ? titre.lang : undefined,
         href,
-        rubrique: t(lang, 'nav.conferences'),
+        rubrique: 'nav.conferences' as Cle,
+        ed: ed('publications', c.id, 'titre'),
         telechargement: Boolean(c.pdf),
       };
     })
@@ -65,9 +68,12 @@ for (const e of entrees.sort((a, b) => cle(a.titre).localeCompare(cle(b.titre), 
   groupes.set(lettre, [...(groupes.get(lettre) ?? []), e]);
 }
 const lettres = [...groupes.keys()];
+import T from '../components/T.astro';
+import { ed, edLibelle, type Edition } from '../lib/edition';
+import type { Cle } from '../lib/i18n';
 ---
 
-<Tete lang={lang} fil={route.fil} titre={route.nom} chapeau={t(lang, 'index.intro')}>
+<Tete lang={lang} fil={route.fil} titre={route.nom} chapeau={t(lang, 'index.intro')} edChapeau={edLibelle('index.intro')}>
   <nav class="alphabet" aria-label={route.nom}>
     {lettres.map((l) => <a href={`#lettre-${l}`}>{l}</a>)}
   </nav>
@@ -82,10 +88,10 @@ const lettres = [...groupes.keys()];
           <ul>
             {groupes.get(l)!.map((e) => (
               <li>
-                <a href={e.href} lang={e.titreLang} download={e.telechargement || undefined}>
+                <a href={e.href} lang={e.titreLang} download={e.telechargement || undefined} {...e.ed}>
                   {e.titre}
                 </a>
-                <span>{e.rubrique}</span>
+                <T lang={lang} k={e.rubrique} />
               </li>
             ))}
           </ul>
