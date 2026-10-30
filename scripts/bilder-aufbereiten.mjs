@@ -40,12 +40,20 @@ const PLAETZE = [
     quelle: 'etude-avocats-luxembourg-lorang.jpg',
     verhaeltnis: [3, 2],
     zuschnitt: 'centre',
+    // Die Aufnahme hat einen kraeftigen Gelbstich, der neben Marineblau
+    // und Gold schmutzig wirkt. Halber Grauwelt-Abgleich: der Raum bleibt
+    // warm, das Weiss der Waende wird wieder weiss. Korrektur, keine
+    // Retusche.
+    weissabgleich: 0.5,
   },
   {
     name: 'bureau-2',
     quelle: 'avocats-luxembourg-cabinet-lorang.jpg',
     verhaeltnis: [3, 4],
     zuschnitt: 'centre',
+    // Derselbe Gelbstich wie im Salon, dieselbe Korrektur — sonst zeigt
+    // die Seite dasselbe Haus in zwei Farbstimmungen.
+    weissabgleich: 0.5,
   },
   // Der Besprechungsraum aus `avocat-lorang-luxembourg-footer.jpg` ist
   // bewusst NICHT dabei: Die Aufnahme ist schwarzweiss und traegt das
@@ -145,6 +153,13 @@ async function fotoAufbereiten(platz) {
   let bild = sharp(quelle).rotate(); // EXIF-Drehung beachten
   if (platz.vorschnitt) bild = bild.extract(platz.vorschnitt);
   if (platz.graustufen) bild = bild.greyscale();
+  if (platz.weissabgleich) {
+    const { channels } = await bild.clone().stats();
+    const [r, g, b] = channels.slice(0, 3).map((c) => c.mean);
+    const moyenne = (r + g + b) / 3;
+    const facteur = (x) => 1 + (moyenne / x - 1) * platz.weissabgleich;
+    bild = bild.linear([facteur(r), facteur(g), facteur(b)], [0, 0, 0]);
+  }
 
   const meta = await bild.clone().metadata();
   const [vw, vh] = platz.verhaeltnis;

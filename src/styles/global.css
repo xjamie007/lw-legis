@@ -148,6 +148,10 @@
   .section--brume {
     background: var(--color-brume);
   }
+  /* Weiss, nur durch eine Haarlinie vom Abschnitt davor getrennt. */
+  .section--filet {
+    border-top: 1px solid var(--color-trait);
+  }
   .section--marine {
     background: var(--color-marine);
     color: var(--color-marine-texte);
@@ -198,16 +202,6 @@
     color: var(--color-marine-texte);
   }
 
-  /* Eine kurze Goldlinie ueber einem Titel: das Zeichen der Seite. */
-  .filet::before {
-    content: '';
-    display: block;
-    width: 2.5rem;
-    height: 2px;
-    background: var(--color-or);
-    margin-bottom: 1.5rem;
-  }
-
   /* --- Knoepfe und Links --------------------------------------------------- */
   .bouton {
     display: inline-flex;
@@ -232,14 +226,15 @@
     background: var(--color-marine-tief);
     border-color: var(--color-marine-tief);
   }
+  /* Auf Marine: goldene Kontur, gefuellt erst beim Ueberfahren. */
   .bouton--or {
-    background: var(--color-or-clair);
+    background: transparent;
     border-color: var(--color-or-clair);
-    color: var(--color-marine-tief);
+    color: var(--color-blanc);
   }
   .bouton--or:hover {
-    background: var(--color-blanc);
-    border-color: var(--color-blanc);
+    background: var(--color-or-clair);
+    border-color: var(--color-or-clair);
     color: var(--color-marine-tief);
   }
   .bouton--contour {
@@ -549,6 +544,8 @@
       margin-inline: calc(-1 * var(--gouttiere));
       padding-inline: var(--gouttiere);
       scrollbar-width: none;
+      /* Der Rand blendet aus: so sieht man, dass es weitergeht. */
+      mask-image: linear-gradient(to right, #000 calc(100% - 3rem), transparent);
     }
     .filtres button {
       flex: none;
@@ -632,8 +629,6 @@
   .liste-aside a[aria-current='page'] {
     color: var(--color-marine);
     font-weight: 600;
-    box-shadow: inset 2px 0 0 var(--color-or);
-    padding-left: 0.85rem;
   }
 }
 

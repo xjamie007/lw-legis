@@ -69,7 +69,7 @@ const urlConferences = adresse('conferences', lang);
 <section class="section">
   <div class="enveloppe etude">
     <div class="etude__texte">
-      <h2 class="titre-section filet" {...edPage('accueil.cabinet_titre')}>{txt(p.cabinet_titre, lang)}</h2>
+      <h2 class="titre-section" {...edPage('accueil.cabinet_titre')}>{txt(p.cabinet_titre, lang)}</h2>
       <div class="prose" set:html={txtHtml(p.cabinet_texte, lang)} {...edPage('accueil.cabinet_texte', true)} />
     </div>
     {
@@ -99,7 +99,7 @@ const urlConferences = adresse('conferences', lang);
 <section class="section section--brume">
   <div class="enveloppe">
     <div class="entete-section">
-      <h2 class="titre-section filet">{t(lang, 'accueil.activites_titre')}</h2>
+      <h2 class="titre-section titre-section--grand">{t(lang, 'accueil.activites_titre')}</h2>
       <p class="chapeau" {...edPage('activites.intro')}>{txt(contenu.pages.activites.intro, lang)}</p>
     </div>
     <ul class="registre registre--deux">
@@ -120,9 +120,9 @@ const urlConferences = adresse('conferences', lang);
   </div>
 </section>
 
-<section class="section section--marine atouts">
-  <div class="enveloppe">
-    <h2 class="titre-section filet" {...edPage('accueil.atouts_titre')}>{txt(p.atouts_titre, lang)}</h2>
+<section class="section--marine atouts">
+  <div class="enveloppe atouts__grille">
+    <h2 class="titre-section" {...edPage('accueil.atouts_titre')}>{txt(p.atouts_titre, lang)}</h2>
     <ol class="atouts__liste">
       {
         p.atouts.map((a: any, i: number) => (
@@ -140,7 +140,7 @@ const urlConferences = adresse('conferences', lang);
 <section class="section">
   <div class="enveloppe specialiste">
     <div>
-      <h2 class="titre-section filet" {...edPage('accueil.specialiste_titre')}>{txt(p.specialiste_titre, lang)}</h2>
+      <h2 class="titre-section" {...edPage('accueil.specialiste_titre')}>{txt(p.specialiste_titre, lang)}</h2>
       <div class="prose" set:html={txtHtml(p.specialiste_texte, lang)} {...edPage('accueil.specialiste_texte', true)} />
     </div>
     <aside class="reseaux" aria-labelledby="titre-reseaux">
@@ -155,14 +155,17 @@ const urlConferences = adresse('conferences', lang);
           ))
         }
       </dl>
+      <div class="reseaux__photo">
+        <Bild platz="bureau_2" lang={lang} sizes="(min-width: 62rem) 22rem, 80vw" />
+      </div>
     </aside>
   </div>
 </section>
 
-<section class="section section--brume">
+<section class="section section--filet">
   <div class="enveloppe publications">
     <div>
-      <h2 class="titre-section filet">{t(lang, 'nav.dossiers')}</h2>
+      <h2 class="titre-section">{t(lang, 'nav.dossiers')}</h2>
       <ul class="registre">
         {
           derniersDossiers.map((d) => (
@@ -186,7 +189,7 @@ const urlConferences = adresse('conferences', lang);
       }
     </div>
     <div>
-      <h2 class="titre-section filet">{t(lang, 'nav.conferences')}</h2>
+      <h2 class="titre-section">{t(lang, 'nav.conferences')}</h2>
       <p class="chapeau" {...edPage('accueil.conferences_texte')}>{txt(p.conferences_texte, lang)}</p>
       <ul class="registre publications__conf">
         {
@@ -221,16 +224,16 @@ const urlConferences = adresse('conferences', lang);
   </div>
 </section>
 
-<section class="section">
+<section class="section section--filet pourquoi-section">
   <div class="enveloppe pourquoi">
-    <h2 class="titre-section filet" {...edPage('accueil.pourquoi_titre')}>{txt(p.pourquoi_titre, lang)}</h2>
+    <h2 class="pourquoi__titre" {...edPage('accueil.pourquoi_titre')}>{txt(p.pourquoi_titre, lang)}</h2>
     <div class="prose pourquoi__texte" set:html={txtHtml(p.pourquoi_texte, lang)} {...edPage('accueil.pourquoi_texte', true)} />
   </div>
 </section>
 
 <section class="section section--marine rdv">
   <div class="enveloppe rdv__grille">
-    <h2 class="titre-section">{t(lang, 'accueil.rdv_titre')}</h2>
+    <h2 class="titre-section" set:html={t(lang, 'accueil.rdv_titre').replace('rendez-vous', '<span class="insecable">rendez-vous</span>')} />
     <div class="rdv__coordonnees">
       <address>
         {s.adresse.rue}<br />
@@ -323,7 +326,7 @@ const urlConferences = adresse('conferences', lang);
     .hero {
       grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
       grid-template-rows: 1fr auto;
-      min-height: min(88vh, 50rem);
+      min-height: min(80vh, 44rem);
     }
     .hero__texte {
       align-self: center;
@@ -403,37 +406,47 @@ const urlConferences = adresse('conferences', lang);
     gap: 1.25rem 4rem;
     margin-bottom: 3rem;
   }
+  .titre-section--grand {
+    font-size: var(--text-titre);
+    font-weight: 300;
+  }
   @media (min-width: 62rem) {
     .entete-section {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      align-items: end;
+      align-items: start;
+    }
+    .entete-section .chapeau {
+      padding-top: 0.6rem;
     }
   }
 
-  /* --- Staerken ----------------------------------------------------------- */
-  .atouts__liste {
+  /* --- Staerken -----------------------------------------------------------
+     Ein knappes Band: links der Titel, rechts die vier Staerken als
+     Zeilen mit Linie. */
+  .atouts {
+    padding-block: clamp(3.5rem, 2.5rem + 3vw, 5rem);
+  }
+  .atouts__grille {
     display: grid;
-    gap: 2.5rem 3rem;
-    margin-top: 3.5rem;
+    gap: 2rem 6rem;
   }
   .atouts__liste li {
-    padding-top: 1.5rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-marine-texte) 30%, transparent);
+  }
+  .atouts__liste li:first-child {
     border-top: 1px solid color-mix(in srgb, var(--color-marine-texte) 30%, transparent);
   }
   .atouts__titre {
     font-family: var(--font-titre);
-    font-size: 1.5rem;
+    font-size: 1.375rem;
     line-height: 1.3;
     color: var(--color-blanc);
   }
-  @media (min-width: 48rem) {
-    .atouts__liste {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  @media (min-width: 72rem) {
-    .atouts__liste {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+  @media (min-width: 62rem) {
+    .atouts__grille {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
     }
   }
 
@@ -464,6 +477,18 @@ const urlConferences = adresse('conferences', lang);
     font-size: 1.5rem;
     color: var(--color-marine);
   }
+  .reseaux__photo {
+    margin-top: 1.5rem;
+  }
+  /* Quer beschnitten, damit das Foto mit dem Text daneben endet. */
+  .reseaux__photo :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: 50% 55%;
+  }
   .reseaux dd {
     margin-top: 0.25rem;
     font-size: 0.9375rem;
@@ -474,8 +499,9 @@ const urlConferences = adresse('conferences', lang);
       grid-template-columns: minmax(0, 1fr) 22rem;
       gap: clamp(4rem, 8vw, 8rem);
     }
+    /* Unten buendig mit dem Text links: keine leere Flaeche daneben. */
     .reseaux {
-      margin-top: 4.5rem;
+      align-self: end;
     }
   }
 
@@ -507,9 +533,16 @@ const urlConferences = adresse('conferences', lang);
   }
 
   /* --- Pourquoi ------------------------------------------------------------- */
+  /* Ein allgemeiner Text: ruhiger gesetzt als die Abschnitte davor. */
+  .pourquoi__titre {
+    font-size: 1.5rem;
+    max-width: 40ch;
+  }
   .pourquoi__texte {
     max-width: none;
-    margin-top: 2.5rem;
+    margin-top: 1.75rem;
+    font-size: 0.9688rem;
+    color: var(--color-gris);
   }
   @media (min-width: 62rem) {
     .pourquoi__texte {
@@ -525,6 +558,9 @@ const urlConferences = adresse('conferences', lang);
   .rdv__grille {
     display: grid;
     gap: 2.5rem 6rem;
+  }
+  .rdv :global(.insecable) {
+    white-space: nowrap;
   }
   .rdv__coordonnees {
     display: grid;

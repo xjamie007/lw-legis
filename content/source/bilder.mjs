@@ -69,7 +69,7 @@ export const BILDER = {
       en: 'The firm’s waiting room: light leather armchairs, low table, parquet floor.',
     },
     seitenverhaeltnis: '3 / 2',
-    point_x: 50,
+    point_x: 62,
     point_y: 50,
   },
 
