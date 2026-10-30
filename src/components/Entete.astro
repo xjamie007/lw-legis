@@ -2,472 +2,341 @@
 /**
  * src/components/Entete.astro — Kopfbereich.
  *
- * Aufbau: Wortmarke — Navigation — Sprachen — Telefonnummer.
- *
- * Ohne JavaScript vollstaendig bedienbar. Das Menue am Handy ist ein
- * <details>-Element; der Sprachumschalter besteht aus vier gewoehnlichen
- * Links, weil vier Sprachen keine Aufklappliste brauchen.
- *
- * Der Sprachumschalter bleibt auf derselben Seite und wirft niemanden auf
- * die Startseite zurueck: `alternatifs` liefert je Sprache den Pfad
- * genau dieser Seite.
+ * Oben eine schmale marineblaue Leiste mit Adresse, Telefon, E-Mail und
+ * Sprachwahl, darunter die weisse Kopfzeile mit Wappen und Menue. Auf dem
+ * Handy klappt das Menue als ganze Flaeche auf; ohne JavaScript bleibt es
+ * eine einfache Liste unter dem Wappen.
  */
-import { LANGS, LANG_NOMS, LANG_BALISE, type Lang } from '../lib/langs';
+import type { Lang } from '../lib/langs';
+import { LANG_NOMS } from '../lib/langs';
 import { t, type Cle } from '../lib/i18n';
 import { contenu, languesDuSite } from '../lib/content';
 import { seg, urlAccueil, type NomSegment } from '../lib/routes';
-import Wappen from './Wappen.astro';
 import { prefixer } from '../lib/base';
+import Icone from './Icone.astro';
 
 interface Props {
   lang: Lang;
   chemin: string;
   alternatifs?: (l: Lang) => string | null;
 }
-
 const { lang, chemin, alternatifs } = Astro.props;
-
-const pretes = languesDuSite();
+const s = contenu.settings;
 
 const liens = contenu.navigation
   .filter((n) => n.visible)
   .sort((a, b) => a.ordre - b.ordre)
-  .map((n) => ({
-    cle: n.cle as Cle,
-    href: (() => {
-      const s = seg(n.segment as NomSegment, lang);
-      return s ? prefixer(`/${lang}/${s}/`) : null;
-    })(),
-  }))
-  .filter((n): n is { cle: Cle; href: string } => n.href !== null);
+  .map((n) => {
+    const x = seg(n.segment as NomSegment, lang);
+    return x ? { cle: n.cle as Cle, href: prefixer(`/${lang}/${x}/`) } : null;
+  })
+  .filter((l): l is { cle: Cle; href: string } => l !== null);
 
-const tel = contenu.settings.telephone;
+const actif = (href: string) => chemin === href || chemin.startsWith(href);
 
-/** Fuer jede Sprache: Adresse dieser Seite, oder null. */
-const langues = LANGS.map((l) => {
-  const disponible = pretes.includes(l);
-  const href = disponible ? (alternatifs?.(l) ?? urlAccueil(l)) : null;
-  return { lang: l, nom: LANG_NOMS[l], code: LANG_BALISE[l], href, disponible };
-});
-
-/** Ist dieser Navigationspunkt der aktuelle? */
-const actif = (href: string) => chemin.startsWith(href);
-
-/** Nur auf der Startseite zeichnet sich das Wappen einmal selbst. */
-const estAccueil = chemin === urlAccueil(lang);
+const langues = languesDuSite().map((l) => ({
+  lang: l,
+  href: alternatifs?.(l) ?? urlAccueil(l),
+  courant: l === lang,
+}));
 ---
 
-<header class="entete sans-impression">
-  <div class="entete__barre enveloppe">
-    <a class="marque" href={urlAccueil(lang)}>
-      {/* Das Wappen trägt den Namen der Kanzlei bereits in sich. Eine
-          zweite Wortmarke daneben wäre dieselbe Aussage zweimal. */}
-      <Wappen groesse="klein" auftritt={estAccueil} alt={`${contenu.settings.nom} — ${t(lang, 'nav.accueil')}`} />
-    </a>
-
-    <nav class="entete__nav" aria-label={t(lang, 'nav.principale')}>
-      <ul class="liens">
-        {
-          liens.map((l) => (
-            <li>
-              <a
-                href={l.href}
-                class:list={['liens__lien', { 'liens__lien--actif': actif(l.href) }]}
-                aria-current={actif(l.href) ? 'page' : undefined}
-              >
-                {t(lang, l.cle)}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
-
-    <div class="entete__cote">
-      <nav class="langues" aria-label={t(lang, 'nav.choisir_langue')}>
-        <ul class="langues__liste">
+<header class="entete">
+  <div class="barre">
+    <div class="enveloppe barre__interieur">
+      <p class="barre__adresse">{s.adresse.une_ligne}</p>
+      <div class="barre__droite">
+        <a href={`tel:${s.telephone.lien}`}><Icone nom="telephone" />{s.telephone.affiche}</a>
+        <a href={`mailto:${s.courriel}`} class="barre__courriel"><Icone nom="courriel" />{s.courriel}</a>
+        <ul class="langues" aria-label={t(lang, 'nav.langue')}>
           {
-            langues.map((l) =>
-              l.disponible && l.href ? (
-                <li>
-                  <a
-                    href={l.href}
-                    class:list={['langues__lien', { 'langues__lien--actif': l.lang === lang }]}
-                    lang={l.code}
-                    hreflang={l.code}
-                    aria-current={l.lang === lang ? 'true' : undefined}
-                  >
-                    <abbr title={l.nom}>{l.code.toUpperCase()}</abbr>
-                  </a>
-                </li>
-              ) : (
-                <li>
-                  <span class="langues__absent" lang={l.code}>
-                    <abbr title={`${l.nom} — ${t(lang, 'nav.langue_en_preparation')}`}>
-                      {l.code.toUpperCase()}
-                    </abbr>
+            langues.map((l) => (
+              <li>
+                {l.courant ? (
+                  <span aria-current="true" title={LANG_NOMS[l.lang]}>
+                    {l.lang.toUpperCase()}
                   </span>
-                </li>
-              ),
-            )
+                ) : (
+                  <a href={l.href} hreflang={l.lang} lang={l.lang} title={LANG_NOMS[l.lang]}>
+                    {l.lang.toUpperCase()}
+                  </a>
+                )}
+              </li>
+            ))
           }
         </ul>
-      </nav>
-
-      <a class="telephone" href={`tel:${tel.central_lien}`} aria-label={t(lang, 'nav.telephoner')}>
-        {tel.central}
-      </a>
-    </div>
-
-    <details class="menu">
-      <summary class="menu__bouton">
-        <span class="menu__texte">{t(lang, 'nav.menu')}</span>
-        <span class="menu__barres" aria-hidden="true"></span>
-      </summary>
-      <div class="menu__panneau">
-        <nav aria-label={t(lang, 'nav.principale')}>
-          <ul class="menu__liens">
-            {
-              liens.map((l) => (
-                <li>
-                  <a href={l.href} aria-current={actif(l.href) ? 'page' : undefined}>
-                    {t(lang, l.cle)}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </nav>
-        {/* Die Sprachwahl gehoert auch ins Menue am Handy. Ohne sie waere
-            auf dem Telefon keine Sprache zu wechseln — bei einer
-            viersprachigen Seite fuer Auslaender der schwerste denkbare
-            Bedienfehler. */}
-        <nav class="menu__langues" aria-label={t(lang, 'nav.choisir_langue')}>
-          <p class="menu__langues-titre">{t(lang, 'nav.langue')}</p>
-          <ul class="menu__langues-liste">
-            {langues.map((l) =>
-              l.disponible && l.href ? (
-                <li>
-                  <a
-                    href={l.href}
-                    class:list={['menu__langue', { 'menu__langue--actif': l.lang === lang }]}
-                    lang={l.code}
-                    hreflang={l.code}
-                    aria-current={l.lang === lang ? 'true' : undefined}
-                  >
-                    {l.nom}
-                  </a>
-                </li>
-              ) : (
-                <li>
-                  <span class="menu__langue menu__langue--absent" lang={l.code}>
-                    {l.nom} — {t(lang, 'nav.langue_en_preparation')}
-                  </span>
-                </li>
-              ),
-            )}
-          </ul>
-        </nav>
-
-        <a class="menu__telephone" href={`tel:${tel.central_lien}`}>
-          {tel.central}
-        </a>
       </div>
-    </details>
+    </div>
+  </div>
+
+  <div class="tete-site">
+    <div class="enveloppe tete-site__interieur">
+      <a class="marque" href={urlAccueil(lang)} aria-label={`${s.nom} — ${t(lang, 'nav.accueil')}`}>
+        <img src={prefixer('/bilder/wappen.png')} alt="" width="694" height="240" />
+      </a>
+
+      <button
+        class="menu-bouton"
+        type="button"
+        aria-expanded="false"
+        aria-controls="menu"
+        data-menu-bouton
+        data-ouvrir={t(lang, 'nav.menu_ouvrir')}
+        data-fermer={t(lang, 'nav.menu_fermer')}
+        aria-label={t(lang, 'nav.menu_ouvrir')}
+      >
+        <Icone nom="menu" class="menu-bouton__ouvrir" />
+        <Icone nom="fermer" class="menu-bouton__fermer" />
+        <span>{t(lang, 'nav.menu')}</span>
+      </button>
+
+      <nav class="menu" id="menu" aria-label={t(lang, 'nav.principale')} data-menu>
+        <ul>
+          {
+            liens.map((l) => (
+              <li>
+                <a href={l.href} aria-current={actif(l.href) ? 'page' : undefined}>
+                  {t(lang, l.cle)}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="menu__pied">
+          <a href={`tel:${s.telephone.lien}`}>{s.telephone.affiche}</a>
+          <a href={`mailto:${s.courriel}`}>{s.courriel}</a>
+          <p>{s.adresse.une_ligne}</p>
+        </div>
+      </nav>
+    </div>
   </div>
 </header>
 
+<script>
+  const bouton = document.querySelector<HTMLButtonElement>('[data-menu-bouton]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  if (bouton && menu) {
+    const basculer = (ouvert: boolean) => {
+      bouton.setAttribute('aria-expanded', String(ouvert));
+      bouton.setAttribute('aria-label', (ouvert ? bouton.dataset.fermer : bouton.dataset.ouvrir) ?? '');
+      document.documentElement.classList.toggle('menu-ouvert', ouvert);
+    };
+    bouton.addEventListener('click', () => basculer(bouton.getAttribute('aria-expanded') !== 'true'));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && bouton.getAttribute('aria-expanded') === 'true') {
+        basculer(false);
+        bouton.focus();
+      }
+    });
+    matchMedia('(min-width: 64rem)').addEventListener('change', () => basculer(false));
+  }
+</script>
+
 <style>
   .entete {
-    background-color: var(--color-papier);
-    border-bottom: 1px solid color-mix(in srgb, var(--color-pierre) 22%, transparent);
     position: sticky;
     top: 0;
-    z-index: 40;
+    z-index: 50;
   }
 
-  /* Die Kopfzeile ist nicht auf die Lesespalte gedeckelt: Sie läuft über
-     die volle Breite, mit demselben linken Rand wie der Seiteninhalt. Die
-     Telefonnummer steht damit ganz rechts — so wie in der Entwurfsskizze.
-
-     Vorher lag sie in `.enveloppe` und war auf 64 rem begrenzt. Auf
-     Deutsch braucht sie rund 1160 Pixel; bei 1200 Pixeln Fensterbreite
-     ragte sie deshalb 17 Pixel aus dem Bild. */
-  .entete__barre {
+  /* --- Leiste ------------------------------------------------------------ */
+  .barre {
+    background: var(--color-marine-tief);
+    color: var(--color-marine-texte);
+    font-size: 0.8125rem;
+  }
+  .barre__interieur {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
-    min-height: 4.25rem;
-    padding-block: 0.75rem;
-    max-width: none;
-    margin-inline: 0;
-    padding-inline: var(--bord-gauche) var(--gouttiere);
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-height: 2.5rem;
   }
-
-  /* --- Wortmarke ---------------------------------------------------------- */
-  .marque {
-    text-decoration: none;
-    color: var(--color-encre);
-    display: flex;
-    align-items: baseline;
-    gap: 0.75rem;
-    margin-right: auto;
-  }
-  .marque:hover {
-    color: var(--color-encre);
-  }
-  .marque__nom {
-    display: block;
-    /* Die Wortmarke bricht nie um. Auf Deutsch ist die Navigation
-       laenger, und ohne das hier stuende dort "LW / LEGIS". */
-    white-space: nowrap;
-    font-family: var(--font-lecture);
-    font-weight: 600;
-    font-size: 1.1875rem;
-    letter-spacing: 0.06em;
-    line-height: 1.1;
-  }
-  .marque__sous {
-    display: none;
-    font-family: var(--font-commande);
-    font-size: 0.75rem;
-    line-height: 1.2;
-    color: var(--color-pierre);
-    margin-top: 0.15rem;
-  }
-
-  /* --- Hauptnavigation ---------------------------------------------------- */
-  .entete__nav {
+  .barre__adresse {
     display: none;
   }
-  .liens {
+  .barre__droite {
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .liens__lien {
-    font-family: var(--font-commande);
-    font-size: var(--text-commande);
-    letter-spacing: 0.01em;
-    color: var(--color-encre);
-    text-decoration: none;
-    padding-block: 0.6rem;
-    display: inline-block;
-    border-bottom: 1.5px solid transparent;
-  }
-  .liens__lien:hover {
-    color: var(--color-frontiere-tief);
-    border-bottom-color: var(--color-laiton);
-  }
-  .liens__lien--actif {
-    border-bottom-color: var(--color-laiton);
-    color: var(--color-frontiere-tief);
-  }
-
-  /* --- Sprachen und Telefon ------------------------------------------------ */
-  .entete__cote {
-    display: none;
-    align-items: center;
-    gap: 1.25rem;
-  }
-  .langues__liste {
-    display: flex;
-    gap: 0.5rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .langues__lien,
-  .langues__absent {
-    font-family: var(--font-commande);
-    font-size: 0.8125rem;
-    letter-spacing: 0.04em;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 1.75rem;
-    min-height: 1.75rem;
-    padding: 0.25rem;
-    border-radius: var(--radius-commande);
-  }
-  .langues__lien {
-    color: var(--color-pierre);
-    text-decoration: none;
-  }
-  .langues__lien:hover {
-    color: var(--color-frontiere-tief);
-  }
-  .langues__lien--actif {
-    color: var(--color-encre);
-    border-bottom: 1.5px solid var(--color-laiton);
-  }
-  .langues__absent {
-    /* Die Sprache wird genannt, aber nicht verlinkt: es gibt sie noch
-       nicht. Ein toter Link waere schlechter als diese Ehrlichkeit. */
-    color: color-mix(in srgb, var(--color-pierre) 60%, var(--color-papier));
-    cursor: help;
-  }
-  .langues__lien abbr,
-  .langues__absent abbr {
-    text-decoration: none;
-    border: 0;
-  }
-
-  .telephone {
-    font-family: var(--font-commande);
-    font-size: var(--text-commande);
-    color: var(--color-frontiere);
-    text-decoration: none;
-    white-space: nowrap;
-    padding-block: 0.5rem;
-  }
-  .telephone:hover {
-    color: var(--color-frontiere-tief);
-    text-decoration: underline;
-  }
-
-  /* --- Menue am Handy ------------------------------------------------------
-     Ein <details>-Element: funktioniert ohne eine Zeile JavaScript,
-     inklusive Tastaturbedienung und aria-expanded, das der Browser selbst
-     auf dem <summary> fuehrt.
-     ---------------------------------------------------------------------- */
-  .menu {
     margin-left: auto;
   }
-  .menu__bouton {
+  .barre a {
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
-    min-height: 2.75rem;
-    padding: 0.5rem 0.25rem 0.5rem 0.75rem;
-    font-family: var(--font-commande);
-    font-size: var(--text-commande);
-    color: var(--color-encre);
-    cursor: pointer;
-    list-style: none;
+    gap: 0.45rem;
+    text-decoration: none;
+    transition: color 200ms ease-out;
   }
-  .menu__bouton::-webkit-details-marker {
-    display: none;
+  .barre a:hover {
+    color: var(--color-blanc);
   }
-  .menu__barres {
+  .barre :global(svg) {
+    width: 0.95rem;
+    height: 0.95rem;
+    color: var(--color-or-clair);
+  }
+  .barre__courriel {
+    display: none !important;
+  }
+  .langues {
+    display: flex;
+    gap: 0.15rem;
+    padding-left: 1.25rem;
+    border-left: 1px solid color-mix(in srgb, var(--color-marine-texte) 30%, transparent);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .langues span,
+  .langues a {
+    display: inline-block;
+    padding: 0.35rem 0.4rem;
+  }
+  .langues span {
+    color: var(--color-or-clair);
+  }
+  @media (min-width: 48rem) {
+    .barre__adresse {
+      display: block;
+    }
+  }
+  @media (min-width: 64rem) {
+    .barre__courriel {
+      display: inline-flex !important;
+    }
+  }
+
+  /* --- Kopfzeile ---------------------------------------------------------- */
+  .tete-site {
+    background: var(--color-blanc);
+    border-bottom: 1px solid var(--color-trait);
+  }
+  .tete-site__interieur {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    min-height: var(--entete);
+  }
+  .marque img {
+    display: block;
+    height: 3.25rem;
+    width: auto;
+  }
+
+  .menu ul {
+    display: flex;
+    gap: clamp(1.25rem, 2.2vw, 2.25rem);
+  }
+  .menu a {
     position: relative;
-    width: 1.25rem;
-    height: 0.75rem;
-    flex: none;
+    display: block;
+    padding-block: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-encre);
+    text-decoration: none;
   }
-  .menu__barres::before,
-  .menu__barres::after {
+  .menu a::after {
     content: '';
     position: absolute;
     left: 0;
     right: 0;
-    height: 1.5px;
-    background-color: var(--color-laiton-texte);
-    transition: transform 160ms ease-out;
+    bottom: 0;
+    height: 2px;
+    background: var(--color-or);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .menu__barres::before {
-    top: 0.0625rem;
+  .menu a:hover::after,
+  .menu a[aria-current='page']::after {
+    transform: scaleX(1);
   }
-  .menu__barres::after {
-    bottom: 0.0625rem;
-  }
-  .menu[open] .menu__barres::before {
-    transform: translateY(0.3125rem) rotate(45deg);
-  }
-  .menu[open] .menu__barres::after {
-    transform: translateY(-0.3125rem) rotate(-45deg);
+  .menu__pied {
+    display: none;
   }
 
-  .menu__panneau {
-    position: absolute;
-    left: 0;
-    right: 0;
-    background-color: var(--color-papier);
-    border-bottom: var(--trait);
-    padding: 0.5rem var(--gouttiere) 1.5rem;
-    box-shadow: none;
-  }
-  .menu__liens {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .menu__liens a {
-    display: block;
-    padding-block: 0.85rem;
-    font-family: var(--font-commande);
-    font-size: 1.0625rem;
-    color: var(--color-encre);
-    text-decoration: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--color-pierre) 18%, transparent);
-  }
-  .menu__liens a[aria-current='page'] {
-    color: var(--color-frontiere-tief);
-  }
-  .menu__langues {
-    margin-top: 1.5rem;
-  }
-  .menu__langues-titre {
-    font-family: var(--font-commande);
-    font-size: var(--text-marge);
-    color: var(--color-pierre);
-    margin-bottom: 0.4rem;
-  }
-  .menu__langues-liste {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 1.25rem;
-  }
-  .menu__langue {
-    display: inline-block;
-    min-height: 2.75rem;
-    padding-block: 0.7rem;
-    font-family: var(--font-commande);
-    font-size: var(--text-commande);
-    color: var(--color-frontiere);
-    text-decoration: none;
-  }
-  .menu__langue--actif {
-    color: var(--color-encre);
-    border-bottom: 1.5px solid var(--color-laiton);
-  }
-  .menu__langue--absent {
-    color: var(--color-pierre);
+  .menu-bouton {
+    display: none;
   }
 
-  .menu__telephone {
-    display: inline-block;
-    margin-top: 1.25rem;
-    font-family: var(--font-commande);
-    font-size: 1.0625rem;
-    color: var(--color-frontiere);
-  }
+  @media (max-width: 63.99rem) {
+    .menu-bouton {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-height: 2.75rem;
+      padding: 0.5rem 0.25rem;
+      background: none;
+      border: 0;
+      color: var(--color-encre);
+      font-weight: 600;
+      font-size: 0.9375rem;
+      cursor: pointer;
+    }
+    .menu-bouton :global(svg) {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    .menu-bouton :global(.menu-bouton__fermer),
+    :global(.menu-ouvert) .menu-bouton :global(.menu-bouton__ouvrir) {
+      display: none;
+    }
+    :global(.menu-ouvert) .menu-bouton :global(.menu-bouton__fermer) {
+      display: block;
+    }
 
-  /* --- Ab grossem Schirm: alles offen, kein Menueknopf ---------------------
-     Die Schwelle liegt bei 78rem und nicht bei 62rem: Auf Deutsch heissen
-     die Punkte „Taetigkeitsgebiete" und „Die Kanzlei", und bei 1000 Pixeln
-     brach die Zeile um, die Wortmarke schob sich in die Navigation und die
-     Telefonnummer lief aus dem Bild. Dazwischen ist das Menue die
-     ehrlichere Loesung. */
-  @media (min-width: 78rem) {
+    /* Ohne JavaScript: das Menue steht als Liste unter dem Wappen. */
     .menu {
       display: none;
     }
-    .entete__nav,
-    .entete__cote {
+    :global(.menu-ouvert) .menu {
       display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: fixed;
+      inset: calc(2.5rem + var(--entete)) 0 0 0;
+      background: var(--color-marine);
+      padding: 2rem var(--gouttiere) 2.5rem;
+      overflow-y: auto;
+      z-index: 60;
     }
-    .marque__sous {
-      display: block;
+    :global(.menu-ouvert) {
+      overflow: hidden;
     }
-    .entete__barre {
-      gap: 2rem;
+    .menu ul {
+      flex-direction: column;
+      gap: 0;
+    }
+    .menu a {
+      font-family: var(--font-titre);
+      font-size: 1.75rem;
+      font-weight: 300;
+      color: var(--color-blanc);
+      padding-block: 0.7rem;
+      border-bottom: 1px solid color-mix(in srgb, var(--color-marine-texte) 25%, transparent);
+    }
+    .menu a::after {
+      display: none;
+    }
+    .menu a[aria-current='page'] {
+      color: var(--color-or-clair);
+    }
+    .menu__pied {
+      display: grid;
+      gap: 0.35rem;
+      margin-top: 2.5rem;
+      color: var(--color-marine-texte);
+      font-size: 0.9375rem;
+    }
+    .menu__pied a {
+      font-family: var(--font-texte);
+      font-size: 1rem;
+      color: var(--color-or-clair);
+      border: 0;
+      padding: 0;
     }
   }
+
 </style>

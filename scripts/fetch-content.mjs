@@ -74,9 +74,7 @@ function assembler(brut, ancien) {
       source: 'supabase',
       version: 1,
     },
-    // Das Register der offenen Punkte bleibt im Repository: es ist Teil
-    // der Uebergabe, nicht des redaktionellen Inhalts.
-    ouvertes: ancien.ouvertes,
+    ouvertes: ancien.ouvertes ?? {},
     /**
      * Die Bildplaetze stehen ebenfalls im Repository, nicht in der
      * Datenbank: Sie beschreiben, WO ein Bild hingehoert und in welchem
@@ -88,40 +86,26 @@ function assembler(brut, ancien) {
      */
     bilder: ancien.bilder,
     settings: reglages.stammdaten?.valeur ?? ancien.settings,
-    avocat: reglages.avocat?.valeur ?? ancien.avocat,
     navigation: (brut.navigation ?? [])
       .filter((n) => n.emplacement === 'principale')
       .map((n) => ({ id: n.id, cle: n.cle_i18n, segment: n.segment, ordre: n.ordre, visible: n.visible })),
     pied: (brut.navigation ?? [])
       .filter((n) => n.emplacement === 'pied')
       .map((n) => ({ id: n.id, cle: n.cle_i18n, segment: n.segment, ordre: n.ordre, visible: n.visible })),
-    sections_accueil: (brut.sections ?? []).map((s) => ({
-      id: s.id,
-      ordre: s.ordre,
-      visible: s.visible,
-      verrouille: s.verrouille,
-    })),
     pages: reglages.pages?.valeur ?? ancien.pages,
-    familles: (brut.services ?? []).map((s) => ({
-      id: s.id,
-      ordre: s.ordre,
-      slug: s.slug,
-      terme: s.terme,
-      definition: s.definition,
-      texte: s.texte,
-      kurz: s.kurz,
-      marge: { terme: s.marge_terme, texte: s.marge_texte },
-      matieres: s.matieres,
-    })),
-    projet_vers_famille: ancien.projet_vers_famille,
-    situation_options: {
-      pays: (brut.situation_options ?? []).filter((o) => o.axe === 'pays'),
-      projets: (brut.situation_options ?? []).filter((o) => o.axe === 'projet'),
-    },
-    situations: (brut.situations ?? []).map((s) => ({
-      ...s,
-      statut: publierLesBrouillons || s.statut === 'veroeffentlicht' ? 'publie' : 'entwurf',
-    })),
+    familles: (brut.services ?? [])
+      .filter((s) => publierLesBrouillons || s.statut === 'veroeffentlicht')
+      .map((s) => ({
+        id: s.id,
+        ordre: s.ordre,
+        slug: s.slug,
+        terme: s.terme,
+        definition: s.definition,
+        texte: s.texte,
+        kurz: s.kurz,
+        marge: { terme: s.marge_terme, texte: s.marge_texte },
+        matieres: s.matieres,
+      })),
     themes: brut.publication_tags ?? [],
     publications: (brut.publications ?? []).map((p) => ({
       ...p,
@@ -131,10 +115,6 @@ function assembler(brut, ancien) {
     team: (brut.team ?? []).map((m) => ({
       ...m,
       statut: publierLesBrouillons || m.statut === 'veroeffentlicht' ? 'publie' : 'entwurf',
-    })),
-    faq: (brut.faq ?? []).map((f) => ({
-      ...f,
-      statut: publierLesBrouillons || f.statut === 'veroeffentlicht' ? 'publie' : 'entwurf',
     })),
     legal: parId(brut.legal_pages ?? []),
     seo: parId(brut.seo_meta ?? []),
@@ -146,49 +126,20 @@ function assembler(brut, ancien) {
 async function main() {
   const ancien = JSON.parse(await readFile(CIBLE, 'utf8'));
 
-  const [
-    settings,
-    navigation,
-    sections,
-    services,
-    situation_options,
-    situations,
-    publication_tags,
-    publications,
-    team,
-    faq,
-    legal_pages,
-    seo_meta,
-  ] = await Promise.all([
-    table('settings'),
-    table('navigation'),
-    table('sections'),
-    table('services'),
-    table('situation_options'),
-    table('situations'),
-    table('publication_tags'),
-    table('publications'),
-    table('team'),
-    table('faq'),
-    table('legal_pages'),
-    table('seo_meta'),
-  ]);
+  const [settings, navigation, services, publication_tags, publications, team, legal_pages, seo_meta] =
+    await Promise.all([
+      table('settings'),
+      table('navigation'),
+      table('services'),
+      table('publication_tags'),
+      table('publications'),
+      table('team'),
+      table('legal_pages'),
+      table('seo_meta'),
+    ]);
 
   const suivant = assembler(
-    {
-      settings,
-      navigation,
-      sections,
-      services,
-      situation_options,
-      situations,
-      publication_tags,
-      publications,
-      team,
-      faq,
-      legal_pages,
-      seo_meta,
-    },
+    { settings, navigation, services, publication_tags, publications, team, legal_pages, seo_meta },
     ancien,
   );
 
@@ -207,7 +158,7 @@ async function main() {
 
   if ((suivant.familles?.length ?? 0) === 0 && (ancien.familles?.length ?? 0) > 0) {
     throw new Error(
-      'Supabase lieferte keine Taetigkeitsgebiete. Das sieht nach einem Fehler aus, ' +
+      'Supabase lieferte keine Taetigkeiten. Das sieht nach einem Fehler aus, ' +
         'nicht nach einer Aenderung. Der vorhandene Schnappschuss bleibt stehen.',
     );
   }
@@ -215,10 +166,9 @@ async function main() {
   await writeFile(CIBLE, JSON.stringify(suivant, null, 2) + '\n', 'utf8');
   console.log(
     `Inhalte aus Supabase geholt.\n` +
-      `  ${suivant.familles.length} Tätigkeitsgebiete\n` +
-      `  ${suivant.situations.length} Konstellationen\n` +
-      `  ${suivant.publications.length} Dokumente\n` +
-      `  ${suivant.faq.length} Fragen\n` +
+      `  ${suivant.familles.length} Tätigkeiten\n` +
+      `  ${suivant.publications.length} Dossiers und Konferenzen\n` +
+      `  ${suivant.team.length} Anwälte\n` +
       `  content/snapshot.json aktualisiert`,
   );
 }

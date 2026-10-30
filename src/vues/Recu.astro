@@ -1,59 +1,41 @@
 ---
 /**
- * src/vues/Recu.astro — Bestaetigung nach dem Absenden.
- *
- * Sagt, was jetzt passiert, an wen die Anfrage ging und bis wann eine
- * Antwort kommt. Die Frist steht bewusst offen: sie muss stimmen, weil
- * sie ein Versprechen ist — und weil der einzige ernsthafte oeffentliche
- * Vorwurf gegen die Kanzlei lautet, auf E-Mails nicht geantwortet zu haben.
+ * src/vues/Recu.astro — Bestaetigung nach dem Absenden des Formulars.
  */
 import type { Lang } from '../lib/langs';
-import { txt } from '../lib/langs';
 import { t } from '../lib/i18n';
 import { contenu } from '../lib/content';
-import Lacune from '../components/Lacune.astro';
-import { edPage } from '../lib/edition';
+import type { Route } from '../lib/pages';
+import { urlAccueil } from '../lib/routes';
+import Tete from '../components/Tete.astro';
 
 interface Props {
   lang: Lang;
+  route: Route;
 }
-const { lang } = Astro.props;
-const page = contenu.pages.recu;
+const { lang, route } = Astro.props;
 const s = contenu.settings;
 ---
 
-<article class="section">
-  <div class="enveloppe">
-    <div class="colonne">
-      <h1 class="titre-2" {...edPage('recu.titre')}>{txt(page.titre, lang)}</h1>
-      <p class="chapeau" {...edPage('recu.texte')}>{txt(page.texte, lang)}</p>
+<Tete lang={lang} fil={route.fil} titre={route.nom} chapeau={t(lang, 'recu.texte')} />
 
-      <h2 class="titre-3 rubrique">{t(lang, 'formulaire.recu_quoi')}</h2>
-      <ul class="liste">
-        <li>
-          {s.nom}, {s.adresse.une_ligne}
-        </li>
-        <li>
-          <Lacune id="delai_reponse" lang={lang} />
-        </li>
-        <li {...edPage('recu.ensuite')}>{txt(page.ensuite, lang)}</li>
-      </ul>
-
-      <p class="apres">
-        <a class="bouton bouton--contour" href={`tel:${s.telephone.central_lien}`}>
-          {s.telephone.central}
-        </a>
-      </p>
-    </div>
+<section class="section">
+  <div class="enveloppe recu">
+    <p>{s.nom}, {s.adresse.une_ligne}</p>
+    <p><a href={`tel:${s.telephone.lien}`}>{s.telephone.affiche}</a> · <a href={`mailto:${s.courriel}`}>{s.courriel}</a></p>
+    <a class="bouton bouton--contour" href={urlAccueil(lang)}>{t(lang, 'recu.retour')}</a>
   </div>
-</article>
+</section>
 
 <style>
-  .rubrique {
-    margin-top: 2.25rem;
-    margin-bottom: 0.75rem;
+  .recu p + p {
+    margin-top: 0.4rem;
   }
-  .apres {
-    margin-top: 2.25rem;
+  .recu a:not(.bouton) {
+    text-decoration-color: var(--color-or);
+    text-underline-offset: 3px;
+  }
+  .recu .bouton {
+    margin-top: 2.5rem;
   }
 </style>

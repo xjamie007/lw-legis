@@ -71,41 +71,6 @@ const STATUT_OPTIONS = [
 
 export const COLLECTIONS: Record<string, Collection> = {
   // =========================================================================
-  /**
-   * Von den Sektionen nutzt die Website nur Reihenfolge und Sichtbarkeit
-   * (fetch-content.mjs, `sections_accueil`). Ihre Texte stehen in
-   * `settings.pages` und werden in der Vorschau bearbeitet. Frueher gab es
-   * hier auch Felder fuer Ueberschrift und Text — Aenderungen daran kamen
-   * nie auf der Website an.
-   */
-  sections: {
-    table: 'sections',
-    cleNav: 'nav.sektionen',
-    creable: false,
-    supprimable: false,
-    champTitre: 'id',
-    nomsFixes: {
-      hero: L('Großer Satz ganz oben', 'Grande phrase en haut'),
-      services: L('Was wir tun', 'Ce que nous faisons'),
-      avocat: L('Über Me Lorang', 'Me Lorang'),
-      bureau: L('Die Kanzlei (Bilder)', 'L’Étude (photos)'),
-      publications: L('Publikationen', 'Publications'),
-      honoraires: L('Honorare', 'Honoraires'),
-      faq: L('Häufige Fragen', 'Questions fréquentes'),
-      contact: L('Kontakt', 'Contact'),
-    },
-    statut: false,
-    triable: true,
-    champs: [
-      {
-        nom: 'visible',
-        etiquette: L('Auf der Startseite zeigen', 'Afficher sur l’accueil'),
-        type: 'bascule',
-      },
-    ],
-  },
-
-  // =========================================================================
   services: {
     table: 'services',
     cleNav: 'nav.services',
@@ -119,87 +84,14 @@ export const COLLECTIONS: Record<string, Collection> = {
       { nom: 'slug', etiquette: L('Adresse', 'Adresse'), type: 'texte', requis: true },
       {
         nom: 'definition',
-        etiquette: L('Definitionszeile', 'Ligne de définition'),
+        etiquette: L('Kurztext in der Übersicht', 'Texte court dans la liste'),
         type: 'texte',
-        aide: L(
-          'Ein Satz, der sagt, was das Gebiet ist — nicht, wie gut die Kanzlei darin ist.',
-          'Une phrase qui dit ce qu’est le domaine, non à quel point l’Étude y est bonne.',
-        ),
         requis: true,
       },
-      { nom: 'texte', etiquette: L('Zwei Sätze', 'Deux phrases'), type: 'texte_long', requis: true },
-      {
-        nom: 'kurz',
-        etiquette: L('Kurzform für die Leiste', 'Forme courte pour la barre'),
-        type: 'texte',
-        aide: L(
-          'Zwei, drei Wörter für die dunkle Leiste unter dem Hero. Sie müssen im Vorbeigehen lesbar sein — keine Fachsprache, nur die Tätigkeiten.',
-          'Deux ou trois mots pour la barre sombre sous le hero. Ils doivent se lire au passage — pas de jargon, seulement les activités.',
-        ),
-        requis: true,
-      },
-      { nom: 'marge_terme', etiquette: L('Randspalte: Stichwort', 'Marge : mot-clé'), type: 'texte' },
-      { nom: 'marge_texte', etiquette: L('Randspalte: Text', 'Marge : texte'), type: 'texte' },
-      {
-        nom: 'matieres',
-        etiquette: L('Einzelne Rechtsgebiete', 'Matières'),
-        type: 'liste_texte',
-      },
+      { nom: 'texte', etiquette: L('Text der Seite', 'Texte de la page'), type: 'texte_long', requis: true },
       { nom: 'statut', etiquette: L('Status', 'Statut'), type: 'choix', options: STATUT_OPTIONS },
     ],
-    requisParLangue: ['terme', 'slug', 'definition', 'texte', 'kurz'],
-  },
-
-  // =========================================================================
-  situations: {
-    table: 'situations',
-    cleNav: 'nav.situations',
-    creable: true,
-    supprimable: true,
-    champTitre: 'titre',
-    statut: true,
-    triable: false,
-    champs: [
-      {
-        nom: 'titre',
-        etiquette: L('Der vollendete Satz', 'La phrase complétée'),
-        type: 'texte',
-        requis: true,
-      },
-      {
-        nom: 'worum',
-        etiquette: L('Worum es geht', 'De quoi il s’agit'),
-        type: 'texte_long',
-        aide: L('Zwei bis drei Sätze.', 'Deux à trois phrases.'),
-        requis: true,
-      },
-      {
-        nom: 'cadre',
-        etiquette: L('Was in Luxemburg dafür gilt', 'Ce qui s’applique au Luxembourg'),
-        type: 'texte_long',
-        aide: L(
-          'Konkrete Regeln, Fristen, Behörden, Steuern. Rechtsinhalt — nur von der Kanzlei.',
-          'Règles, délais, administrations, impôts. Contenu juridique — par l’Étude seule.',
-        ),
-        requis: true,
-      },
-      {
-        nom: 'notre_role',
-        etiquette: L('Was wir übernehmen', 'Ce dont nous nous chargeons'),
-        type: 'texte_long',
-        requis: true,
-      },
-      {
-        nom: 'vos_pieces',
-        etiquette: L('Was wir von Ihnen brauchen', 'Ce dont nous avons besoin'),
-        type: 'texte_long',
-        requis: true,
-      },
-      { nom: 'themes', etiquette: L('Themen', 'Thèmes'), type: 'etiquettes' },
-      { nom: 'statut', etiquette: L('Status', 'Statut'), type: 'choix', options: STATUT_OPTIONS },
-    ],
-    requisParLangue: ['titre', 'worum', 'cadre', 'notre_role', 'vos_pieces'],
-    seuilMots: 400,
+    requisParLangue: ['terme', 'slug', 'definition', 'texte'],
   },
 
   // =========================================================================
@@ -216,16 +108,6 @@ export const COLLECTIONS: Record<string, Collection> = {
       { nom: 'slug', etiquette: L('Adresse', 'Adresse'), type: 'texte', requis: true },
       { nom: 'resume', etiquette: L('Kurzfassung', 'Résumé'), type: 'texte_long', requis: true },
       { nom: 'corps', etiquette: L('Volltext', 'Texte intégral'), type: 'texte_long', requis: true },
-      {
-        nom: 'etat_du_droit',
-        etiquette: L('Rechtsstand', 'État du droit'),
-        type: 'date',
-        aide: L(
-          'Pflichtfeld. Ohne dieses Datum wird das Dokument nicht veröffentlicht.',
-          'Obligatoire. Sans cette date, le document n’est pas publié.',
-        ),
-        requis: true,
-      },
       { nom: 'date_publication', etiquette: L('Datum', 'Date'), type: 'date' },
       {
         nom: 'type',
@@ -238,10 +120,18 @@ export const COLLECTIONS: Record<string, Collection> = {
       },
       { nom: 'auteur', etiquette: L('Autor', 'Auteur'), type: 'texte_simple' },
       { nom: 'pdf_chemin', etiquette: L('PDF', 'PDF'), type: 'texte_simple' },
+      {
+        nom: 'dossier',
+        etiquette: L('Verweist auf das Dossier', 'Renvoie au dossier'),
+        type: 'texte_simple',
+        aide: L('Nur für Konferenzen ohne PDF: die Kennung des Dossiers.', 'Seulement pour une conférence sans PDF : l’identifiant du dossier.'),
+      },
+      { nom: 'lien_externe', etiquette: L('Veranstaltungsseite', 'Page de l’événement'), type: 'texte_simple' },
       { nom: 'themes', etiquette: L('Themen', 'Thèmes'), type: 'etiquettes' },
       { nom: 'statut', etiquette: L('Status', 'Statut'), type: 'choix', options: STATUT_OPTIONS },
     ],
-    requisParLangue: ['titre', 'slug', 'resume', 'corps'],
+    // Konferenzen haben keinen Volltext und keine eigene Adresse.
+    requisParLangue: ['titre'],
   },
 
   // =========================================================================
@@ -254,34 +144,24 @@ export const COLLECTIONS: Record<string, Collection> = {
     statut: true,
     triable: true,
     champs: [
+      { nom: 'titre_civil', etiquette: L('Anrede', 'Civilité'), type: 'texte_simple' },
       { nom: 'nom', etiquette: L('Name', 'Nom'), type: 'texte_simple', requis: true },
       { nom: 'fonction', etiquette: L('Funktion', 'Fonction'), type: 'texte', requis: true },
+      { nom: 'bio', etiquette: L('Werdegang', 'Parcours'), type: 'texte_long', requis: true },
       {
         nom: 'barreau_depuis',
         etiquette: L('Am Barreau seit', 'Au barreau depuis'),
         type: 'nombre',
       },
-      { nom: 'photo_id', etiquette: L('Foto', 'Photographie'), type: 'media' },
+      {
+        nom: 'photo',
+        etiquette: L('Foto', 'Photographie'),
+        type: 'texte_simple',
+        aide: L('Bildplatz aus der Bildablage, z. B. „portrait“. Leer: ohne Foto.', 'Emplacement d’image, p. ex. « portrait ». Vide : sans photo.'),
+      },
       { nom: 'statut', etiquette: L('Status', 'Statut'), type: 'choix', options: STATUT_OPTIONS },
     ],
-    requisParLangue: ['fonction'],
-  },
-
-  // =========================================================================
-  faq: {
-    table: 'faq',
-    cleNav: 'nav.faq',
-    creable: true,
-    supprimable: true,
-    champTitre: 'question',
-    statut: true,
-    triable: true,
-    champs: [
-      { nom: 'question', etiquette: L('Frage', 'Question'), type: 'texte', requis: true },
-      { nom: 'reponse', etiquette: L('Antwort', 'Réponse'), type: 'texte_long', requis: true },
-      { nom: 'statut', etiquette: L('Status', 'Statut'), type: 'choix', options: STATUT_OPTIONS },
-    ],
-    requisParLangue: ['question', 'reponse'],
+    requisParLangue: ['fonction', 'bio'],
   },
 
   // =========================================================================
@@ -356,16 +236,7 @@ export const COLLECTIONS: Record<string, Collection> = {
  * gelesen — die Seitentexte liegen in `settings.pages`. Wer dort etwas
  * aenderte, sah es nie auf der Website.
  */
-export const ORDRE_NAV = [
-  'sections',
-  'services',
-  'situations',
-  'publications',
-  'faq',
-  'team',
-  'seo_meta',
-  'legal_pages',
-];
+export const ORDRE_NAV = ['services', 'publications', 'team', 'seo_meta', 'legal_pages'];
 
 export function etiquetteChamp(c: Champ, langue: LangueAdmin): string {
   return c.etiquette[langue];

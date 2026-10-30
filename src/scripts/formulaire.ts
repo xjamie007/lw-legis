@@ -1,184 +1,84 @@
 /**
- * src/scripts/formulaire.ts — Pruefung und Versand des Anfrageformulars.
+ * src/scripts/formulaire.ts — Pruefung und Versand des Kontaktformulars.
  *
- * Ohne diese Datei funktioniert das Formular: es wird gewoehnlich an die
- * Edge Function geschickt, die serverseitig prueft und mit 303 auf die
- * Bestaetigungsseite weiterleitet.
+ * Ohne diese Datei funktioniert das Formular trotzdem: es geht als
+ * gewoehnlicher POST an die Edge Function, die serverseitig prueft und mit
+ * 303 auf die Bestaetigungsseite weiterleitet.
  *
  * Mit ihr wird am Feld geprueft, die Fehler stehen direkt daneben, und
- * der Versand laeuft ohne Seitenwechsel. Die Fehlermeldungen kommen aus
- * den Uebersetzungsdateien und sind deshalb in jeder Sprache vorhanden —
- * auch Formularfehler werden uebersetzt, nicht nur Fliesstexte.
+ * gesendet wird ohne Seitenwechsel. Die Meldungen kommen als
+ * Datenattribut aus dem Bauteil, nur in der Sprache der Seite.
  */
-
-/**
- * Die Meldungen kommen als Datenattribut aus dem Astro-Bauteil — nur die
- * der aktuellen Sprache. Wuerden hier die vier Uebersetzungsdateien
- * importiert, laegen alle vier im Bundle jedes Besuchers: rund 27 kB fuer
- * acht Saetze, von denen er sieben nie sieht.
- */
-
 const form = document.querySelector<HTMLFormElement>('[data-formulaire]');
 
 if (form) {
   const messages: Record<string, string> = JSON.parse(form.dataset.messages || '{}');
-  // Die Adresse der Bestaetigungsseite kommt aus dem Bauteil, samt
-  // Sprache. Sie ist dort schon richtig gebaut.
-  const urlRecu = form.dataset.recu || '/';
   const t = (cle: string) => messages[cle] ?? cle;
+  const resume = form.querySelector<HTMLElement>('[data-resume]')!;
+  const resumeListe = form.querySelector<HTMLUListElement>('[data-resume-liste]')!;
+  const bouton = form.querySelector<HTMLButtonElement>('[data-envoi]')!;
 
-  const resume = document.querySelector<HTMLElement>('[data-resume]');
-  const resumeListe = document.querySelector<HTMLUListElement>('[data-resume-liste]');
-  const bouton = form.querySelector<HTMLButtonElement>('[data-envoi]');
-  const sansEcheance = form.querySelector<HTMLInputElement>('[data-sans-echeance]');
-  const echeance = form.querySelector<HTMLInputElement>('[data-echeance]');
+  // Von einer Taetigkeitsseite aus: Taetigkeit vorbelegen.
+  const domaine = new URLSearchParams(location.search).get('domaine');
+  const choix = form.querySelector<HTMLSelectElement>('[data-domaine]');
+  if (domaine && choix && [...choix.options].some((o) => o.value === domaine)) choix.value = domaine;
 
-  // --- „keine Frist“ und Datumsfeld schliessen einander aus ---------------
-  function accorderEcheance() {
-    if (!sansEcheance || !echeance) return;
-    echeance.disabled = sansEcheance.checked;
-    if (sansEcheance.checked) echeance.value = '';
-  }
-  sansEcheance?.addEventListener('change', () => {
-    accorderEcheance();
-    effacer('echeance');
-  });
-  accorderEcheance();
+  const valeur = (nom: string) => (form.elements.namedItem(nom) as HTMLInputElement | null)?.value.trim() ?? '';
+  const coche = (nom: string) => Boolean((form.elements.namedItem(nom) as HTMLInputElement | null)?.checked);
 
-  // --- Einzelpruefungen ----------------------------------------------------
-  type Regle = { nom: string; valide: () => boolean; message: string };
-
-  const champ = <T extends HTMLElement>(nom: string) =>
-    form.querySelector<T>(`[name="${nom}"]`);
-
-  const valeur = (nom: string) =>
-    (champ<HTMLInputElement>(nom)?.value ?? '').trim();
-
-  const regles: Regle[] = [
+  const regles: { nom: string; valide: () => boolean; message: string }[] = [
     { nom: 'nom', valide: () => valeur('nom').length >= 2, message: t('formulaire.erreur_nom') },
+    { nom: 'telephone', valide: () => valeur('telephone').replace(/\D/g, '').length >= 6, message: t('formulaire.erreur_telephone') },
     {
       nom: 'courriel',
-      // Bewusst nachsichtig: die harte Pruefung macht der Server. Eine zu
-      // strenge Regel im Browser weist echte Adressen ab.
       valide: () => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(valeur('courriel')),
       message: t('formulaire.erreur_courriel'),
     },
-    { nom: 'pays', valide: () => valeur('pays') !== '', message: t('formulaire.erreur_pays') },
-    {
-      nom: 'projet',
-      valide: () => valeur('projet') !== '',
-      message: t('formulaire.erreur_projet'),
-    },
-    {
-      nom: 'echeance',
-      valide: () => Boolean(sansEcheance?.checked) || valeur('echeance') !== '',
-      message: t('formulaire.erreur_echeance'),
-    },
-    {
-      nom: 'message',
-      valide: () => valeur('message').length >= 10,
-      message: t('formulaire.erreur_message'),
-    },
-    {
-      nom: 'consentement',
-      valide: () => Boolean(champ<HTMLInputElement>('consentement')?.checked),
-      message: t('formulaire.erreur_consentement'),
-    },
+    { nom: 'message', valide: () => valeur('message').length >= 10, message: t('formulaire.erreur_demande') },
+    { nom: 'consentement', valide: () => coche('consentement'), message: t('formulaire.erreur_consentement') },
   ];
 
-  function zoneErreur(nom: string): HTMLElement | null {
-    const c = champ<HTMLElement>(nom);
-    const conteneur = c?.closest('.champ');
-    return conteneur?.querySelector<HTMLElement>('[data-erreur]') ?? null;
-  }
-
-  function marquer(nom: string, message: string) {
-    const c = champ<HTMLElement>(nom);
-    const zone = zoneErreur(nom);
-    if (zone) zone.textContent = message;
-    c?.setAttribute('aria-invalid', 'true');
-  }
-
-  function effacer(nom: string) {
-    const c = champ<HTMLElement>(nom);
-    const zone = zoneErreur(nom);
-    if (zone) zone.textContent = '';
-    c?.removeAttribute('aria-invalid');
-  }
-
-  /** Erst pruefen, wenn das Feld einmal verlassen wurde — nicht beim Tippen. */
-  for (const r of regles) {
-    const c = champ<HTMLElement>(r.nom);
-    c?.addEventListener('blur', () => {
-      if (r.valide()) effacer(r.nom);
-      else if (c.getAttribute('data-touche') === '1') marquer(r.nom, r.message);
-      c.setAttribute('data-touche', '1');
-    });
-    c?.addEventListener('input', () => {
-      if (r.valide()) effacer(r.nom);
-    });
-    c?.addEventListener('change', () => {
-      if (r.valide()) effacer(r.nom);
-    });
-  }
-
-  function verifierTout(): Regle[] {
-    const fautes: Regle[] = [];
-    for (const r of regles) {
-      if (r.valide()) {
-        effacer(r.nom);
-      } else {
-        marquer(r.nom, r.message);
-        fautes.push(r);
-      }
+  function marquer(nom: string, message: string | null) {
+    const champ = form!.elements.namedItem(nom) as HTMLElement | null;
+    const erreur = form!.querySelector<HTMLElement>(`[data-erreur="${nom}"]`);
+    champ?.setAttribute('aria-invalid', message ? 'true' : 'false');
+    if (erreur) {
+      erreur.textContent = message ?? '';
+      erreur.hidden = !message;
     }
-    return fautes;
   }
 
-  function montrerResume(fautes: { nom: string; message: string }[]) {
-    if (!resume || !resumeListe) return;
-    resumeListe.replaceChildren();
-    for (const f of fautes) {
-      const li = document.createElement('li');
-      const a = document.createElement('a');
-      const c = champ<HTMLElement>(f.nom);
-      a.href = `#${c?.id ?? ''}`;
-      a.textContent = f.message;
-      a.addEventListener('click', (ev) => {
-        ev.preventDefault();
-        c?.focus();
-      });
-      li.append(a);
-      resumeListe.append(li);
-    }
-    resume.hidden = false;
-    resume.focus();
-  }
+  // Ein Fehler verschwindet, sobald das Feld stimmt — nicht erst beim naechsten Senden.
+  form.addEventListener('input', (e) => {
+    const nom = (e.target as HTMLInputElement).name;
+    const regle = regles.find((r) => r.nom === nom);
+    if (regle && (e.target as HTMLElement).getAttribute('aria-invalid') === 'true' && regle.valide()) marquer(nom, null);
+  });
 
-  function cacherResume() {
-    if (resume) resume.hidden = true;
-  }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fautes = regles.filter((r) => !r.valide());
+    for (const r of regles) marquer(r.nom, fautes.includes(r) ? r.message : null);
 
-  // --- Versand -------------------------------------------------------------
-  form.addEventListener('submit', async (ev) => {
-    const fautes = verifierTout();
     if (fautes.length > 0) {
-      ev.preventDefault();
-      montrerResume(fautes);
+      resumeListe.replaceChildren(
+        ...fautes.map((f) => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = `#${f.nom}`;
+          a.textContent = f.message;
+          li.append(a);
+          return li;
+        }),
+      );
+      resume.hidden = false;
+      resume.focus();
       return;
     }
-    cacherResume();
 
-    // Ab hier uebernimmt JavaScript. Schlaegt der Versand fehl, faellt es
-    // nicht auf einen gewoehnlichen Seitenwechsel zurueck, sondern zeigt
-    // eine Meldung samt Telefonnummer — die steht ohnehin auf jeder Seite.
-    ev.preventDefault();
-
-    if (bouton) {
-      bouton.setAttribute('aria-disabled', 'true');
-      bouton.textContent = t('formulaire.envoi_en_cours');
-    }
-
+    resume.hidden = true;
+    bouton.disabled = true;
+    bouton.textContent = t('formulaire.envoi');
     try {
       const reponse = await fetch(form.action, {
         method: 'POST',
@@ -186,13 +86,16 @@ if (form) {
         headers: { Accept: 'application/json' },
       });
       if (!reponse.ok) throw new Error(String(reponse.status));
-      window.location.assign(urlRecu);
+      location.assign(form.dataset.recu || '/');
     } catch {
-      montrerResume([{ nom: 'nom', message: t('formulaire.erreur_generale') }]);
-      if (bouton) {
-        bouton.removeAttribute('aria-disabled');
-        bouton.textContent = t('formulaire.envoyer');
-      }
+      resumeListe.replaceChildren();
+      const li = document.createElement('li');
+      li.textContent = t('formulaire.erreur_envoi');
+      resumeListe.append(li);
+      resume.hidden = false;
+      resume.focus();
+      bouton.disabled = false;
+      bouton.textContent = t('formulaire.envoyer');
     }
   });
 }

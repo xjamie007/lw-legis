@@ -165,15 +165,17 @@ const NOMS_CHAMPS: Record<string, { de: string; fr: string }> = {
 
 const NOMS_PAGES: Record<string, { de: string; fr: string }> = {
   accueil: L('Startseite', 'Accueil'),
-  services: L('Tätigkeitsgebiete', 'Domaines d’activité'),
-  situations: L('Ihre Situation', 'Votre situation'),
-  etude: L('Die Kanzlei', 'L’Étude'),
-  publications: L('Publikationen', 'Publications'),
-  honoraires: L('Honorare', 'Honoraires'),
+  avocats: L('Die Anwälte', 'Les avocats'),
+  activites: L('Tätigkeiten', 'Activités'),
+  dossiers: L('Fachdossiers', 'Dossiers thématiques'),
+  conferences: L('Konferenzen', 'Conférences'),
+  partenaires: L('Partner', 'Partenaires'),
+  index: L('Stichwortverzeichnis', 'Index des matières'),
   contact: L('Kontakt', 'Contact'),
   recu: L('Bestätigung nach dem Formular', 'Confirmation du formulaire'),
   mentions: L('Impressum', 'Mentions légales'),
   donnees: L('Datenschutz', 'Protection des données'),
+  cookies: L('Cookies', 'Cookies'),
   conditions: L('Geschäftsbedingungen', 'Conditions générales'),
 };
 
@@ -250,7 +252,7 @@ export function lieu(table: string, id: string, chemin: string[], ligne: Ligne |
       return la === 'de' ? 'Kanzleidaten' : 'Données de l’Étude';
     }
     case 'services':
-      return `${la === 'de' ? 'Tätigkeitsgebiet' : 'Domaine'} ${guillemets(titreLigne(ligne, 'terme'))}`;
+      return `${la === 'de' ? 'Tätigkeit' : 'Activité'} ${guillemets(titreLigne(ligne, 'terme'))}`;
     case 'faq':
       return `${la === 'de' ? 'Häufige Frage' : 'Question'} ${guillemets(titreLigne(ligne, 'question'))}`;
     case 'publications':
@@ -294,14 +296,16 @@ export function pagesPrincipales(lang: Lang, la: LangueAdmin) {
     { nom: nomPage('accueil', la), chemin: prefixer(`/${lang}/`) },
   ];
   const noms: NomSegment[] = [
-    'services',
-    'situations',
-    'etude',
-    'publications',
-    'honoraires',
+    'avocats',
+    'activites',
+    'dossiers',
+    'conferences',
+    'partenaires',
+    'index',
     'contact',
     'mentions',
     'donnees',
+    'cookies',
     'conditions',
   ];
   for (const n of noms) {
@@ -335,17 +339,17 @@ export function adresseDe(table: string, id: string, chemin: string[], ligne: Li
         if (page === 'accueil' || !(page in SEGMENTS)) return prefixer(`/${lang}/`);
         return adresse(lang, seg(page as NomSegment, lang));
       }
-      return adresse(lang, seg(id === 'avocat' ? 'etude' : 'contact', lang));
+      return adresse(lang, seg('contact', lang));
     case 'services':
-      return adresse(lang, seg('services', lang), slug());
+      return adresse(lang, seg('activites', lang), slug());
     case 'publications':
-      return adresse(lang, seg('publications', lang), slug());
+      return ligne?.type === 'conference'
+        ? adresse(lang, seg('conferences', lang))
+        : adresse(lang, seg('dossiers', lang), slug());
     case 'publication_tags':
-      return adresse(lang, seg('publications', lang), seg('theme', lang), slug());
-    case 'situations':
-      return adresse(lang, seg('situations', lang));
+      return adresse(lang, seg('dossiers', lang));
     case 'team':
-      return adresse(lang, seg('etude', lang));
+      return adresse(lang, seg('avocats', lang));
     case 'legal_pages':
       return id in SEGMENTS ? adresse(lang, seg(id as NomSegment, lang)) : prefixer(`/${lang}/`);
     default:

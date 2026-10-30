@@ -109,7 +109,9 @@ for (const f of pages) {
       continue;
     }
 
-    const [cheminBrut, ancre] = href.split('#');
+    const [avecRequete, ancre] = href.split('#');
+    // `?domaine=…` waehlt im Formular vor; die Seite ist dieselbe.
+    const cheminBrut = avecRequete.split('?')[0];
     const chemin = sansBase(cheminBrut);
     if (chemin === null) {
       signaler(f, 'Link ohne Auslieferungspräfix', href);

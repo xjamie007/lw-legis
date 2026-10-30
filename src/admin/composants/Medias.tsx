@@ -6,7 +6,7 @@
  * festgelegten Breiten und traegt die echten Masse ein — damit im Markup
  * `width` und `height` stehen und beim Laden nichts springt.
  *
- * Der Alt-Text ist in allen vier Sprachen Pflicht. Ohne ihn laesst der
+ * Der Alt-Text ist in beiden Sprachen Pflicht. Ohne ihn laesst der
  * Trigger in der Datenbank das Bild nicht auf „veroeffentlicht“.
  */
 import { useEffect, useRef, useState } from 'react';

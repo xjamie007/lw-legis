@@ -31,42 +31,25 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
  * ein warmes Nussbaumschwarz, aus dem graugruenen Papier ein warmer Sand.
  */
 export const PALETTE = {
-  encre: '#1E1A13',
-  frontiere: '#2F5340',
-  laiton: '#A87A35',
-  papier: '#EFEADB',
-  craie: '#FAF7EE',
-  pierre: '#5A5348',
-  /**
-   * Die vierte Flaeche: eine Messingwaesche fuer abgesetzte Baender.
-   * Auf ihr steht KEIN Messing — dafuer liegt sie zu nah daran (2,8:1).
-   * Text darauf ist `encre` oder `pierre`, Linien sind `pierre`.
-   * Das ist keine Nachlaessigkeit, sondern die Bedingung, unter der diese
-   * Flaeche ueberhaupt benutzbar ist.
-   */
-  sable: '#E5DCC4',
+  marine: '#1F2A36',
+  'marine-tief': '#151D26',
+  encre: '#0E1A2B',
+  texte: '#2B3442',
+  gris: '#5B6575',
+  trait: '#D9DDE3',
+  brume: '#F3F4F6',
+  blanc: '#FFFFFF',
+  /** Gold des Wappens — nur Linien und Logo, kein Text auf Weiss. */
+  or: '#A07C3C',
+  /** Gold fuer Schrift auf Marine. */
+  'or-clair': '#CDB27F',
+  /** Zweitschrift auf Marine. */
+  'marine-texte': '#B6BFCA',
+  erreur: '#A32020',
+  bordure: '#858E9B',
 };
 
-/**
- * Abgeleitete Werte. Jeder ist gesucht, nicht geraten: Farbton und
- * Saettigung bleiben stehen, nur die Helligkeit wandert so weit, bis die
- * Schwelle mit Reserve erreicht ist.
- */
-export const DERIVED = {
-  // Hover und aktiver Zustand der Leitfarbe.
-  'frontiere-tief': '#264333',
-  // Messing traegt auf hellem Grund keinen Text (3,17:1). Abgedunkelt schon.
-  'laiton-texte': '#88632B',
-  // Auf dem warmen Dunkel traegt das Messing Text ohne Aenderung (4,54:1);
-  // der Eintrag bleibt als ausdrueckliche Zusage stehen.
-  'laiton-clair': '#A87A35',
-  // Sekundaertext auf dunklem Grund.
-  'craie-gedaempft': '#BDB4A4',
-  // Endpunkte der Uebergaenge.
-  'papier-warm': '#F3EEE1',
-  'craie-warm': '#FDFBF4',
-  'encre-tief': '#14110C',
-};
+export const DERIVED = {};
 
 function srgbToLinear(c) {
   const s = c / 255;
@@ -100,81 +83,26 @@ const hex = (name) => ALL[name] ?? name;
  * Entwurf nicht als Textfarbe eingesetzt (dient der Begruendung).
  */
 const CHECKS = [
-  // --- Fliesstext und Lesetext ------------------------------------------
-  { fg: 'encre', bg: 'craie', min: 4.5, use: 'Fließtext auf der Lesefläche' },
-  { fg: 'encre', bg: 'papier', min: 4.5, use: 'Fließtext auf der Grundfläche' },
-  { fg: 'encre', bg: 'sable', min: 4.5, use: 'Fließtext auf der Messingwäsche' },
-  { fg: 'pierre', bg: 'craie', min: 4.5, use: 'Sekundärtext, Marginalie auf Lesefläche' },
-  { fg: 'pierre', bg: 'papier', min: 4.5, use: 'Sekundärtext, Marginalie auf Grundfläche' },
-  { fg: 'pierre', bg: 'sable', min: 4.5, use: 'Sekundärtext auf der Messingwäsche' },
-
-  // --- Interaktive Elemente ---------------------------------------------
-  { fg: 'frontiere', bg: 'craie', min: 4.5, use: 'Link und Einsetzstelle im Hero' },
-  { fg: 'frontiere', bg: 'papier', min: 4.5, use: 'Link auf Grundfläche' },
-  { fg: 'frontiere', bg: 'sable', min: 4.5, use: 'Link auf der Messingwäsche' },
-  { fg: 'frontiere-tief', bg: 'papier', min: 4.5, use: 'Link, Hover- und Aktivzustand' },
-  { fg: 'craie', bg: 'frontiere', min: 4.5, use: 'Schrift auf gefülltem Knopf' },
-
-  // --- Messing ------------------------------------------------------------
-  { fg: 'laiton', bg: 'papier', min: 3.0, use: 'Linie in Messing (grafische Abgrenzung, WCAG 1.4.11)' },
-  { fg: 'laiton', bg: 'craie', min: 3.0, use: 'Linie in Messing auf Lesefläche' },
-  {
-    fg: 'laiton',
-    bg: 'papier',
-    min: 4.5,
-    binding: false,
-    use: 'Messing als Fließtextfarbe — NICHT eingesetzt, siehe Befund 1',
-  },
-  {
-    fg: 'laiton',
-    bg: 'sable',
-    min: 3.0,
-    binding: false,
-    use: 'Messing auf der Messingwäsche — NICHT eingesetzt, siehe Befund 2',
-  },
-  { fg: 'laiton-texte', bg: 'papier', min: 4.5, use: 'Messing als Textfarbe — Marginalie, aktiver Zustand' },
-  { fg: 'laiton-texte', bg: 'craie', min: 4.5, use: 'Messing als Textfarbe auf Lesefläche' },
-
-  // --- Dunkle Flaechen ----------------------------------------------------
-  { fg: 'craie', bg: 'encre', min: 4.5, use: 'Text auf dunklem Grund (Fußzeile, Leiste)' },
-  { fg: 'craie-gedaempft', bg: 'encre', min: 4.5, use: 'Sekundärtext auf dunklem Grund' },
-  { fg: 'laiton-clair', bg: 'encre', min: 4.5, use: 'Messing als Textfarbe auf dunklem Grund' },
-  { fg: 'laiton', bg: 'encre', min: 3.0, use: 'Messinglinie auf dunklem Grund' },
-
-  // --- Fokusring ----------------------------------------------------------
-  { fg: 'frontiere', bg: 'papier', min: 3.0, use: 'Fokusring gegen Grundfläche' },
-  { fg: 'frontiere', bg: 'craie', min: 3.0, use: 'Fokusring gegen Lesefläche' },
-  { fg: 'craie', bg: 'frontiere', min: 3.0, use: 'Fokusring auf gefülltem Knopf' },
-  { fg: 'laiton-clair', bg: 'encre', min: 3.0, use: 'Fokusring auf dunklem Grund' },
-
-  // --- Enden der Uebergaenge ----------------------------------------------
-  { fg: 'encre', bg: 'papier-warm', min: 4.5, use: 'Fließtext am warmen Ende der Grundfläche' },
-  { fg: 'encre', bg: 'craie-warm', min: 4.5, use: 'Fließtext am warmen Ende der Lesefläche' },
-  { fg: 'pierre', bg: 'papier-warm', min: 4.5, use: 'Sekundärtext am warmen Ende' },
-  { fg: 'pierre', bg: 'craie-warm', min: 4.5, use: 'Sekundärtext am warmen Ende der Lesefläche' },
-  { fg: 'frontiere', bg: 'papier-warm', min: 4.5, use: 'Link am warmen Ende' },
-  { fg: 'frontiere', bg: 'craie-warm', min: 4.5, use: 'Link am warmen Ende der Lesefläche' },
-  { fg: 'laiton-texte', bg: 'papier-warm', min: 4.5, use: 'Messingtext am warmen Ende' },
-  { fg: 'laiton', bg: 'papier-warm', min: 3.0, use: 'Messinglinie am warmen Ende' },
-  { fg: 'craie', bg: 'encre-tief', min: 4.5, use: 'Text am tiefen Ende des Fußbereichs' },
-  { fg: 'craie-gedaempft', bg: 'encre-tief', min: 4.5, use: 'Sekundärtext am tiefen Ende' },
-  { fg: 'laiton-clair', bg: 'encre-tief', min: 4.5, use: 'Messingtext am tiefen Ende' },
-
-  // --- Flaechen gegeneinander --------------------------------------------
-  {
-    fg: 'papier',
-    bg: 'craie',
-    min: 1.0,
-    binding: false,
-    use: 'Grundfläche gegen Lesefläche — bewusst leise',
-  },
-  {
-    fg: 'sable',
-    bg: 'papier',
-    min: 1.0,
-    binding: false,
-    use: 'Messingwäsche gegen Grundfläche — hier soll man die Kante sehen',
-  },
+  { fg: 'texte', bg: 'blanc', min: 4.5, use: 'Fließtext' },
+  { fg: 'texte', bg: 'brume', min: 4.5, use: 'Fließtext auf hellgrauen Bändern' },
+  { fg: 'encre', bg: 'blanc', min: 4.5, use: 'Überschriften, Menü' },
+  { fg: 'encre', bg: 'brume', min: 4.5, use: 'Überschriften auf hellgrauen Bändern' },
+  { fg: 'gris', bg: 'blanc', min: 4.5, use: 'Sekundärtext, Einleitungen' },
+  { fg: 'gris', bg: 'brume', min: 4.5, use: 'Sekundärtext auf hellgrauen Bändern' },
+  { fg: 'marine', bg: 'blanc', min: 4.5, use: 'Links, Knöpfe als Text' },
+  { fg: 'marine', bg: 'brume', min: 4.5, use: 'Links auf hellgrauen Bändern' },
+  { fg: 'blanc', bg: 'marine', min: 4.5, use: 'Schrift auf Marine (Hero, Bänder, Knöpfe)' },
+  { fg: 'marine-texte', bg: 'marine', min: 4.5, use: 'Zweitschrift auf Marine' },
+  { fg: 'or-clair', bg: 'marine', min: 4.5, use: 'Gold als Schrift auf Marine' },
+  { fg: 'marine-tief', bg: 'or-clair', min: 4.5, use: 'Schrift auf dem goldenen Knopf' },
+  { fg: 'blanc', bg: 'marine-tief', min: 4.5, use: 'Schrift im Fußbereich und in der Leiste' },
+  { fg: 'marine-texte', bg: 'marine-tief', min: 4.5, use: 'Zweitschrift im Fußbereich' },
+  { fg: 'or-clair', bg: 'marine-tief', min: 4.5, use: 'Gold als Schrift im Fußbereich' },
+  { fg: 'erreur', bg: 'blanc', min: 4.5, use: 'Fehlermeldungen im Formular' },
+  { fg: 'or', bg: 'blanc', min: 3.0, use: 'Goldlinien, Pfeile, Fokusring (grafisch, WCAG 1.4.11)' },
+  { fg: 'or', bg: 'brume', min: 3.0, use: 'Goldlinien auf hellgrauen Bändern' },
+  { fg: 'bordure', bg: 'blanc', min: 3.0, use: 'Rahmen der Formularfelder (WCAG 1.4.11)' },
+  { fg: 'or', bg: 'blanc', min: 4.5, binding: false, use: 'Gold als Text auf Weiß — NICHT eingesetzt' },
 ];
 
 const rows = CHECKS.map((c) => {
@@ -198,78 +126,24 @@ Schwellen nach WCAG 2.2: **4,5:1** für Fließtext und kleinen Text,
 
 ## Palette
 
-| Token | Hex | Verwendung |
-|---|---|---|
-| \`encre\` | \`${PALETTE.encre}\` | Fließtext, Fußbereich |
-| \`frontiere\` | \`${PALETTE.frontiere}\` | Leitfarbe, alle interaktiven Elemente |
-| \`laiton\` | \`${PALETTE.laiton}\` | Linien, Marginalien, aktiver Zustand |
-| \`papier\` | \`${PALETTE.papier}\` | Grundfläche der Seite |
-| \`craie\` | \`${PALETTE.craie}\` | Lesefläche |
-| \`pierre\` | \`${PALETTE.pierre}\` | Sekundärtext, Randspalte |
-
-### Abgeleitete Werte
-
-| Token | Hex | Grund |
-|---|---|---|
-${Object.entries(DERIVED)
-  .map(([k, v]) => `| \`${k}\` | \`${v}\` | siehe Befunde unten |`)
+| Token | Hex |
+|---|---|
+${Object.entries(PALETTE)
+  .map(([k, v]) => `| \`${k}\` | \`${v}\` |`)
   .join('\n')}
 
 ## Ergebnisse
 
-| Vordergrund | Hintergrund | Verhältnis | Schwelle | Ergebnis | Verwendung |
-|---|---|---|---|---|---|
-${rows
-  .map(
-    (r) =>
-      `| \`${r.fg}\` | \`${r.bg}\` | ${fmt(r.ratio)}:1 | ${r.min.toFixed(1)}:1 | ${
-        r.binding ? (r.pass ? '**bestanden**' : '**DURCHGEFALLEN**') : r.pass ? 'bestanden (nachrichtlich)' : 'durchgefallen (nachrichtlich)'
-      } | ${r.use} |`,
-  )
-  .join('\n')}
+| Kombination | Verhältnis | Mindestens | Verwendung |
+|---|---|---|---|
+${rows.map((r) => `| \`${r.fg}\` auf \`${r.bg}\` | ${fmt(r.ratio)}:1 | ${r.min} | ${r.use}${r.binding ? '' : ' (nicht verbindlich)'} |`).join('\n')}
 
-## Befunde und Abweichungen
+## Befunde
 
-**1. \`laiton\` (#A07C3C) trägt keinen Fließtext.**
-Gegen \`papier\` erreicht das Messing ${fmt(contrast(PALETTE.laiton, PALETTE.papier))}:1.
-Für Linien, Rahmen und grafische Abgrenzungen (Schwelle 3,0:1) reicht das,
-für Text (4,5:1) nicht. Das Konzept sieht Messing ohnehin nur für
-Marginalien, Linien und den aktiven Zustand vor. Wo Messing **als Text**
-nötig ist, wird \`laiton-texte\` (#7A5D2B) eingesetzt:
-${fmt(contrast(DERIVED['laiton-texte'], PALETTE.papier))}:1 gegen \`papier\`,
-${fmt(contrast(DERIVED['laiton-texte'], PALETTE.craie))}:1 gegen \`craie\`.
-Der Farbton bleibt erkennbar dasselbe Messing, nur abgedunkelt.
-
-**2. \`laiton\` trägt auch auf dunklem Grund keinen Text.**
-Gegen \`encre\` erreicht das Messing ${fmt(contrast(PALETTE.laiton, PALETTE.encre))}:1
-und verfehlt die 4,5:1 damit knapp. Als Linie und als Wappen in der Fußzeile
-ist es zulässig (Schwelle 3,0:1). Für **Text** auf dunklem Grund wird
-\`laiton-clair\` (#AB8440) eingesetzt: ${fmt(contrast(DERIVED['laiton-clair'], PALETTE.encre))}:1.
-Farbton und Sättigung bleiben unverändert (HSL 38,4° / 45,5 %), nur die
-Helligkeit steigt von 43,1 % auf 46 %. Das ist der kleinste Schritt, der die
-Schwelle mit Reserve nimmt — geraten wurde nichts, der Wert ist gesucht worden.
-
-Damit gibt es drei Messingwerte, jeder mit genau einem Einsatzgebiet:
-\`laiton\` für Linien und Flächen, \`laiton-texte\` für Text auf hellem Grund,
-\`laiton-clair\` für Text auf dunklem Grund. Das ist eine Abweichung vom
-Konzept, das nur einen Wert vorsah — sie ist durch die Prüfung erzwungen.
-
-**3. \`pierre\` ist knapp, aber ausreichend.**
-${fmt(contrast(PALETTE.pierre, PALETTE.craie))}:1 gegen \`craie\` und
-${fmt(contrast(PALETTE.pierre, PALETTE.papier))}:1 gegen \`papier\`.
-Die Marginalie wird in 0,8125rem gesetzt und ist damit kleiner Text — die
-4,5:1 gelten, und sie sind erfüllt. Weiter aufhellen würde sie unterschreiten.
-
-**4. Farbe ist nirgends der einzige Bedeutungsträger.**
-Die beiden Einsetzstellen im Hero sind zusätzlich unterstrichen und tragen
-\`aria-expanded\`. Links im Fließtext sind unterstrichen. Der Pflichtfeld-
-und Fehlerzustand im Formular wird zusätzlich durch Text und
-\`aria-invalid\` ausgewiesen, nicht nur durch Farbe.
-
-**5. Kein Dunkelmodus.**
-Die Seite ist hell, in allen Zuständen. Das Dunkelgrün ist Textfarbe und
-Fußbereich, keine Flächenvariante. Ein zweites Farbsystem hätte keine
-zusätzlichen geprüften Kombinationen, sondern nur ungeprüfte.
+**Gold traegt auf Weiss keinen Text.** Das Gold des Wappens erreicht gegen
+Weiss nur ${fmt(contrast(PALETTE.or, PALETTE.blanc))}:1. Es steht deshalb nur
+als Linie, Pfeil, Fokusring und im Logo. Als Schrift erscheint Gold nur auf
+Marine, in der helleren Fassung \`or-clair\`.
 `;
 
 await mkdir(join(ROOT, 'docs'), { recursive: true });

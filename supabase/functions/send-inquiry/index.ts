@@ -23,17 +23,7 @@ import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { SMTPClient } from 'jsr:@denodomain/denomailer@1.6.0';
 import { corsHeaders, preflight } from '../_shared/cors.ts';
 
-const PAYS = ['france', 'belgique', 'allemagne', 'luxembourg', 'ue', 'hors-ue'];
-const PROJETS = [
-  'immobilier',
-  'societe',
-  'succession',
-  'creance',
-  'marque',
-  'fiscalite',
-  'litige',
-];
-const LANGUES = ['fr', 'de', 'en', 'lb'];
+const LANGUES = ['fr', 'en'];
 
 interface Faute {
   champ: string;
@@ -44,39 +34,42 @@ function valider(f: FormData): { fautes: Faute[]; donnees: Record<string, unknow
   const fautes: Faute[] = [];
   const s = (k: string) => String(f.get(k) ?? '').trim();
 
+  // Felder wie auf der alten Website: Name, Firma, Adresse, Telefon,
+  // E-Mail, Anfrage, Einwilligung — dazu die Taetigkeit, um die es geht.
   const nom = s('nom');
+  const societe = s('societe');
+  const adresse = s('adresse');
   const courriel = s('courriel');
   const telephone = s('telephone');
-  const pays = s('pays');
-  const projet = s('projet');
+  const domaine = s('domaine');
   const message = s('message');
-  const echeance = s('echeance');
-  const sansEcheance = s('sans_echeance') === '1';
   const consentement = s('consentement') === '1';
   const langue = LANGUES.includes(s('langue')) ? s('langue') : 'fr';
 
   if (nom.length < 2 || nom.length > 200) fautes.push({ champ: 'nom', raison: 'laenge' });
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(courriel) || courriel.length > 320)
     fautes.push({ champ: 'courriel', raison: 'format' });
-  if (!PAYS.includes(pays)) fautes.push({ champ: 'pays', raison: 'unbekannt' });
-  if (!PROJETS.includes(projet)) fautes.push({ champ: 'projet', raison: 'unbekannt' });
-  if (message.length < 10 || message.length > 8000)
-    fautes.push({ champ: 'message', raison: 'laenge' });
+  if (telephone.replace(/\D/g, '').length < 6 || telephone.length > 60)
+    fautes.push({ champ: 'telephone', raison: 'format' });
+  if (domaine && !/^[a-z0-9-]{1,80}$/.test(domaine)) fautes.push({ champ: 'domaine', raison: 'format' });
+  if (message.length < 10 || message.length > 8000) fautes.push({ champ: 'message', raison: 'laenge' });
   if (!consentement) fautes.push({ champ: 'consentement', raison: 'fehlt' });
-  if (!sansEcheance && !/^\d{4}-\d{2}-\d{2}$/.test(echeance))
-    fautes.push({ champ: 'echeance', raison: 'fehlt' });
-  if (telephone.length > 60) fautes.push({ champ: 'telephone', raison: 'laenge' });
+  if (societe.length > 200 || adresse.length > 400) fautes.push({ champ: 'societe', raison: 'laenge' });
 
   return {
     fautes,
     donnees: {
       nom,
+      societe: societe || null,
+      adresse: adresse || null,
       courriel,
-      telephone: telephone || null,
-      pays,
-      projet,
-      echeance: sansEcheance ? null : echeance,
-      sans_echeance: sansEcheance,
+      telephone,
+      // Die Spalten pays/projet stammen aus der frueheren Fassung des
+      // Formulars; projet traegt jetzt die gewaehlte Taetigkeit.
+      pays: '',
+      projet: domaine || 'autre',
+      echeance: null,
+      sans_echeance: true,
       message,
       langue,
       page: s('page') || null,
@@ -89,11 +82,11 @@ function texteCourriel(d: Record<string, unknown>): string {
     'Neue Anfrage über das Formular der Website',
     '',
     `Name:      ${d.nom}`,
+    `Firma:     ${d.societe ?? '—'}`,
+    `Adresse:   ${d.adresse ?? '—'}`,
     `E-Mail:    ${d.courriel}`,
-    `Telefon:   ${d.telephone ?? '—'}`,
-    `Wohnsitz:  ${d.pays}`,
-    `Anliegen:  ${d.projet}`,
-    `Frist:     ${d.sans_echeance ? 'keine angegeben' : d.echeance}`,
+    `Telefon:   ${d.telephone}`,
+    `Tätigkeit: ${d.projet}`,
     `Sprache:   ${d.langue}`,
     `Von Seite: ${d.page ?? '—'}`,
     '',
@@ -140,7 +133,7 @@ Deno.serve(async (req) => {
   // Fuer Menschen unsichtbar. Ist es ausgefuellt, war es eine Maschine.
   // Geantwortet wird trotzdem freundlich, damit der Absender nicht lernt,
   // woran es gescheitert ist.
-  if (String(formulaire.get('societe') ?? '').trim() !== '') {
+  if (String(formulaire.get('site_web') ?? '').trim() !== '') {
     return repondre(200, { ok: true }, String(formulaire.get('recu') ?? '/'));
   }
 
@@ -185,7 +178,7 @@ Deno.serve(async (req) => {
         to: destinataire,
         // Antworten geht direkt an den Absender.
         replyTo: `${donnees.nom} <${donnees.courriel}>`,
-        subject: `Anfrage Website — ${donnees.pays} / ${donnees.projet}`,
+        subject: `Anfrage Website — ${donnees.projet}`,
         content: texteCourriel(donnees),
       });
       await client.close();

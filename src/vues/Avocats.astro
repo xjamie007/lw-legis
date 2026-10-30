@@ -1,0 +1,127 @@
+---
+/**
+ * src/vues/Avocats.astro — Les avocats.
+ *
+ * Einleitung der alten Seite, dann je Anwalt Foto (falls vorhanden),
+ * Name, Funktion und Werdegang, und der Weg zum Termin.
+ */
+import type { Lang } from '../lib/langs';
+import { txt, txtHtml } from '../lib/langs';
+import { t } from '../lib/i18n';
+import { contenu, equipe } from '../lib/content';
+import { adresse, type Route } from '../lib/pages';
+import { ed, edPage } from '../lib/edition';
+import Tete from '../components/Tete.astro';
+import Bild from '../components/Bild.astro';
+import Icone from '../components/Icone.astro';
+
+interface Props {
+  lang: Lang;
+  route: Route;
+}
+const { lang, route } = Astro.props;
+const p = contenu.pages.avocats;
+const urlContact = adresse('contact', lang);
+---
+
+<Tete
+  lang={lang}
+  fil={route.fil}
+  titre={route.nom}
+  chapeau={txt(p.intro, lang)}
+  chapeauHtml
+  edTitre={edPage('avocats.titre')}
+  edChapeau={edPage('avocats.intro', true)}
+/>
+
+<section class="section">
+  <div class="enveloppe">
+    <p class="accroche" {...edPage('avocats.accroche')}>{txt(p.accroche, lang)}</p>
+
+    {
+      equipe(lang).map((m) => (
+        <article class:list={['avocat', { 'avocat--sans-photo': !m.photo }]} id={m.id}>
+          {m.photo && (
+            <div class="avocat__photo">
+              <Bild platz={m.photo} lang={lang} sizes="(min-width: 62rem) 22rem, 80vw" />
+            </div>
+          )}
+          <div>
+            <h2>
+              {m.titre_civil} {m.nom}
+            </h2>
+            <p class="avocat__fonction">
+              <span {...ed('team', m.id, 'fonction')}>{txt(m.fonction, lang)}</span>
+              {m.barreau_depuis && (
+                <span>
+                  {t(lang, 'avocats.barreau_depuis')} {m.barreau_depuis}
+                </span>
+              )}
+            </p>
+            <div class="prose" set:html={txtHtml(m.bio, lang)} {...ed('team', m.id, 'bio', true)} />
+            {urlContact && (
+              <a class="bouton" href={urlContact}>
+                {t(lang, 'avocats.prendre_rdv')}
+                <Icone nom="fleche" />
+              </a>
+            )}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .accroche {
+    font-family: var(--font-titre);
+    font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.125rem);
+    font-weight: 300;
+    line-height: 1.3;
+    color: var(--color-marine);
+    max-width: 30ch;
+    padding-bottom: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+  .avocat {
+    display: grid;
+    gap: 2.5rem;
+    padding-block: clamp(3rem, 2rem + 3vw, 5rem);
+    border-top: 1px solid var(--color-trait);
+  }
+  .avocat__photo :global(img) {
+    display: block;
+    width: 100%;
+    max-width: 22rem;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+  .avocat h2 {
+    font-size: var(--text-h2);
+    font-weight: 300;
+  }
+  .avocat__fonction {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    margin-top: 0.6rem;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
+    border-bottom: 2px solid var(--color-or);
+    color: var(--color-gris);
+    font-weight: 500;
+  }
+  .avocat .bouton {
+    margin-top: 2.25rem;
+  }
+  @media (min-width: 62rem) {
+    .avocat {
+      grid-template-columns: 22rem minmax(0, 1fr);
+      gap: clamp(3rem, 6vw, 6rem);
+    }
+    .avocat--sans-photo {
+      grid-template-columns: minmax(0, 1fr);
+      padding-left: calc(22rem + clamp(3rem, 6vw, 6rem));
+    }
+  }
+</style>

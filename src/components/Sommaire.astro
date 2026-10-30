@@ -1,0 +1,125 @@
+---
+/**
+ * src/components/Sommaire.astro — „Sur cette page“ ueber langen Texten.
+ *
+ * Erst ab drei Zwischenueberschriften: Bei kuerzeren Texten waere das
+ * Verzeichnis laenger als sein Nutzen. Auf dem Handy zugeklappt, damit
+ * der Text nicht erst nach einer Liste beginnt.
+ */
+import type { Lang } from '../lib/langs';
+import { t } from '../lib/i18n';
+import Icone from './Icone.astro';
+
+interface Props {
+  lang: Lang;
+  titres: { id: string; texte: string }[];
+}
+const { lang, titres } = Astro.props;
+---
+
+{
+  titres.length >= 3 && (
+    <details class="sommaire sans-impression" data-sommaire>
+      <summary>
+        {t(lang, 'sommaire.titre')}
+        <span class="sommaire__nombre">{titres.length}</span>
+        <Icone nom="plus" />
+      </summary>
+      <ol>
+        {titres.map((x) => (
+          <li>
+            <a href={`#${x.id}`}>{x.texte}</a>
+          </li>
+        ))}
+      </ol>
+    </details>
+  )
+}
+
+<script>
+  // Auf grossen Bildschirmen steht das Verzeichnis offen da.
+  const grand = matchMedia('(min-width: 62rem)');
+  const ouvrir = () => {
+    for (const d of document.querySelectorAll<HTMLDetailsElement>('[data-sommaire]')) d.open = grand.matches;
+  };
+  ouvrir();
+  grand.addEventListener('change', ouvrir);
+</script>
+
+<style>
+  .sommaire {
+    margin-bottom: 2.5rem;
+    border-top: 2px solid var(--color-or);
+    border-bottom: 1px solid var(--color-trait);
+    max-width: var(--mesure);
+  }
+  .sommaire summary {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-block: 1rem;
+    cursor: pointer;
+    list-style: none;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-gris);
+  }
+  .sommaire summary::-webkit-details-marker {
+    display: none;
+  }
+  .sommaire summary :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-left: auto;
+    color: var(--color-or);
+    transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sommaire[open] summary :global(svg) {
+    transform: rotate(45deg);
+  }
+  .sommaire__nombre {
+    color: var(--color-or);
+  }
+  .sommaire ol {
+    display: grid;
+    gap: 0.1rem 2rem;
+    padding-bottom: 1.25rem;
+    counter-reset: s;
+  }
+  .sommaire li {
+    counter-increment: s;
+    display: flex;
+    gap: 0.75rem;
+  }
+  .sommaire li::before {
+    content: counter(s);
+    flex: none;
+    min-width: 1.25rem;
+    color: var(--color-or);
+    font-family: var(--font-titre);
+    font-variant-numeric: tabular-nums;
+  }
+  .sommaire a {
+    padding-block: 0.3rem;
+    color: var(--color-encre);
+    font-size: 0.9688rem;
+    line-height: 1.45;
+    text-decoration: none;
+  }
+  .sommaire a:hover {
+    color: var(--color-marine);
+    text-decoration: underline;
+    text-decoration-color: var(--color-or);
+    text-underline-offset: 3px;
+  }
+  @media (min-width: 48rem) {
+    .sommaire ol {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  :global(.prose h2[id]) {
+    scroll-margin-top: calc(var(--entete) + 3rem);
+  }
+</style>

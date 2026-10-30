@@ -11,14 +11,13 @@ import { traduire, type LangueAdmin } from '../i18n';
 import EditeurTexte from './EditeurTexte';
 import type { Champ } from '../schema';
 
-export const LANGUES_CONTENU = ['fr', 'de', 'en', 'lb'] as const;
+/** Wie die Website: Franzoesisch und Englisch. */
+export const LANGUES_CONTENU = ['fr', 'en'] as const;
 export type LangueContenu = (typeof LANGUES_CONTENU)[number];
 
 export const NOMS_LANGUE: Record<LangueContenu, string> = {
   fr: 'Français',
-  de: 'Deutsch',
   en: 'English',
-  lb: 'Lëtzebuergesch',
 };
 
 interface Props {

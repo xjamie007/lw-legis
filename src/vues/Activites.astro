@@ -1,0 +1,195 @@
+---
+/**
+ * src/vues/Activites.astro — Uebersicht und Detailseite der Taetigkeiten.
+ *
+ * Uebersicht: die Taetigkeiten in fuenf Bereichen (src/lib/groupes.ts),
+ * oben die Bereiche als Sprungmarken. So sieht man auf einen Blick, was es
+ * alles gibt, statt dreizehn Eintraege hintereinander zu lesen.
+ *
+ * Detailseite: oben „Sur cette page“ mit den Zwischenueberschriften, dann
+ * der Text; daneben der Kasten, der das Formular mit dieser Taetigkeit
+ * vorbelegt, und die anderen Taetigkeiten.
+ */
+import type { Lang } from '../lib/langs';
+import { txt } from '../lib/langs';
+import { t } from '../lib/i18n';
+import { activites, contenu, type Activite } from '../lib/content';
+import { groupesAvecActivites } from '../lib/groupes';
+import { sommaire } from '../lib/sommaire';
+import { adresse, type Route } from '../lib/pages';
+import { ed, edPage } from '../lib/edition';
+import { prefixerHtml } from '../lib/base';
+import Tete from '../components/Tete.astro';
+import Sommaire from '../components/Sommaire.astro';
+import Icone from '../components/Icone.astro';
+
+interface Props {
+  lang: Lang;
+  route: Route;
+  activite?: Activite;
+}
+const { lang, route, activite } = Astro.props;
+const s = contenu.settings;
+const toutes = activites(lang);
+const groupes = groupesAvecActivites(lang);
+const urlContact = adresse('contact', lang);
+const texte = activite ? sommaire(txt(activite.texte, lang)) : null;
+---
+
+{
+  !activite && (
+    <>
+      <Tete
+        lang={lang}
+        fil={route.fil}
+        titre={route.nom}
+        chapeau={txt(contenu.pages.activites.intro, lang)}
+        chapeauDesktop
+        edTitre={edPage('activites.titre')}
+        edChapeau={edPage('activites.intro')}
+      >
+        <nav class="sauts" aria-label={t(lang, 'activites.domaines')}>
+          {groupes.map((g) => (
+            <a href={`#${g.id}`}>
+              {txt(g.nom, lang)}
+              <span>{g.liste.length}</span>
+            </a>
+          ))}
+        </nav>
+      </Tete>
+      <div class="enveloppe groupes">
+        {groupes.map((g) => (
+          <section class="groupe" id={g.id} aria-labelledby={`titre-${g.id}`} data-revele>
+            <h2 id={`titre-${g.id}`}>
+              {txt(g.nom, lang)}
+              <span class="groupe__nombre">{g.liste.length}</span>
+            </h2>
+            <ul class="registre registre--deux">
+              {g.liste.map((a, i) => (
+                <li class="registre__ligne" data-revele-i style={`--i: ${i}`}>
+                  <a class="registre__lien" href={adresse(`activite:${a.id}`, lang)}>
+                    <span class="registre__titre" {...ed('services', a.id, 'terme')}>
+                      {txt(a.terme, lang)}
+                    </span>
+                    <span class="registre__texte" {...ed('services', a.id, 'definition')}>
+                      {txt(a.definition, lang)}
+                    </span>
+                    <Icone nom="fleche" class="registre__fleche" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </>
+  )
+}
+
+{
+  activite && texte && (
+    <>
+      <Tete
+        lang={lang}
+        fil={route.fil}
+        titre={route.nom}
+        chapeau={txt(activite.definition, lang)}
+        edTitre={ed('services', activite.id, 'terme')}
+        edChapeau={ed('services', activite.id, 'definition')}
+      />
+      <section class="section">
+        <div class="enveloppe avec-aside">
+          <div>
+            <Sommaire lang={lang} titres={texte.titres} />
+            <article class="prose" set:html={prefixerHtml(texte.html)} {...ed('services', activite.id, 'texte', true)} />
+          </div>
+          <aside class="sans-impression">
+            <div class="encadre">
+              <h2>{t(lang, 'activite.contacter')}</h2>
+              <p>{t(lang, 'activite.contacter_texte')}</p>
+              {urlContact && (
+                <a class="bouton bouton--or" href={`${urlContact}?domaine=${activite.id}#formulaire`}>
+                  {t(lang, 'contact.ecrire')}
+                  <Icone nom="fleche" />
+                </a>
+              )}
+              <a class="encadre__tel" href={`tel:${s.telephone.lien}`}>
+                {s.telephone.affiche}
+              </a>
+            </div>
+            <nav class="liste-aside" aria-labelledby="autres-activites">
+              <h2 id="autres-activites">{t(lang, 'activite.autres')}</h2>
+              {toutes.map((a) => (
+                <a href={adresse(`activite:${a.id}`, lang)} aria-current={a.id === activite.id ? 'page' : undefined}>
+                  {txt(a.terme, lang)}
+                </a>
+              ))}
+            </nav>
+          </aside>
+        </div>
+      </section>
+    </>
+  )
+}
+
+<style>
+  .sauts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+  .sauts a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 2.5rem;
+    padding: 0.45rem 1rem;
+    border: 1px solid var(--color-trait);
+    background: var(--color-blanc);
+    color: var(--color-encre);
+    font-size: 0.9063rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color 200ms ease-out;
+  }
+  .sauts a:hover {
+    border-color: var(--color-marine);
+  }
+  .sauts span {
+    color: var(--color-or);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .groupes {
+    padding-block: clamp(2.5rem, 2rem + 3vw, 4.5rem) var(--section);
+  }
+  .groupe + .groupe {
+    margin-top: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+  /* Jeder Bereich als deutlicher Abschnittstitel: gross, Marine, mit der
+     Anzahl in Gold und einer kraeftigen Goldlinie ueber die ganze Breite. */
+  .groupe h2 {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: var(--text-titre);
+    font-weight: 400;
+    color: var(--color-marine);
+    padding-bottom: 1rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 3px solid var(--color-or);
+    scroll-margin-top: calc(var(--entete) + 3rem);
+  }
+  .groupe__nombre {
+    font-family: var(--font-texte);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-or);
+    font-variant-numeric: tabular-nums;
+  }
+  .groupe .registre--deux .registre__ligne:nth-child(-n + 2) {
+    border-top: 0;
+  }
+</style>

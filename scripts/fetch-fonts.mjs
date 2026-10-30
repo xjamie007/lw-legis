@@ -1,7 +1,7 @@
 /**
  * scripts/fetch-fonts.mjs
  *
- * Holt Literata und Atkinson Hyperlegible Next einmalig als WOFF2 ins
+ * Holt Spectral und Hanken Grotesk einmalig als WOFF2 ins
  * Projekt (public/fonts) und erzeugt src/styles/fonts.css.
  *
  * Warum ueberhaupt ein Skript und kein <link> auf fonts.googleapis.com:
@@ -41,17 +41,17 @@ const WANTED_SUBSETS = new Set(['latin', 'latin-ext']);
 
 const FAMILIES = [
   {
-    query: 'Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..700',
-    family: 'Literata',
-    slug: 'literata',
-    licence: 'https://raw.githubusercontent.com/googlefonts/literata/main/OFL.txt',
+    // Ueberschriften. Statische Schnitte: Google liefert Spectral nicht variabel.
+    query: 'Spectral:wght@300;400;500',
+    family: 'Spectral',
+    slug: 'spectral',
+    licence: 'https://raw.githubusercontent.com/google/fonts/main/ofl/spectral/OFL.txt',
   },
   {
-    query: 'Atkinson+Hyperlegible+Next:wght@400..700',
-    family: 'Atkinson Hyperlegible Next',
-    slug: 'atkinson-hyperlegible-next',
-    licence:
-      'https://raw.githubusercontent.com/googlefonts/atkinson-hyperlegible/main/OFL.txt',
+    query: 'Hanken+Grotesk:wght@400..700',
+    family: 'Hanken Grotesk',
+    slug: 'hanken-grotesk',
+    licence: 'https://raw.githubusercontent.com/google/fonts/main/ofl/hankengrotesk/OFL.txt',
   },
 ];
 
@@ -97,7 +97,7 @@ async function main() {
     ' * src/styles/fonts.css — ERZEUGT von scripts/fetch-fonts.mjs.',
     ' * Nicht von Hand aendern. Neu erzeugen mit: npm run fonts',
     ' *',
-    ' * Literata und Atkinson Hyperlegible Next, beide SIL Open Font License 1.1.',
+    ' * Spectral und Hanken Grotesk, beide SIL Open Font License 1.1.',
     ' * Die Dateien liegen unter public/fonts und werden vom eigenen Server',
     ' * ausgeliefert — kein Aufruf an fonts.googleapis.com, keine',
     ' * IP-Uebertragung des Besuchers an Dritte.',
@@ -121,7 +121,8 @@ async function main() {
 
     for (const face of faces) {
       const italic = face.style === 'italic';
-      const name = `${fam.slug}-${italic ? 'italic' : 'roman'}-${face.subset}.woff2`;
+      // Gewicht im Namen: statische Schnitte derselben Familie wuerden sich sonst ueberschreiben.
+      const name = `${fam.slug}-${italic ? 'italic' : 'roman'}-${face.weight.replace(' ', '-')}-${face.subset}.woff2`;
       const dest = join(OUT_DIR, name);
 
       if (await exists(dest)) {

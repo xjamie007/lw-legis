@@ -137,6 +137,70 @@ const headers = `# Erzeugt von scripts/postbuild.mjs
 `;
 await writeFile(join(DIST, '_headers'), headers, 'utf8');
 
+/**
+ * Die Adressen der alten Website (cabinet-avocats-lorang.com/*.php) fuehren
+ * mit 301 auf die neue Seite. So bleiben Lesezeichen, Links von anderen
+ * Seiten und die Positionen bei Google erhalten.
+ */
+const snap = JSON.parse(await readFile(join(DIST, '..', 'content', 'snapshot.json'), 'utf8'));
+const { ACTIVITES } = await import('../content/source/activites.mjs');
+const { DOSSIERS, CONFERENCES } = await import('../content/source/publications.mjs');
+const SEG = {
+  fr: { activites: 'activites', dossiers: 'dossiers-thematiques' },
+  en: { activites: 'practice-areas', dossiers: 'thematic-files' },
+};
+const anciennes = [
+  ['index.php', '/fr/'],
+  ['index-en.php', '/en/'],
+  ['cabinet-avocats-lorang-luxembourg.php', '/fr/avocats/'],
+  ['law-firm-lorang-luxembourg.php', '/en/lawyers/'],
+  ['activites-avocat-luxembourg.php', '/fr/activites/'],
+  ['activities-lawyer-luxembourg.php', '/en/practice-areas/'],
+  ['cabinet-avocats-dossiers-thematiques-luxembourg.php', '/fr/dossiers-thematiques/'],
+  ['law-firm-thematic-files-luxembourg.php', '/en/thematic-files/'],
+  ['conferences-avocat-avocat-lorang-luxembourg.php', '/fr/conferences/'],
+  ['conferences-avocat-lorang-luxembourg.php', '/fr/conferences/'],
+  ['cabinet-avocats-luxembourg-partenaires.php', '/fr/partenaires/'],
+  ['law-firm-luxembourg-partners.php', '/en/partners/'],
+  ['contact-cabinet-avocats-luxembourg.php', '/fr/contact/'],
+  ['contact-law-firm-luxembourg.php', '/en/contact/'],
+  ['conditions-generales.php', '/fr/conditions-generales/'],
+  ['general-conditions.php', '/en/terms/'],
+  ['mentions-legales.php', '/fr/mentions-legales/'],
+  // Doppelte oder falsch geschriebene Adressen der alten Seite
+  ['avocat-domicialiation-societe-luxembourg.php', '/fr/activites/'],
+];
+// Taetigkeiten und Dossiers: alte Adresse je Sprache -> heutige Adresse.
+// Die heutige Adresse kommt aus dem Schnappschuss (dort koennte die
+// Kanzlei einen Slug geaendert haben), die alte aus den Quelldateien.
+const nachId = (liste) => Object.fromEntries(liste.map((x) => [x.id, x]));
+const fam = nachId(snap.familles);
+const pub = nachId(snap.publications);
+for (const [quelle, aktuell, art] of [
+  [ACTIVITES, fam, 'activites'],
+  [DOSSIERS, pub, 'dossiers'],
+]) {
+  for (const x of quelle) {
+    for (const l of ['fr', 'en']) {
+      const alt = x.ancienne_url?.[l];
+      const slug = aktuell[x.id]?.slug?.[l];
+      if (alt && slug) anciennes.push([alt, `/${l}/${SEG[l][art]}/${slug}/`]);
+      else if (alt) anciennes.push([alt, `/${l}/${SEG[l][art]}/`]);
+    }
+  }
+}
+// Konferenz-PDFs: alter Pfad -> neue Datei.
+for (const c of CONFERENCES) {
+  if (typeof c.ancienne_url === 'string' && c.ancienne_url.endsWith('.pdf') && c.pdf?.chemin) {
+    anciennes.push([c.ancienne_url, c.pdf.chemin]);
+  }
+}
+const vus = new Set();
+const lignesAnciennes = anciennes
+  .filter(([alt]) => !vus.has(alt) && vus.add(alt))
+  .map(([alt, neu]) => `/${encodeURI(alt).replace(/^\/+/, '')}  ${neu}  301`)
+  .join('\n');
+
 const redirects = `# Erzeugt von scripts/postbuild.mjs
 
 # Die Wurzel führt auf die Standardsprache. Eine echte Weiterleitung ist
@@ -146,6 +210,9 @@ const redirects = `# Erzeugt von scripts/postbuild.mjs
 
 # Der Redaktionsbereich ist eine Anwendung mit eigenen Unterpfaden.
 /admin/*     /admin/index.html   200
+
+# Adressen der alten Website
+${lignesAnciennes}
 `;
 await writeFile(join(DIST, '_redirects'), redirects, 'utf8');
 

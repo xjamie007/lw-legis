@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-30T07:14:15.913Z",
+  "title": "Design System: Étude d'Avocats LW LEGIS",
+  "extensions": {
+    "colorMeta": {
+      "marine": {
+        "role": "primary",
+        "displayName": "Chancery Navy",
+        "canonical": "#13294b",
+        "tonalRamp": [
+          "oklch(15% 0.069 258.9)",
+          "oklch(25% 0.069 258.9)",
+          "oklch(35% 0.069 258.9)",
+          "oklch(48% 0.069 258.9)",
+          "oklch(60% 0.069 258.9)",
+          "oklch(72% 0.069 258.9)",
+          "oklch(84% 0.069 258.9)",
+          "oklch(95% 0.069 258.9)"
+        ]
+      },
+      "marine-tief": {
+        "role": "primary",
+        "displayName": "Night Navy",
+        "canonical": "#0c1c36",
+        "tonalRamp": [
+          "oklch(15% 0.055 259.6)",
+          "oklch(25% 0.055 259.6)",
+          "oklch(35% 0.055 259.6)",
+          "oklch(48% 0.055 259.6)",
+          "oklch(60% 0.055 259.6)",
+          "oklch(72% 0.055 259.6)",
+          "oklch(84% 0.055 259.6)",
+          "oklch(95% 0.055 259.6)"
+        ]
+      },
+      "or": {
+        "role": "secondary",
+        "displayName": "Arms Gold",
+        "canonical": "#a07c3c",
+        "tonalRamp": [
+          "oklch(15% 0.093 79.9)",
+          "oklch(25% 0.093 79.9)",
+          "oklch(35% 0.093 79.9)",
+          "oklch(48% 0.093 79.9)",
+          "oklch(60% 0.093 79.9)",
+          "oklch(72% 0.093 79.9)",
+          "oklch(84% 0.093 79.9)",
+          "oklch(95% 0.093 79.9)"
+        ]
+      },
+      "or-clair": {
+        "role": "secondary",
+        "displayName": "Pale Gold",
+        "canonical": "#cdb27f",
+        "tonalRamp": [
+          "oklch(15% 0.074 83.0)",
+          "oklch(25% 0.074 83.0)",
+          "oklch(35% 0.074 83.0)",
+          "oklch(48% 0.074 83.0)",
+          "oklch(60% 0.074 83.0)",
+          "oklch(72% 0.074 83.0)",
+          "oklch(84% 0.074 83.0)",
+          "oklch(95% 0.074 83.0)"
+        ]
+      },
+      "marine-texte": {
+        "role": "neutral",
+        "displayName": "Mist Blue-Grey",
+        "canonical": "#b9c3d3",
+        "tonalRamp": [
+          "oklch(15% 0.025 259.8)",
+          "oklch(25% 0.025 259.8)",
+          "oklch(35% 0.025 259.8)",
+          "oklch(48% 0.025 259.8)",
+          "oklch(60% 0.025 259.8)",
+          "oklch(72% 0.025 259.8)",
+          "oklch(84% 0.025 259.8)",
+          "oklch(95% 0.025 259.8)"
+        ]
+      },
+      "encre": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#0e1a2b",
+        "tonalRamp": [
+          "oklch(15% 0.038 257.2)",
+          "oklch(25% 0.038 257.2)",
+          "oklch(35% 0.038 257.2)",
+          "oklch(48% 0.038 257.2)",
+          "oklch(60% 0.038 257.2)",
+          "oklch(72% 0.038 257.2)",
+          "oklch(84% 0.038 257.2)",
+          "oklch(95% 0.038 257.2)"
+        ]
+      },
+      "texte": {
+        "role": "neutral",
+        "displayName": "Body Slate",
+        "canonical": "#2b3442",
+        "tonalRamp": [
+          "oklch(15% 0.028 259.1)",
+          "oklch(25% 0.028 259.1)",
+          "oklch(35% 0.028 259.1)",
+          "oklch(48% 0.028 259.1)",
+          "oklch(60% 0.028 259.1)",
+          "oklch(72% 0.028 259.1)",
+          "oklch(84% 0.028 259.1)",
+          "oklch(95% 0.028 259.1)"
+        ]
+      },
+      "gris": {
+        "role": "neutral",
+        "displayName": "Quiet Grey",
+        "canonical": "#5b6575",
+        "tonalRamp": [
+          "oklch(15% 0.028 259.8)",
+          "oklch(25% 0.028 259.8)",
+          "oklch(35% 0.028 259.8)",
+          "oklch(48% 0.028 259.8)",
+          "oklch(60% 0.028 259.8)",
+          "oklch(72% 0.028 259.8)",
+          "oklch(84% 0.028 259.8)",
+          "oklch(95% 0.028 259.8)"
+        ]
+      },
+      "trait": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#d9dde3",
+        "tonalRamp": [
+          "oklch(15% 0.009 258.3)",
+          "oklch(25% 0.009 258.3)",
+          "oklch(35% 0.009 258.3)",
+          "oklch(48% 0.009 258.3)",
+          "oklch(60% 0.009 258.3)",
+          "oklch(72% 0.009 258.3)",
+          "oklch(84% 0.009 258.3)",
+          "oklch(95% 0.009 258.3)"
+        ]
+      },
+      "bordure": {
+        "role": "neutral",
+        "displayName": "Field Border",
+        "canonical": "#858e9b",
+        "tonalRamp": [
+          "oklch(15% 0.022 257.5)",
+          "oklch(25% 0.022 257.5)",
+          "oklch(35% 0.022 257.5)",
+          "oklch(48% 0.022 257.5)",
+          "oklch(60% 0.022 257.5)",
+          "oklch(72% 0.022 257.5)",
+          "oklch(84% 0.022 257.5)",
+          "oklch(95% 0.022 257.5)"
+        ]
+      },
+      "brume": {
+        "role": "neutral",
+        "displayName": "Mist",
+        "canonical": "#f3f4f6",
+        "tonalRamp": [
+          "oklch(15% 0.003 264.5)",
+          "oklch(25% 0.003 264.5)",
+          "oklch(35% 0.003 264.5)",
+          "oklch(48% 0.003 264.5)",
+          "oklch(60% 0.003 264.5)",
+          "oklch(72% 0.003 264.5)",
+          "oklch(84% 0.003 264.5)",
+          "oklch(95% 0.003 264.5)"
+        ]
+      },
+      "blanc": {
+        "role": "neutral",
+        "displayName": "Paper White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9)",
+          "oklch(25% 0.000 89.9)",
+          "oklch(35% 0.000 89.9)",
+          "oklch(48% 0.000 89.9)",
+          "oklch(60% 0.000 89.9)",
+          "oklch(72% 0.000 89.9)",
+          "oklch(84% 0.000 89.9)",
+          "oklch(95% 0.000 89.9)"
+        ]
+      },
+      "erreur": {
+        "role": "neutral",
+        "displayName": "Error Red",
+        "canonical": "#a32020",
+        "tonalRamp": [
+          "oklch(15% 0.120 26.6)",
+          "oklch(25% 0.120 26.6)",
+          "oklch(35% 0.120 26.6)",
+          "oklch(48% 0.120 26.6)",
+          "oklch(60% 0.120 26.6)",
+          "oklch(72% 0.120 26.6)",
+          "oklch(84% 0.120 26.6)",
+          "oklch(95% 0.120 26.6)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Home hero headline only, white on navy, max 12ch."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Inner-page h1 on the mist header and large home section titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Section titles, max 22ch."
+      },
+      "entry": {
+        "displayName": "Entry",
+        "purpose": "Register row titles, atouts lines, names, phone numbers in Spectral."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Paragraph under a title, Quiet Grey, max 58ch."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text, max 68ch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase label naming a list, field or metadata; never a kicker above a heading."
+      }
+    },
+    "shadows": [
+      {
+        "name": "field-focus",
+        "value": "0 0 0 3px color-mix(in srgb, #13294b 18%, transparent)",
+        "purpose": "Focus halo on form fields only. Content carries no shadows."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-register",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Register hover, menu underline, arrow nudge, hero entrance."
+      },
+      {
+        "name": "duration-state",
+        "value": "200ms ease-out",
+        "purpose": "Colour and border transitions on buttons, links, filters, fields."
+      },
+      {
+        "name": "duration-menu-rule",
+        "value": "300ms",
+        "purpose": "Gold underline scaling in under navigation links."
+      },
+      {
+        "name": "duration-register",
+        "value": "450ms",
+        "purpose": "Register row slide and gold rule scale-in."
+      },
+      {
+        "name": "hero-entrance",
+        "value": "900ms translateY(0.75rem) to 0, transform only, no fade",
+        "purpose": "The single entrance animation, home hero text."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation and transition durations 0.01ms",
+        "purpose": "Respected globally; smooth scrolling off."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "40rem"
+      },
+      {
+        "name": "md",
+        "value": "48rem"
+      },
+      {
+        "name": "register-two-col",
+        "value": "56rem"
+      },
+      {
+        "name": "lg",
+        "value": "62rem"
+      },
+      {
+        "name": "nav-desktop",
+        "value": "64rem"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Solid navy button on white grounds.",
+      "html": "<a class=\"ds-btn\" href=\"#\">Prendre rendez-vous <svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></a>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;gap:0.75rem;min-height:3.25rem;padding:0.85rem 1.6rem;border:1px solid #13294b;border-radius:0;font-family:\"Hanken Grotesk\",system-ui,sans-serif;font-weight:600;font-size:0.9375rem;letter-spacing:0.02em;text-decoration:none;cursor:pointer;transition:background-color 200ms ease-out,color 200ms ease-out,border-color 200ms ease-out;background:#13294b;color:#fff;}.ds-btn:hover{background:#0c1c36;border-color:#0c1c36;}.ds-btn:focus-visible{outline:2px solid #a07c3c;outline-offset:3px;}"
+    },
+    {
+      "name": "Gold Button",
+      "kind": "button",
+      "refersTo": "button-gold",
+      "description": "Gold-outline button on navy; fills Pale Gold on hover.",
+      "html": "<div class=\"ds-navy\"><a class=\"ds-btn-or\" href=\"#\">Prendre rendez-vous <svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></a></div>",
+      "css": ".ds-navy{background:#13294b;padding:2rem;}.ds-btn-or{display:inline-flex;align-items:center;gap:0.75rem;min-height:3.25rem;padding:0.85rem 1.6rem;border:1px solid #13294b;border-radius:0;font-family:\"Hanken Grotesk\",system-ui,sans-serif;font-weight:600;font-size:0.9375rem;letter-spacing:0.02em;text-decoration:none;cursor:pointer;transition:background-color 200ms ease-out,color 200ms ease-out,border-color 200ms ease-out;background:transparent;border-color:#cdb27f;color:#fff;}.ds-btn-or:hover{background:#cdb27f;color:#0c1c36;}.ds-btn-or:focus-visible{outline:2px solid #a07c3c;outline-offset:3px;}"
+    },
+    {
+      "name": "Arrow Link",
+      "kind": "custom",
+      "description": "Text exit with a gold underline and an arrow that nudges right.",
+      "html": "<a class=\"ds-lien\" href=\"#\">Toutes les activités <svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></a>",
+      "css": ".ds-lien{display:inline-flex;align-items:center;gap:0.6rem;font-family:\"Hanken Grotesk\",system-ui,sans-serif;font-weight:600;font-size:0.9375rem;color:#13294b;text-decoration:none;border-bottom:1px solid #a07c3c;padding-bottom:0.2rem;}.ds-lien svg{width:1rem;height:1rem;transition:transform 250ms cubic-bezier(0.22, 1, 0.36, 1);}.ds-lien:hover svg{transform:translateX(4px);}.ds-lien:focus-visible{outline:2px solid #a07c3c;outline-offset:3px;}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Square field with label above; navy border and halo on focus.",
+      "html": "<div class=\"ds-champ\"><label for=\"ds-n\">Nom</label><input id=\"ds-n\" placeholder=\"Votre nom\"></div>",
+      "css": ".ds-champ{font-family:\"Hanken Grotesk\",system-ui,sans-serif;max-width:22rem;}.ds-champ label{display:block;margin-bottom:0.45rem;font-size:0.9063rem;font-weight:600;color:#0e1a2b;}.ds-champ input{width:100%;min-height:3.1rem;padding:0.75rem 0.9rem;border:1px solid #858e9b;border-radius:0;background:#fff;color:#0e1a2b;font:inherit;transition:border-color 200ms ease-out,box-shadow 200ms ease-out;}.ds-champ input:hover{border-color:#5b6575;}.ds-champ input:focus{outline:none;border-color:#13294b;box-shadow:0 0 0 3px color-mix(in srgb,#13294b 18%,transparent);}"
+    },
+    {
+      "name": "Filter Chips",
+      "kind": "chip",
+      "refersTo": "filter-chip",
+      "description": "Square filter buttons; pressed state fills navy.",
+      "html": "<div class=\"ds-filtres\"><button aria-pressed=\"true\">Tous</button><button aria-pressed=\"false\">Sociétés</button><button aria-pressed=\"false\">Immobilier</button></div>",
+      "css": ".ds-filtres{display:flex;flex-wrap:wrap;gap:0.5rem;font-family:\"Hanken Grotesk\",system-ui,sans-serif;}.ds-filtres button{min-height:2.5rem;padding:0.45rem 1rem;border:1px solid #d9dde3;border-radius:0;background:#fff;color:#2b3442;font:inherit;font-size:0.9063rem;font-weight:500;cursor:pointer;transition:border-color 200ms ease-out,background-color 200ms ease-out,color 200ms ease-out;}.ds-filtres button:hover{border-color:#13294b;}.ds-filtres button[aria-pressed=\"true\"]{background:#13294b;border-color:#13294b;color:#fff;}.ds-filtres button:focus-visible{outline:2px solid #a07c3c;outline-offset:3px;}"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "description": "Header links in Ink with a gold underline scaling in from the left.",
+      "html": "<nav class=\"ds-menu\"><a href=\"#\" aria-current=\"page\">Accueil</a><a href=\"#\">Les avocats</a><a href=\"#\">Activités</a><a href=\"#\">Contact</a></nav>",
+      "css": ".ds-menu{display:flex;gap:2rem;background:#fff;padding:1rem 0;border-bottom:1px solid #d9dde3;font-family:\"Hanken Grotesk\",system-ui,sans-serif;}.ds-menu a{position:relative;padding-block:0.5rem;font-size:0.9375rem;font-weight:500;color:#0e1a2b;text-decoration:none;}.ds-menu a::after{content:\"\";position:absolute;left:0;right:0;bottom:0;height:2px;background:#a07c3c;transform:scaleX(0);transform-origin:left;transition:transform 300ms cubic-bezier(0.22, 1, 0.36, 1);}.ds-menu a:hover::after,.ds-menu a[aria-current=\"page\"]::after{transform:scaleX(1);}.ds-menu a:focus-visible{outline:2px solid #a07c3c;outline-offset:3px;}"
+    },
+    {
+      "name": "Ruled Register",
+      "kind": "custom",
+      "description": "Signature index: ruled rows whose title slides right as a gold rule scales in from the left.",
+      "html": "<ul class=\"ds-registre\"><li><a href=\"#\"><span class=\"t\">Droit des sociétés</span><span class=\"x\">Constitution, domiciliation, SOPARFI et SPF.</span><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></a></li><li><a href=\"#\"><span class=\"t\">Recouvrement de créances</span><span class=\"x\">Créanciers luxembourgeois et étrangers.</span><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></a></li></ul>",
+      "css": ".ds-registre{list-style:none;margin:0;padding:0;border-top:1px solid #d9dde3;font-family:\"Hanken Grotesk\",system-ui,sans-serif;}.ds-registre li{position:relative;border-bottom:1px solid #d9dde3;}.ds-registre li::before{content:\"\";position:absolute;left:0;top:-1px;height:2px;width:4rem;background:#a07c3c;transform:scaleX(0);transform-origin:left;transition:transform 450ms cubic-bezier(0.22, 1, 0.36, 1);}.ds-registre a{display:grid;grid-template-columns:1fr auto;gap:0.4rem 1.5rem;padding:1.5rem 0;text-decoration:none;}.ds-registre .t{font-family:Spectral,Georgia,serif;font-size:1.375rem;line-height:1.3;color:#0e1a2b;transition:transform 450ms cubic-bezier(0.22, 1, 0.36, 1);}.ds-registre .x{grid-column:1;color:#5b6575;font-size:0.9688rem;line-height:1.6;transition:transform 450ms cubic-bezier(0.22, 1, 0.36, 1);}.ds-registre svg{grid-row:1;grid-column:2;width:1.25rem;height:1.25rem;margin-top:0.35rem;color:#a07c3c;transition:transform 450ms cubic-bezier(0.22, 1, 0.36, 1);}.ds-registre li:hover::before{transform:scaleX(1);}.ds-registre li:hover .t,.ds-registre li:hover .x{transform:translateX(0.5rem);}.ds-registre li:hover svg{transform:translateX(0.25rem);}.ds-registre a:focus-visible{outline:2px solid #a07c3c;outline-offset:-2px;}"
+    },
+    {
+      "name": "Side Box",
+      "kind": "custom",
+      "refersTo": "aside-box",
+      "description": "The one boxed container: navy contact box in the detail-page side column.",
+      "html": "<aside class=\"ds-encadre\"><h2>Contacter l'Étude à ce sujet</h2><p>41, avenue du X Septembre, L-2551 Luxembourg</p><a class=\"ds-encadre__tel\" href=\"#\">+352 44 71 76 1</a></aside>",
+      "css": ".ds-encadre{background:#13294b;color:#b9c3d3;padding:2rem;max-width:21rem;font-family:\"Hanken Grotesk\",system-ui,sans-serif;}.ds-encadre h2{margin:0;font-family:Spectral,Georgia,serif;font-weight:400;font-size:1.5rem;line-height:1.15;color:#fff;}.ds-encadre p{margin:0.75rem 0 0;font-size:0.9688rem;}.ds-encadre__tel{display:block;margin-top:1.25rem;color:#cdb27f;font-weight:600;text-decoration:none;}.ds-encadre__tel:hover{text-decoration:underline;text-underline-offset:3px;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Bound Register",
+    "overview": "The category standard for a law firm, executed at full craft: white pages, deep navy bands, the firm's gold arms, real photographs of the office and of Me Lorang, and type set with care. The reference shelf is Elvinger Hoss Prussen, Arendt & Medernach and Bredin Prat. The system earns trust through restraint, not ornament: everything is ruled, aligned and quiet, the way a well-kept register is.\n\nThe page alternates three grounds in a fixed vocabulary. Navy carries the moments of address (hero, the \"atouts\" band, the closing appointment band); deep navy carries the frame (utility bar, footer); white carries reading, with sections separated by a single hairline; a cool mist ground marks the start of every inner page and the home activities band. Content is organised as ruled lists, never as tiles. Gold appears as a line, an arrow, a focus ring and the arms; as text it appears only on navy.\n\nDensity is generous but not airy: sections breathe on a fluid 4 to 7.5rem rhythm, measure is held at 68ch, and the two-column split is the default composition from 62rem up. Motion is nearly absent: one hero entrance, a few hover transforms, nothing that fades content in.",
+    "keyCharacteristics": [
+      "White ground, navy bands, gold only as line or as text on navy.",
+      "Spectral at light weight for headings, Hanken Grotesk for text and interface.",
+      "Ruled lists instead of cards; hairlines instead of shadows.",
+      "Square corners everywhere.",
+      "Real photographs only, cropped edge to edge."
+    ],
+    "rules": [
+      {
+        "name": "The Gold Is Metal Rule",
+        "body": "Arms Gold never carries text on a light ground. If gold must be read, it is Pale Gold on navy.",
+        "section": "colors"
+      },
+      {
+        "name": "The Three Grounds Rule",
+        "body": "A section is white, mist or navy; nothing else. White sections that follow white sections are separated by one hairline, not by a tint.",
+        "section": "colors"
+      },
+      {
+        "name": "The Light Serif Rule",
+        "body": "Headings are Spectral at 300 or 400; 500 is the ceiling (prose h3, ordered-list numerals).",
+        "section": "typography"
+      },
+      {
+        "name": "The Label Names Data Rule",
+        "body": "Small uppercase text labels a list, a field or metadata. It never sits above a heading as a kicker.",
+        "section": "typography"
+      },
+      {
+        "name": "The Hairline Rule",
+        "body": "Separation is a 1px rule in Hairline on light grounds, or Mist Blue-Grey at 22 to 30% on navy. Never a shadow, never a card.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use Arms Gold (#a07c3c) only for rules, arrows, markers, the focus ring and the arms; use Pale Gold (#cdb27f) for gold text, on navy only.",
+      "Do build indexes as ruled register rows between 1px hairlines.",
+      "Do separate consecutive white sections with one hairline, and use mist for inner-page headers and the home activities band.",
+      "Do put solid navy buttons on white and gold-outline buttons on navy.",
+      "Do keep every corner square.",
+      "Do run `npm run check:contrast` when a colour pair is added.",
+      "Do keep motion to transforms; the hero entrance moves 0.75rem up with no fade, and reduced motion is respected."
+    ],
+    "donts": [
+      "Don't set gold text on white or mist.",
+      "Don't put a gold dash, kicker or eyebrow above a heading.",
+      "Don't use cards, tiles or icon grids for content.",
+      "Don't add shadows to content or round any corner.",
+      "Don't fade content in or animate the menu.",
+      "Don't use stock imagery; only the firm's own photographs and arms.",
+      "Don't set Spectral above 500."
+    ]
+  }
+}

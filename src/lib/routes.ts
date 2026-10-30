@@ -5,9 +5,8 @@
  * Grund, warum das Sprach-Routing nicht ueber Astros `i18n`-Option laeuft:
  * die kann nur ein Praefix voranstellen, nicht die Segmente uebersetzen.
  *
- *   /fr/votre-situation/france/acheter-un-bien-immobilier/
- *   /de/ihre-situation/frankreich/immobilie-kaufen/
- *   /en/your-situation/france/buying-property/
+ *   /fr/activites/domiciliation-de-societes/
+ *   /en/practice-areas/company-domiciliation/
  *
  * Alle Adressen enden auf einen Schraegstrich (astro.config: trailingSlash).
  */
@@ -18,30 +17,19 @@ import { prefixer } from './base';
 export type Segment = Multi;
 
 export const SEGMENTS = {
-  situations: { fr: 'votre-situation', de: 'ihre-situation', en: 'your-situation', lb: null },
-  services: {
-    fr: 'domaines-d-activite',
-    de: 'taetigkeitsgebiete',
-    en: 'practice-areas',
-    lb: null,
-  },
-  etude: { fr: 'l-etude', de: 'die-kanzlei', en: 'the-firm', lb: null },
-  publications: { fr: 'publications', de: 'publikationen', en: 'publications', lb: null },
-  honoraires: { fr: 'honoraires', de: 'honorare', en: 'fees', lb: null },
-  contact: { fr: 'contact', de: 'kontakt', en: 'contact', lb: null },
-  mentions: { fr: 'mentions-legales', de: 'impressum', en: 'legal-notice', lb: null },
-  donnees: {
-    fr: 'protection-des-donnees',
-    de: 'datenschutz',
-    en: 'privacy-policy',
-    lb: null,
-  },
-  conditions: { fr: 'conditions-generales', de: 'agb', en: 'terms', lb: null },
-  // Filtersegmente der Bibliothek
-  theme: { fr: 'theme', de: 'thema', en: 'topic', lb: null },
-  annee: { fr: 'annee', de: 'jahr', en: 'year', lb: null },
+  avocats: { fr: 'avocats', en: 'lawyers' },
+  activites: { fr: 'activites', en: 'practice-areas' },
+  dossiers: { fr: 'dossiers-thematiques', en: 'thematic-files' },
+  conferences: { fr: 'conferences', en: 'conferences' },
+  partenaires: { fr: 'partenaires', en: 'partners' },
+  index: { fr: 'index-des-matieres', en: 'subject-index' },
+  contact: { fr: 'contact', en: 'contact' },
+  mentions: { fr: 'mentions-legales', en: 'legal-notice' },
+  donnees: { fr: 'protection-des-donnees', en: 'privacy-policy' },
+  cookies: { fr: 'cookies', en: 'cookies' },
+  conditions: { fr: 'conditions-generales', en: 'terms' },
   // Bestaetigungsseite des Formulars
-  recu: { fr: 'message-recu', de: 'nachricht-erhalten', en: 'message-received', lb: null },
+  recu: { fr: 'message-recu', en: 'message-received' },
 } as const satisfies Record<string, Segment>;
 
 export type NomSegment = keyof typeof SEGMENTS;

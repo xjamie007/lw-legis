@@ -38,9 +38,7 @@ export const BILDER = {
     /** Für den Platzhalter und die Übergabe. */
     beschreibung: {
       fr: 'Portrait de Me Alain Lorang',
-      de: 'Porträt von Me Alain Lorang',
       en: 'Portrait of Me Alain Lorang',
-      lb: null,
     },
     /**
      * Beschreibt, was auf dem Bild WIRKLICH zu sehen ist. Der erste
@@ -50,9 +48,7 @@ export const BILDER = {
      */
     alt: {
       fr: 'Me Alain Lorang, avocat à la cour : cheveux gris, lunettes rondes, col roulé noir.',
-      de: 'Me Alain Lorang, avocat à la cour: graues Haar, runde Brille, schwarzer Rollkragen.',
       en: 'Me Alain Lorang, avocat à la cour: grey hair, round glasses, black polo neck.',
-      lb: null,
     },
     /** Hochformat — ein Porträt wird nicht quer beschnitten. */
     seitenverhaeltnis: '4 / 5',
@@ -66,18 +62,14 @@ export const BILDER = {
     breiten: [480, 768, 1200, 1719],
     beschreibung: {
       fr: 'Le salon d’attente',
-      de: 'Der Wartebereich',
       en: 'The waiting room',
-      lb: null,
     },
     alt: {
       fr: 'Le salon d’attente de l’Étude : fauteuils en cuir clair, table basse, parquet.',
-      de: 'Der Wartebereich der Kanzlei: helle Ledersessel, niedriger Tisch, Parkett.',
       en: 'The firm’s waiting room: light leather armchairs, low table, parquet floor.',
-      lb: null,
     },
     seitenverhaeltnis: '3 / 2',
-    point_x: 50,
+    point_x: 62,
     point_y: 50,
   },
 
@@ -87,15 +79,11 @@ export const BILDER = {
     breiten: [480, 519],
     beschreibung: {
       fr: 'L’étage, escalier et palier',
-      de: 'Das Obergeschoss, Treppe und Flur',
       en: 'The upper floor, stairs and landing',
-      lb: null,
     },
     alt: {
       fr: 'L’escalier et le palier de l’Étude, parquet et boiseries claires.',
-      de: 'Treppe und Flur der Kanzlei, Parkett und helles Holz.',
       en: 'The stairs and landing of the firm, parquet and light woodwork.',
-      lb: null,
     },
     seitenverhaeltnis: '3 / 4',
     point_x: 50,

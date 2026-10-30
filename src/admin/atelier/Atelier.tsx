@@ -1,30 +1,44 @@
 /**
- * src/admin/atelier/Atelier.tsx — Die Website bearbeiten, so wie sie aussieht.
+ * src/admin/atelier/Atelier.tsx — Die Website bearbeiten, direkt auf der Seite.
  *
- * Links steht die echte Website in einer Vorschau, rechts ein schmaler
- * Bereich mit dem, was gerade zu tun ist:
+ * Bedienung wie in den Demos fuer Krombach und DRP:
  *
- *   nichts angeklickt  -> Anleitung in drei Schritten, „Ihre Änderungen“,
- *                         Veroeffentlichen
- *   Text angeklickt    -> das Eingabefeld fuer genau diesen Text
+ *   Text anklicken     -> direkt lostippen (laengere Texte mit Absaetzen,
+ *                         Listen und Fussnoten oeffnen ein Fenster mit dem
+ *                         Texteditor)
+ *   Leiste unten       -> Speichern · Rückgängig · Seiten · Google ·
+ *                         Veröffentlichen · Mehr
  *
- * Die Vorschau ist die statisch gebaute Seite (dieselbe Adresse, derselbe
- * Server). Beim Laden legt diese Datei die gespeicherten Texte aus der
- * Datenbank darueber — so sieht man seine Aenderungen, bevor sie
- * veroeffentlicht sind. Was anders ist als online, wird gelb hinterlegt.
+ * Die Website ist die statisch gebaute Seite in einem <iframe> ueber die
+ * ganze Flaeche (dieselbe Adresse, derselbe Server). Beim Laden legt diese
+ * Datei die gespeicherten und die noch nicht gespeicherten Texte darueber.
+ * Gelb hinterlegt ist, was anders ist als online.
+ *
+ * Getippt wird zuerst nur hier im Browser („wartet“). „Speichern“ schreibt
+ * alles in die Datenbank, „Veröffentlichen“ baut daraus die Website neu.
+ * Ungespeichertes geht beim Seitenwechsel nicht verloren: Es haengt am
+ * Datensatz, nicht an der Seite.
  *
  * Welcher Text zu welchem Datensatz gehoert, steht im HTML als
  * `data-lw` (src/lib/edition.ts, src/admin/atelier/chemins.ts).
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { estLocal, supabase } from '../supabase';
+import { estLocal, supabase, type Profil } from '../supabase';
 import { traduire, type LangueAdmin } from '../i18n';
+import { COLLECTIONS, ORDRE_NAV } from '../schema';
 import { LANG_NOMS, type Lang } from '../../lib/langs';
+import { SEGMENTS, type NomSegment } from '../../lib/routes';
+import Feuille from '../composants/Feuille';
 import Publier from '../composants/Publier';
-import PanneauTexte, { type Selection } from './PanneauTexte';
+import EditeurTexte from '../composants/EditeurTexte';
+import Anfragen from '../composants/Anfragen';
+import Medias from '../composants/Medias';
+import Liste from '../composants/Liste';
+import Editeur from '../composants/Editeur';
 import ListeModifications from './ListeModifications';
 import {
   adresseDe,
+  apercu,
   colonneCle,
   lire,
   lireCle,
@@ -39,68 +53,114 @@ import { annulerModification, chargerModifications, type Modification } from './
 import { prefixer } from '../../lib/base';
 
 type Ligne = Record<string, any>;
+type CleT = Parameters<typeof traduire>[1];
 
 interface Props {
   langueAdmin: LangueAdmin;
-  estOwner: boolean;
+  profil: Profil;
   /** Zeitpunkt, aus dem die Website zuletzt gebaut wurde. */
   stand: string;
   /** Die Sprachen, in denen die Website gebaut wird. */
   langues: Lang[];
+  /** Die Seite, von der aus „Login“ geklickt wurde. */
+  depart: string;
+  onLangueAdmin: (l: LangueAdmin) => void;
+  onAbmelden: (chemin: string) => void;
 }
 
-const CLE_STOCKAGE = 'lw-atelier-chemin';
+/** Ein getippter, noch nicht gespeicherter Text. */
+interface Attente {
+  cle: Cle;
+  lang: Lang;
+  texte: string;
+}
+type Attentes = Record<string, Attente>;
 
-/** Die Markierungen in der Vorschau. Liegen IN der Vorschau, nicht hier. */
+type Fenster =
+  | 'seiten'
+  | 'google'
+  | 'publier'
+  | 'mehr'
+  | 'hilfe'
+  | 'nachrichten'
+  | 'medias'
+  | 'inhalte';
+
+/** Die Markierungen in der Website. Liegen IN der Vorschau, nicht hier. */
 const STYLE_VORSCHAU = `
-  [data-lw] { cursor: pointer; border-radius: 2px; }
-  [data-lw]:hover, [data-lw]:focus-visible {
-    outline: 3px dashed #a07c3c; outline-offset: 3px;
+  [data-lw] {
+    cursor: text; border-radius: 2px;
+    outline: 2px dashed transparent; outline-offset: 3px;
+    transition: outline-color .15s;
   }
+  [data-lw]:hover { outline-color: rgba(160, 124, 60, .75); }
+  [data-lw]:focus { outline: 2px solid #a07c3c; background-color: rgba(160, 124, 60, .08); }
+  [data-lw-html] { cursor: pointer; }
+  .lw-fixe, .lw-fixe:hover { cursor: not-allowed; outline-color: transparent; }
   .lw-geaendert {
     background-color: rgba(255, 208, 90, 0.5) !important;
     box-shadow: 0 0 0 3px rgba(255, 208, 90, 0.5);
   }
-  .lw-choisi, .lw-choisi:hover {
-    outline: 4px solid #2f5d50 !important; outline-offset: 3px;
-  }
-  @keyframes lw-blinken { 0%, 100% { outline-color: transparent; } 50% { outline-color: #2f5d50; } }
-  .lw-blinken { outline: 4px solid #2f5d50; outline-offset: 3px; animation: lw-blinken 0.7s ease 3; }
-  #lw-schild {
-    position: fixed; z-index: 2147483000; pointer-events: none;
-    background: #151e1a; color: #fcfcfa; border-radius: 3px;
-    font: 600 15px/1.2 system-ui, sans-serif; padding: 6px 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.25); display: none; white-space: nowrap;
-  }
+  .lw-choisi, .lw-choisi:hover { outline: 3px solid #f5a524 !important; outline-offset: 3px; }
+  @keyframes lw-blinken { 0%, 100% { outline-color: transparent; } 50% { outline-color: #f5a524; } }
+  .lw-blinken { outline: 3px solid #f5a524; outline-offset: 3px; animation: lw-blinken 0.7s ease 3; }
   astro-dev-toolbar { display: none !important; }
 `;
 
 const norm = (s: string) => s.replace(/\s+/g, ' ').trim();
+const cleAttente = (c: Cle, lang: Lang) => `${texteCle(c)}|${lang}`;
+const cleLigne = (c: Cle) => `${c.table}|${c.id}`;
 
-export default function Atelier({ langueAdmin, estOwner, stand, langues }: Props) {
-  const t = (c: Parameters<typeof traduire>[1], v?: Record<string, string | number>) =>
-    traduire(langueAdmin, c, v);
+/** Die Seiten mit eigenen Angaben fuer Google (`seo_meta.id`). */
+const PAGES_SEO: NomSegment[] = [
+  'avocats',
+  'activites',
+  'dossiers',
+  'conferences',
+  'partenaires',
+  'index',
+  'contact',
+  'mentions',
+  'donnees',
+  'cookies',
+  'conditions',
+];
+function idSeo(chemin: string, lang: Lang): string | null {
+  const teile = chemin.split('/').filter(Boolean);
+  if (teile.length === 1) return 'accueil';
+  if (teile.length !== 2) return null;
+  return PAGES_SEO.find((n) => SEGMENTS[n][lang] === teile[1]) ?? null;
+}
 
-  const langueDepart: Lang = langues.includes(langueAdmin as Lang)
-    ? (langueAdmin as Lang)
-    : (langues[0] ?? 'fr');
+export default function Atelier({
+  langueAdmin,
+  profil,
+  stand,
+  langues,
+  depart,
+  onLangueAdmin,
+  onAbmelden,
+}: Props) {
+  const t = (c: CleT, v?: Record<string, string | number>) => traduire(langueAdmin, c, v);
+  const estOwner = profil.role === 'owner';
 
   const cadre = useRef<HTMLIFrameElement>(null);
-  const [src] = useState(() => {
-    try {
-      const gemerkt = window.sessionStorage.getItem(CLE_STOCKAGE);
-      if (gemerkt?.startsWith('/')) return gemerkt;
-    } catch {
-      /* ohne Speicher eben die Startseite */
-    }
-    return `/${langueDepart}/`;
-  });
-
   const [ici, setIci] = useState<{ chemin: string; lang: Lang; nom: string } | null>(null);
-  const [selection, setSelection] = useState<Selection | null>(null);
-  const [sale, setSale] = useState(false);
+  const [fenster, setFenster] = useState<Fenster | null>(null);
+  const [riche, setRiche] = useState<Attente | null>(null);
+  const [toast, setToast] = useState<{ texte: string; ms: number; n: number } | null>(null);
   const [modifs, setModifs] = useState<Modification[] | null>(null);
-  const [bandeau, setBandeau] = useState<string | null>(null);
+  const [nouvelles, setNouvelles] = useState(0);
+  const [occupe, setOccupe] = useState(false);
+  const [inhalte, setInhalte] = useState<{ cle?: string; id?: string }>({});
+
+  /** Getippt, aber noch nicht gespeichert. Die Ref ist die Wahrheit. */
+  const attentes = useRef<Attentes>({});
+  /** Fuer „Rückgängig“: frühere Staende von `attentes`. */
+  const pile = useRef<Attentes[]>([]);
+  /** Neu zeichnen, wenn sich `attentes` oder `pile` aendern. */
+  const [, setRev] = useState(0);
+  const neuZeichnen = () => setRev((r) => r + 1);
 
   /** Zeilen aus der Datenbank, nach `tabelle|schluessel`. */
   const lignes = useRef(new Map<string, Ligne>());
@@ -108,28 +168,35 @@ export default function Atelier({ langueAdmin, estOwner, stand, langues }: Props
   const originaux = useRef(new WeakMap<Element, string>());
   /** Nach dem naechsten Laden zu dieser Stelle springen. */
   const aMontrer = useRef<string | null>(null);
-  /** Die aktuelle Auswahl, fuer die Ereignisse in der Vorschau. */
-  const selectionRef = useRef<Selection | null>(null);
-  const saleRef = useRef(false);
-  selectionRef.current = selection;
-  saleRef.current = sale;
 
   const doc = () => cadre.current?.contentDocument ?? null;
-  const cleLigne = (c: Cle) => `${c.table}|${c.id}`;
-
   const elementsDe = (cle: string) =>
     Array.from(doc()?.querySelectorAll('[data-lw]') ?? []).filter(
       (el) => el.getAttribute('data-lw') === cle,
     );
 
-  // --- Einen Text in der Vorschau anzeigen --------------------------------
-  const rendre = useCallback((el: Element, texte: string) => {
+  const montrerToast = (texte: string, ms = 2600) =>
+    setToast((alt) => ({ texte, ms, n: (alt?.n ?? 0) + 1 }));
+  useEffect(() => {
+    if (!toast) return;
+    const minuterie = window.setTimeout(() => setToast(null), toast.ms);
+    return () => window.clearTimeout(minuterie);
+  }, [toast]);
+
+  // --- Werte -----------------------------------------------------------------
+  /** Was an dieser Stelle stehen soll: getippt, sonst gespeichert. */
+  function valeur(c: Cle, lang: Lang): string {
+    const a = attentes.current[cleAttente(c, lang)];
+    if (a) return a.texte;
+    return valeurDe(lignes.current.get(cleLigne(c)), c, lang).texte;
+  }
+
+  function rendre(el: Element, texte: string) {
     const html = el.hasAttribute('data-lw-html');
     const original = originaux.current.get(el) ?? '';
     // Leer: die gebaute Seite zeigt an dieser Stelle schon, dass etwas
     // fehlt. Das bleibt stehen.
     const neu = texte.trim() === '' ? original : texte;
-
     if (html) {
       const probe = el.ownerDocument.createElement('div');
       probe.innerHTML = neu;
@@ -139,19 +206,54 @@ export default function Atelier({ langueAdmin, estOwner, stand, langues }: Props
       if (norm(el.textContent ?? '') !== norm(neu)) el.textContent = neu;
       el.classList.toggle('lw-geaendert', norm(el.textContent ?? '') !== norm(original));
     }
-  }, []);
+  }
 
-  const rendreCle = useCallback(
-    (c: Cle, lang: Lang) => {
-      const ligne = lignes.current.get(cleLigne(c));
-      if (!ligne) return;
-      const { texte } = valeurDe(ligne, c, lang);
-      for (const el of elementsDe(texteCle(c))) rendre(el, texte);
-    },
-    [rendre],
-  );
+  /** Alle Texte der Seite neu zeichnen, z. B. nach „Rückgängig“. */
+  function toutRendre() {
+    const d = doc();
+    if (!d) return;
+    const lang = langueDe(d);
+    for (const el of Array.from(d.querySelectorAll('[data-lw]'))) {
+      // Ohne Wert stellt `rendre` den Text der gebauten Seite wieder her.
+      rendre(el, valeur(lireCle(el.getAttribute('data-lw')!), lang));
+    }
+  }
 
-  // --- Zeilen holen -------------------------------------------------------
+  const langueDe = (d: Document) => (d.documentElement.lang.slice(0, 2) || langues[0]) as Lang;
+
+  function lectureSeule(c: Cle): string | null {
+    if (estOwner) return null;
+    if (c.table === 'legal_pages') return t('atelier.nur_inhaber');
+    if (c.table === 'settings' && lignes.current.get(cleLigne(c))?.reserve_owner) {
+      return t('atelier.nur_inhaber');
+    }
+    return null;
+  }
+
+  /** Einen getippten Text vormerken. Gleiche Texte zaehlen nicht. */
+  function vormerken(c: Cle, lang: Lang, texte: string) {
+    if (texte === valeur(c, lang)) return;
+    pile.current = [...pile.current.slice(-59), attentes.current];
+    const gespeichert = valeurDe(lignes.current.get(cleLigne(c)), c, lang).texte;
+    const naechste = { ...attentes.current };
+    // Wieder wie gespeichert: dann wartet hier nichts mehr.
+    if (texte === gespeichert) delete naechste[cleAttente(c, lang)];
+    else naechste[cleAttente(c, lang)] = { cle: c, lang, texte };
+    attentes.current = naechste;
+    for (const el of elementsDe(texteCle(c))) rendre(el, texte);
+    neuZeichnen();
+  }
+
+  function rueckgaengig() {
+    const vorher = pile.current.pop();
+    if (!vorher) return;
+    attentes.current = vorher;
+    toutRendre();
+    neuZeichnen();
+    montrerToast(t('atelier.rueckgaengig_ok'));
+  }
+
+  // --- Zeilen holen ----------------------------------------------------------
   async function chargerLignes(cles: Cle[]) {
     const parTable = new Map<string, Set<string>>();
     for (const c of cles) {
@@ -171,99 +273,185 @@ export default function Atelier({ langueAdmin, estOwner, stand, langues }: Props
     setModifs(await chargerModifications(stand));
   }, [stand]);
 
+  const compterNouvelles = useCallback(async () => {
+    const { count } = await supabase
+      .from('inquiries')
+      .select('id', { count: 'exact', head: true })
+      .eq('traite', false);
+    setNouvelles(count ?? 0);
+  }, []);
+
   useEffect(() => {
     void rafraichirModifs();
-  }, [rafraichirModifs]);
+    void compterNouvelles();
+    montrerToast(t('atelier.angemeldet'), 4200);
+    // Nur einmal nach der Anmeldung.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // --- Einen Text auswaehlen ----------------------------------------------
-  function marquerChoisi(el: Element | null) {
+  // Nicht gespeichert? Dann fragt der Browser vor dem Verlassen nach.
+  useEffect(() => {
+    const avant = (e: BeforeUnloadEvent) => {
+      if (Object.keys(attentes.current).length) e.preventDefault();
+    };
+    window.addEventListener('beforeunload', avant);
+    return () => window.removeEventListener('beforeunload', avant);
+  }, []);
+
+  // --- Speichern -------------------------------------------------------------
+  async function enregistrer() {
+    // Was gerade getippt wird, zaehlt mit.
+    (doc()?.activeElement as HTMLElement | null)?.blur?.();
+    const liste = Object.values(attentes.current);
+    if (!liste.length || occupe) return;
+    setOccupe(true);
+
+    const parLigne = new Map<string, Attente[]>();
+    for (const a of liste) {
+      const k = cleLigne(a.cle);
+      parLigne.set(k, [...(parLigne.get(k) ?? []), a]);
+    }
+
+    const problemes: string[] = [];
+    const reste = { ...attentes.current };
+    for (const groupe of parLigne.values()) {
+      const { table, id } = groupe[0].cle;
+      const col = colonneCle(table);
+      // Frisch lesen: Seit dem Oeffnen koennte jemand anderes an derselben
+      // Zeile gearbeitet haben, und die Seitentexte liegen alle in einer.
+      const { data: frais, error: erreurLecture } = await supabase
+        .from(table)
+        .select('*')
+        .eq(col, id)
+        .single();
+      if (erreurLecture || !frais) {
+        problemes.push(erreurLecture?.message ?? t('app.fehler'));
+        continue;
+      }
+      let suivant: Ligne = frais;
+      const colonnes = new Set<string>();
+      for (const a of groupe) {
+        suivant = poser(suivant, valeurDe(suivant, a.cle, a.lang).chemin, a.texte);
+        colonnes.add(a.cle.chemin[0]);
+      }
+      const maj = Object.fromEntries([...colonnes].map((c) => [c, lire(suivant, [c])]));
+      const { data: ecrit, error } = await supabase.from(table).update(maj).eq(col, id).select();
+      if (error) {
+        problemes.push(error.message);
+        continue;
+      }
+      // Ohne Recht verweigert die Datenbank nicht laut, sie aendert still
+      // null Zeilen. Das muss hier auffallen.
+      if (!ecrit || ecrit.length === 0) {
+        problemes.push(t('atelier.keine_berechtigung'));
+        continue;
+      }
+      lignes.current.set(`${table}|${id}`, ecrit[0]);
+      for (const a of groupe) delete reste[cleAttente(a.cle, a.lang)];
+    }
+
+    attentes.current = reste;
+    if (!problemes.length) pile.current = [];
+    setOccupe(false);
+    neuZeichnen();
+    toutRendre();
+    void rafraichirModifs();
+    if (problemes.length) {
+      montrerToast(`${t('atelier.speichern_fehler')} ${problemes.join(' · ')}`, 7000);
+    } else {
+      montrerToast(t('atelier.gespeichert_ok'), 4200);
+    }
+  }
+
+  // --- Ein laengerer Text: im Fenster mit dem Texteditor -------------------
+  function ouvrirRiche(el: Element) {
+    const d = el.ownerDocument;
+    const c = lireCle(el.getAttribute('data-lw')!);
+    const lang = langueDe(d);
+    const raison = lectureSeule(c);
+    if (raison) return montrerToast(raison, 4000);
+    d.querySelectorAll('.lw-choisi').forEach((x) => x.classList.remove('lw-choisi'));
+    el.classList.add('lw-choisi');
+    setRiche({ cle: c, lang, texte: valeur(c, lang) });
+  }
+
+  function fermerRiche(texte: string | null) {
+    if (!riche) return;
     doc()
       ?.querySelectorAll('.lw-choisi')
       .forEach((x) => x.classList.remove('lw-choisi'));
-    el?.classList.add('lw-choisi');
+    if (texte !== null) vormerken(riche.cle, riche.lang, texte);
+    else for (const el of elementsDe(texteCle(riche.cle))) rendre(el, valeur(riche.cle, riche.lang));
+    setRiche(null);
   }
 
-  /** Nicht gespeicherte Eingaben in der Vorschau wieder zuruecknehmen. */
-  function verwerfen() {
-    const s = selectionRef.current;
-    if (s) rendreCle(s.cle, s.lang);
+  // Die Ereignisse in der Website rufen immer die neueste Fassung auf.
+  const aktuell = useRef({ vormerken, ouvrirRiche, montrerToast, enregistrer, lectureSeule, t, abmelden });
+  aktuell.current = { vormerken, ouvrirRiche, montrerToast, enregistrer, lectureSeule, t, abmelden };
+
+  function abmelden() {
+    const chemin = ici?.chemin ?? depart;
+    if (Object.keys(attentes.current).length && !window.confirm(t('atelier.abmelden_ungespeichert'))) {
+      return;
+    }
+    attentes.current = {};
+    onAbmelden(chemin);
   }
 
-  function fermer() {
-    verwerfen();
-    marquerChoisi(null);
-    setSelection(null);
-    setSale(false);
-  }
-
-  function choisir(el: Element) {
-    const attr = el.getAttribute('data-lw');
-    if (!attr) return;
-    const courante = selectionRef.current;
-    if (courante && texteCle(courante.cle) === attr) return;
-    if (saleRef.current && !window.confirm(t('atelier.verwerfen_sicher'))) return;
-    verwerfen();
-
-    const d = el.ownerDocument;
-    const lien = el.closest('a[href]')?.getAttribute('href') ?? null;
-    marquerChoisi(el);
-    setBandeau(null);
-    setSale(false);
-    setSelection({
-      cle: lireCle(attr),
-      lang: (d.documentElement.lang || langueDepart) as Lang,
-      html: el.hasAttribute('data-lw-html'),
-      lien: lien && lien.startsWith('/') ? lien : null,
-    });
-  }
-
-  // --- Die Vorschau vorbereiten, sobald eine Seite geladen ist ------------
+  // --- Die Website vorbereiten, sobald eine Seite geladen ist ----------------
   async function preparer() {
     const d = doc();
     const fenetre = cadre.current?.contentWindow;
     if (!d || !fenetre) return;
 
     const chemin = fenetre.location.pathname;
-    try {
-      window.sessionStorage.setItem(CLE_STOCKAGE, chemin);
-    } catch {
-      /* egal */
-    }
-    const lang = (d.documentElement.lang || langueDepart) as Lang;
+    // Neu laden fuehrt auf dieselbe Seite zurueck.
+    window.history.replaceState(null, '', `?seite=${encodeURIComponent(chemin)}`);
+    const lang = langueDe(d);
     setIci({ chemin, lang, nom: nomDeLaPage(chemin, d.querySelector('h1')?.textContent ?? '', langueAdmin) });
-
-    // Eine Auswahl gehoert zur Seite, auf der sie getroffen wurde.
-    setSelection(null);
-    setSale(false);
 
     const style = d.createElement('style');
     style.textContent = STYLE_VORSCHAU;
     d.head.appendChild(style);
 
-    const schild = d.createElement('div');
-    schild.id = 'lw-schild';
-    schild.textContent = `✎ ${t('atelier.klicken_zum_aendern')}`;
-    d.body.appendChild(schild);
+    // „Login“ im Footer heisst jetzt „Abmelden“ — wie bei Krombach und DRP.
+    for (const a of Array.from(d.querySelectorAll('.k-login'))) {
+      a.textContent = aktuell.current.t('app.abmelden');
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        aktuell.current.abmelden();
+      });
+    }
 
     const elements = Array.from(d.querySelectorAll('[data-lw]'));
     for (const el of elements) {
       originaux.current.set(el, el.hasAttribute('data-lw-html') ? el.innerHTML : (el.textContent ?? ''));
-      // Auch mit der Tastatur erreichbar.
-      el.setAttribute('tabindex', '0');
     }
 
     // --- Ereignisse ---------------------------------------------------------
+    const editable = (x: EventTarget | null) =>
+      (x as Element | null)?.closest?.('[data-lw]:not([data-lw-html])') as HTMLElement | null;
+
     d.addEventListener(
       'click',
       (e) => {
         const cible = e.target as Element | null;
+        if (cible?.closest?.('.k-login')) return;
         const el = cible?.closest?.('[data-lw]');
         if (el) {
-          // In einer aufklappbaren Frage darf das Aufklappen weiter
-          // funktionieren — sonst kaeme man nie an die Antwort.
-          if (!el.closest('summary')) e.preventDefault();
-          e.stopPropagation();
-          choisir(el);
+          const raison = aktuell.current.lectureSeule(lireCle(el.getAttribute('data-lw')!));
+          if (el.hasAttribute('data-lw-html') || raison) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (raison) aktuell.current.montrerToast(raison, 4000);
+            else aktuell.current.ouvrirRiche(el);
+            return;
+          }
+          // Text in einem Link: tippen statt weiterspringen. In einer
+          // zugeklappten Frage darf der Klick sie noch aufklappen.
+          const resume = el.closest('summary');
+          if (!resume || resume.parentElement?.hasAttribute('open')) e.preventDefault();
           return;
         }
         const a = cible?.closest?.('a[href]') as HTMLAnchorElement | null;
@@ -271,23 +459,61 @@ export default function Atelier({ langueAdmin, estOwner, stand, langues }: Props
           const intern = a.origin === fenetre.location.origin && !a.target;
           if (!intern) {
             e.preventDefault();
-            setBandeau(t('atelier.extern_blockiert'));
+            aktuell.current.montrerToast(aktuell.current.t('atelier.extern_blockiert'));
           }
         }
       },
       true,
     );
+    d.addEventListener('focusin', (e) => {
+      const el = editable(e.target);
+      if (el) (el as any)._avant = norm(el.textContent ?? '');
+    });
+    d.addEventListener('focusout', (e) => {
+      const el = editable(e.target);
+      if (!el) return;
+      const texte = norm(el.textContent ?? '');
+      if ((el as any)._avant === texte) return;
+      const c = lireCle(el.getAttribute('data-lw')!);
+      aktuell.current.vormerken(c, langueDe(d), texte);
+    });
     d.addEventListener(
       'keydown',
       (e) => {
-        const el = (e.target as Element | null)?.closest?.('[data-lw]');
-        if (el && (e.key === 'Enter' || e.key === ' ')) {
+        const el = editable(e.target);
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
           e.preventDefault();
-          choisir(el);
+          void aktuell.current.enregistrer();
+          return;
+        }
+        if (!el) {
+          // Laengere Texte mit der Tastatur oeffnen.
+          const riche = (e.target as Element | null)?.closest?.('[data-lw-html]');
+          if (riche && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault();
+            aktuell.current.ouvrirRiche(riche);
+          }
+          return;
+        }
+        // Ein Titel hat keine Zeilenumbrueche: Enter beendet die Eingabe.
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          el.blur();
+        }
+        // In einer Frage wuerde die Leertaste sie auf- und zuklappen.
+        if (e.key === ' ' && el.closest('summary')) {
+          e.preventDefault();
+          d.execCommand('insertText', false, ' ');
         }
       },
       true,
     );
+    // Eingefuegter Text verliert seine Formatierung.
+    d.addEventListener('paste', (e) => {
+      if (!editable(e.target)) return;
+      e.preventDefault();
+      d.execCommand('insertText', false, norm(e.clipboardData?.getData('text/plain') ?? ''));
+    });
     // Aus der Vorschau wird nichts abgeschickt — kein Formular erreicht
     // die Kanzlei, nur weil jemand beim Bearbeiten auf „Senden“ drueckt.
     d.addEventListener(
@@ -295,133 +521,71 @@ export default function Atelier({ langueAdmin, estOwner, stand, langues }: Props
       (e) => {
         e.preventDefault();
         e.stopImmediatePropagation();
-        setBandeau(t('atelier.formular_blockiert'));
+        aktuell.current.montrerToast(aktuell.current.t('atelier.formular_blockiert'));
       },
       true,
     );
-    d.addEventListener('mouseover', (e) => {
-      const el = (e.target as Element | null)?.closest?.('[data-lw]');
-      if (!el) {
-        schild.style.display = 'none';
-        return;
-      }
-      const r = el.getBoundingClientRect();
-      schild.style.display = 'block';
-      schild.style.left = `${Math.max(4, r.left)}px`;
-      schild.style.top = `${r.top > 40 ? r.top - 36 : r.bottom + 8}px`;
-    });
-    d.addEventListener('scroll', () => (schild.style.display = 'none'), { passive: true });
 
-    // --- Gespeicherte Texte darueberlegen ----------------------------------
-    const cles = elements.map((el) => lireCle(el.getAttribute('data-lw')!));
-    await chargerLignes(cles);
+    // --- Gespeicherte und getippte Texte darueberlegen -----------------------
+    await chargerLignes(elements.map((el) => lireCle(el.getAttribute('data-lw')!)));
     if (doc() !== d) return; // inzwischen weitergeblaettert
     for (const el of elements) {
       const c = lireCle(el.getAttribute('data-lw')!);
-      const ligne = lignes.current.get(cleLigne(c));
-      if (ligne) rendre(el, valeurDe(ligne, c, lang).texte);
-    }
-
-    if (aMontrer.current) {
-      const cible = elementsDe(aMontrer.current)[0];
-      aMontrer.current = null;
-      if (cible) {
-        cible.scrollIntoView({ block: 'center', behavior: 'smooth' });
-        cible.classList.add('lw-blinken');
-        window.setTimeout(() => cible.classList.remove('lw-blinken'), 2400);
+      rendre(el, valeur(c, lang));
+      if (el.hasAttribute('data-lw-html')) {
+        el.setAttribute('tabindex', '0');
+      } else if (lectureSeule(c)) {
+        el.classList.add('lw-fixe');
+      } else {
+        const h = el as HTMLElement;
+        h.contentEditable = 'plaintext-only';
+        if (h.contentEditable !== 'plaintext-only') h.contentEditable = 'true';
+        h.spellcheck = true;
       }
     }
+
+    if (aMontrer.current) sauter();
   }
 
-  // --- Navigation ---------------------------------------------------------
-  function aller(chemin: string) {
-    if (saleRef.current && !window.confirm(t('atelier.verwerfen_sicher'))) return;
-    const f = cadre.current?.contentWindow;
-    if (!f) return;
-    if (f.location.pathname === chemin && aMontrer.current) {
-      // Schon da: nur hinspringen.
-      void preparerSprung();
-      return;
-    }
-    f.location.assign(chemin);
-  }
-
-  async function preparerSprung() {
+  function sauter() {
     const cle = aMontrer.current;
     aMontrer.current = null;
     const cible = cle ? elementsDe(cle)[0] : null;
-    if (cible) {
-      cible.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      cible.classList.add('lw-blinken');
-      window.setTimeout(() => cible.classList.remove('lw-blinken'), 2400);
-    }
+    if (!cible) return;
+    cible.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    cible.classList.add('lw-blinken');
+    window.setTimeout(() => cible.classList.remove('lw-blinken'), 2400);
+  }
+
+  // --- Navigation ------------------------------------------------------------
+  function aller(chemin: string) {
+    const f = cadre.current?.contentWindow;
+    if (!f) return;
+    if (f.location.pathname === chemin) return sauter();
+    f.location.assign(chemin);
   }
 
   function changerLangue(l: Lang) {
-    const d = doc();
-    const alt = d?.querySelector(`link[rel="alternate"][hreflang="${l}"]`)?.getAttribute('href');
-    if (!alt) return aller(prefixer(`/${l}/`));
+    const alt = doc()?.querySelector(`link[rel="alternate"][hreflang="${l}"]`)?.getAttribute('href');
     try {
-      aller(new URL(alt, window.location.href).pathname);
+      aller(alt ? new URL(alt, window.location.href).pathname : prefixer(`/${l}/`));
     } catch {
       aller(prefixer(`/${l}/`));
     }
   }
 
-  // --- Speichern ----------------------------------------------------------
-  async function enregistrer(texte: string): Promise<string | null> {
-    const s = selectionRef.current;
-    if (!s) return null;
-    const { table, id } = s.cle;
-    const col = colonneCle(table);
-
-    // Frisch lesen: Seit dem Oeffnen koennte jemand anderes an derselben
-    // Zeile gearbeitet haben, und die Seitentexte liegen alle in einer.
-    const { data: frais, error: erreurLecture } = await supabase
-      .from(table)
-      .select('*')
-      .eq(col, id)
-      .single();
-    if (erreurLecture || !frais) return erreurLecture?.message ?? t('app.fehler');
-
-    const { chemin } = valeurDe(frais, s.cle, s.lang);
-    const suivant = poser(frais, chemin, texte);
-    const colonne = s.cle.chemin[0];
-    const { data: ecrit, error } = await supabase
-      .from(table)
-      .update({ [colonne]: lire(suivant, [colonne]) })
-      .eq(col, id)
-      .select();
-    if (error) return error.message;
-    // Ohne Recht verweigert die Datenbank nicht laut, sie aendert still
-    // null Zeilen. Das muss hier auffallen.
-    if (!ecrit || ecrit.length === 0) return t('atelier.keine_berechtigung');
-
-    lignes.current.set(cleLigne(s.cle), ecrit[0]);
-    rendreCle(s.cle, s.lang);
-    marquerChoisi(null);
-    setSelection(null);
-    setSale(false);
-    setBandeau(t('atelier.gespeichert_hinweis'));
-    void rafraichirModifs();
-    return null;
+  function recharger() {
+    cadre.current?.contentWindow?.location.reload();
   }
 
-  function lectureSeule(s: Selection): string | null {
-    const ligne = lignes.current.get(cleLigne(s.cle));
-    if (estOwner) return null;
-    if (s.cle.table === 'legal_pages') return t('atelier.nur_inhaber');
-    if (s.cle.table === 'settings' && ligne?.reserve_owner) return t('atelier.nur_inhaber');
-    return null;
-  }
-
-  // --- Aenderungen ansehen und zuruecknehmen -------------------------------
+  // --- Aenderungen ansehen und zuruecknehmen ---------------------------------
   function montrer(m: Modification) {
     const derniere = m.chemin[m.chemin.length - 1];
     const langueModif = langues.find((l) => l === derniere);
-    const lang = langueModif ?? ici?.lang ?? langueDepart;
+    const lang = langueModif ?? ici?.lang ?? langues[0];
     const cheminCle = langueModif ? m.chemin.slice(0, -1) : m.chemin;
     aMontrer.current = texteCle({ table: m.table, id: m.id, chemin: cheminCle });
+    setFenster(null);
     aller(adresseDe(m.table, m.id, cheminCle, m.ligne, lang));
   }
 
@@ -431,152 +595,450 @@ export default function Atelier({ langueAdmin, estOwner, stand, langues }: Props
       window.alert(`${t('atelier.speichern_fehler')} ${probleme}`);
       return;
     }
-    // Die Vorschau neu aufbauen, damit der alte Text wieder dasteht.
-    cadre.current?.contentWindow?.location.reload();
+    // Die Website neu aufbauen, damit der alte Text wieder dasteht.
+    lignes.current.clear();
+    recharger();
     await rafraichirModifs();
-    setBandeau(t('atelier.zurueckgenommen'));
+    montrerToast(t('atelier.zurueckgenommen'));
   }
 
-  // -------------------------------------------------------------------------
-  const pages = pagesPrincipales(ici?.lang ?? langueDepart, langueAdmin);
-  const surUnePagePrincipale = pages.some((p) => p.chemin === ici?.chemin);
+  /** Nach Bildern, Nachrichten und Weiteren Inhalten: frisch laden. */
+  function fermerFenster() {
+    if (fenster === 'medias' || fenster === 'inhalte') {
+      lignes.current.clear();
+      recharger();
+      void rafraichirModifs();
+    }
+    if (fenster === 'nachrichten') void compterNouvelles();
+    setFenster(null);
+    setInhalte({});
+  }
+
+  // ---------------------------------------------------------------------------
+  const nombreAttentes = Object.keys(attentes.current).length;
+  const sale = nombreAttentes > 0;
   const nombre = modifs?.length ?? 0;
+  const lang = ici?.lang ?? langues[0];
+  const fermer = t('atelier.schliessen');
 
   return (
-    <div className="atelier">
-      <section className="apercu" aria-label={t('atelier.vorschau')}>
-        <div className="apercu__barre">
-          <label className="apercu__ici">
-            <span className="apercu__etiquette">{t('atelier.sie_sind_hier')}</span>
-            <select
-              className="saisie apercu__choix"
-              value={surUnePagePrincipale ? ici?.chemin : ''}
-              onChange={(e) => e.target.value && aller(e.target.value)}
-            >
-              {!surUnePagePrincipale && <option value="">{ici?.nom ?? t('app.laden')}</option>}
-              {pages.map((p) => (
-                <option key={p.chemin} value={p.chemin}>
-                  {p.nom}
-                </option>
-              ))}
-            </select>
-          </label>
+    <>
+      <iframe
+        ref={cadre}
+        className="kx-cadre"
+        src={depart}
+        title={t('atelier.vorschau')}
+        onLoad={() => void preparer()}
+      />
 
-          {langues.length > 1 && (
-            <div className="apercu__langues" role="group" aria-label={t('atelier.sprache_website')}>
-              {langues.map((l) => (
-                <button
-                  key={l}
-                  type="button"
-                  className={ici?.lang === l ? 'langue-bouton langue-bouton--actif' : 'langue-bouton'}
-                  aria-pressed={ici?.lang === l}
-                  onClick={() => changerLangue(l)}
-                >
-                  {LANG_NOMS[l]}
-                </button>
-              ))}
-            </div>
+      <nav className="kx-bar" aria-label={t('app.titre')}>
+        <button
+          type="button"
+          className={sale ? 'kx-b kx-save kx-dirty' : 'kx-b kx-save'}
+          disabled={!sale || occupe}
+          onClick={() => void enregistrer()}
+        >
+          <span className="kx-i" aria-hidden="true">✓</span>
+          <span>{occupe ? t('leiste.speichert') : sale ? t('leiste.speichern') : t('leiste.gespeichert')}</span>
+        </button>
+        <button type="button" className="kx-b" disabled={!pile.current.length} onClick={rueckgaengig}>
+          <span className="kx-i" aria-hidden="true">↶</span>
+          <span>{t('leiste.rueckgaengig')}</span>
+        </button>
+        <button type="button" className="kx-b" onClick={() => setFenster('seiten')}>
+          <span className="kx-i" aria-hidden="true">☰</span>
+          <span>{t('leiste.seiten')}</span>
+        </button>
+        <button type="button" className="kx-b" onClick={() => setFenster('google')}>
+          <span className="kx-i" aria-hidden="true">G</span>
+          <span>Google</span>
+        </button>
+        <button type="button" className="kx-b" onClick={() => setFenster('publier')}>
+          <span className="kx-i" aria-hidden="true">⇪</span>
+          <span>{t('leiste.veroeffentlichen')}</span>
+          {nombre > 0 && <span className="kx-badge">{nombre}</span>}
+        </button>
+        <button type="button" className="kx-b" onClick={() => setFenster('mehr')}>
+          <span className="kx-i" aria-hidden="true">⋯</span>
+          <span>{t('leiste.mehr')}</span>
+          {nouvelles > 0 && (
+            <span className="kx-badge" aria-label={t('nav.neu', { n: nouvelles })}>
+              {nouvelles}
+            </span>
           )}
+        </button>
+      </nav>
 
-          <div className="apercu__outils">
-            <button
-              type="button"
-              className="bouton-fin"
-              onClick={() => cadre.current?.contentWindow?.history.back()}
-            >
-              ← {t('atelier.zurueck')}
+      {toast && (
+        <p key={toast.n} className="kx-toast" role="status">
+          {toast.texte}
+        </p>
+      )}
+
+      {riche && (
+        <FenetreRiche
+          attente={riche}
+          ligne={lignes.current.get(cleLigne(riche.cle))}
+          langueAdmin={langueAdmin}
+          onApercu={(texte) => {
+            for (const el of elementsDe(texteCle(riche.cle))) rendre(el, texte);
+          }}
+          onFermer={fermerRiche}
+        />
+      )}
+
+      {fenster === 'seiten' && (
+        <Feuille titre={t('seiten.titel')} onFermer={fermerFenster} fermer={fermer}>
+          <div className="kx-list">
+            {pagesPrincipales(lang, langueAdmin).map((p) => (
+              <button
+                key={p.chemin}
+                type="button"
+                className={p.chemin === ici?.chemin ? 'kx-li kx-cur' : 'kx-li'}
+                onClick={() => {
+                  setFenster(null);
+                  aller(p.chemin);
+                }}
+              >
+                {p.nom}
+              </button>
+            ))}
+          </div>
+          {langues.length > 1 && (
+            <>
+              <h3 className="kx-h3">{t('atelier.sprache_website')}</h3>
+              <div className="kx-row kx-row--start">
+                {langues.map((l) => (
+                  <button
+                    key={l}
+                    type="button"
+                    className={l === lang ? 'kx-btn kx-primary' : 'kx-btn kx-ghost'}
+                    aria-pressed={l === lang}
+                    onClick={() => {
+                      setFenster(null);
+                      changerLangue(l);
+                    }}
+                  >
+                    {LANG_NOMS[l]}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </Feuille>
+      )}
+
+      {fenster === 'google' && ici && (
+        <FenetreGoogle
+          chemin={ici.chemin}
+          lang={ici.lang}
+          langueAdmin={langueAdmin}
+          lignes={lignes.current}
+          valeur={valeur}
+          document={doc()}
+          onAppliquer={(c, texte) => vormerken(c, ici.lang, texte)}
+          onFermer={(applique) => {
+            setFenster(null);
+            if (applique) montrerToast(t('google.uebernommen'), 4000);
+          }}
+        />
+      )}
+
+      {fenster === 'publier' && (
+        <Feuille titre={t('leiste.veroeffentlichen')} large onFermer={fermerFenster} fermer={fermer}>
+          {sale && <p className="kx-err kx-abstand">{t('publier.erst_speichern')}</p>}
+          {modifs === null ? (
+            <p className="kx-hint">{t('app.laden')}</p>
+          ) : nombre === 0 ? (
+            <p className="kx-p">{t('atelier.keine_aenderungen')}</p>
+          ) : (
+            <>
+              <p className="kx-p">{t('atelier.noch_nicht_online', { n: nombre })}</p>
+              <Publier langue={langueAdmin} nombre={nombre} local={estLocal} />
+              <h3 className="kx-h3">{t('atelier.ihre_aenderungen')}</h3>
+              <ListeModifications
+                modifications={modifs}
+                langueAdmin={langueAdmin}
+                onMontrer={montrer}
+                onAnnuler={annuler}
+              />
+            </>
+          )}
+        </Feuille>
+      )}
+
+      {fenster === 'mehr' && (
+        <Feuille titre={t('leiste.mehr')} onFermer={fermerFenster} fermer={fermer}>
+          <p className="kx-hint kx-abstand">{t('mehr.angemeldet_als', { nom: profil.nom || '—' })}</p>
+          <div className="kx-list">
+            <button type="button" className="kx-li" onClick={() => setFenster('nachrichten')}>
+              ✉ {t('nav.nachrichten')}
+              {nouvelles > 0 && ` (${nouvelles})`}
             </button>
-            <button
-              type="button"
-              className="bouton-fin"
-              onClick={() => cadre.current?.contentWindow?.location.reload()}
-            >
-              ↻ {t('atelier.neu_laden')}
+            <button type="button" className="kx-li" onClick={() => setFenster('medias')}>
+              ▣ {t('nav.medias')}
+            </button>
+            <button type="button" className="kx-li" onClick={() => setFenster('inhalte')}>
+              ☰ {t('nav.mehr')}
+            </button>
+            <button type="button" className="kx-li" onClick={() => setFenster('hilfe')}>
+              ❓ {t('mehr.anleitung')}
+            </button>
+            <button type="button" className="kx-li" onClick={recharger}>
+              ↻ {t('mehr.neu_laden')}
             </button>
           </div>
-        </div>
+          <h3 className="kx-h3">{t('app.sprache')}</h3>
+          <div className="kx-row kx-row--start">
+            {(['de', 'fr'] as const).map((l) => (
+              <button
+                key={l}
+                type="button"
+                className={l === langueAdmin ? 'kx-btn kx-primary' : 'kx-btn kx-ghost'}
+                aria-pressed={l === langueAdmin}
+                onClick={() => onLangueAdmin(l)}
+              >
+                {l === 'de' ? 'Deutsch' : 'Français'}
+              </button>
+            ))}
+          </div>
+          <div className="kx-list kx-oben">
+            <button type="button" className="kx-li" onClick={abmelden}>
+              ⎋ {t('app.abmelden')}
+            </button>
+          </div>
+        </Feuille>
+      )}
 
-        <p className="apercu__legende">
-          <span className="apercu__pastille" aria-hidden="true" /> {t('atelier.legende')}
-        </p>
+      {fenster === 'hilfe' && (
+        <Feuille titre={t('mehr.anleitung')} onFermer={fermerFenster} fermer={fermer}>
+          <ol className="kx-help">
+            {([1, 2, 3, 4, 5, 6, 7] as const).map((n) => (
+              <li key={n}>
+                <b>{t(`hilfe.${n}_titel` as CleT)}</b> {t(`hilfe.${n}` as CleT)}
+              </li>
+            ))}
+          </ol>
+        </Feuille>
+      )}
 
-        <iframe
-          ref={cadre}
-          className="apercu__cadre"
-          src={src}
-          title={t('atelier.vorschau')}
-          onLoad={() => void preparer()}
+      {fenster === 'nachrichten' && (
+        <Feuille titre={t('nav.nachrichten')} large onFermer={fermerFenster} fermer={fermer}>
+          <Anfragen langueAdmin={langueAdmin} />
+        </Feuille>
+      )}
+
+      {fenster === 'medias' && (
+        <Feuille titre={t('nav.medias')} large onFermer={fermerFenster} fermer={fermer}>
+          <Medias langueAdmin={langueAdmin} />
+        </Feuille>
+      )}
+
+      {fenster === 'inhalte' && (
+        <Feuille
+          titre={inhalte.cle ? t(COLLECTIONS[inhalte.cle].cleNav as CleT) : t('nav.mehr')}
+          large
+          onFermer={fermerFenster}
+          fermer={fermer}
+        >
+          {!inhalte.cle && (
+            <>
+              <p className="kx-p">{t('mehr.intro')}</p>
+              <div className="kx-list">
+                {ORDRE_NAV.filter((cle) => COLLECTIONS[cle] && (!COLLECTIONS[cle].reserveOwner || estOwner)).map(
+                  (cle) => (
+                    <button key={cle} type="button" className="kx-li" onClick={() => setInhalte({ cle })}>
+                      <b>{t(COLLECTIONS[cle].cleNav as CleT)}</b>
+                      <small className="kx-li-text">{t(`mehr.${cle}` as CleT)}</small>
+                    </button>
+                  ),
+                )}
+              </div>
+            </>
+          )}
+          {inhalte.cle && !inhalte.id && (
+            <>
+              <button type="button" className="kx-btn kx-ghost kx-abstand" onClick={() => setInhalte({})}>
+                ← {t('nav.mehr')}
+              </button>
+              <Liste
+                collection={COLLECTIONS[inhalte.cle]}
+                langueAdmin={langueAdmin}
+                onOuvrir={(id) => setInhalte({ cle: inhalte.cle, id })}
+              />
+            </>
+          )}
+          {inhalte.cle && inhalte.id && (
+            <Editeur
+              collection={COLLECTIONS[inhalte.cle]}
+              id={inhalte.id}
+              langueAdmin={langueAdmin}
+              estOwner={estOwner}
+              onRetour={() => setInhalte({ cle: inhalte.cle })}
+            />
+          )}
+        </Feuille>
+      )}
+    </>
+  );
+}
+
+// =============================================================================
+// Ein laengerer Text im Fenster: Absatz, Liste, Fussnote, Link …
+// =============================================================================
+function FenetreRiche({
+  attente,
+  ligne,
+  langueAdmin,
+  onApercu,
+  onFermer,
+}: {
+  attente: Attente;
+  ligne: Ligne | undefined;
+  langueAdmin: LangueAdmin;
+  onApercu: (texte: string) => void;
+  onFermer: (texte: string | null) => void;
+}) {
+  const t = (c: CleT) => traduire(langueAdmin, c);
+  const [texte, setTexte] = useState(attente.texte);
+  const v = valeurDe(ligne, attente.cle, attente.lang);
+  const reference = v.multi && attente.lang !== 'fr' && 'reference' in v ? v.reference : '';
+
+  return (
+    <Feuille titre={`${t('atelier.text_aendern')} · ${LANG_NOMS[attente.lang]}`} large onFermer={() => onFermer(null)} fermer={t('atelier.schliessen')}>
+      <div className="kx-form">
+        {attente.texte.trim() === '' && <p className="kx-hint">{t('atelier.fehlt_noch')}</p>}
+        <EditeurTexte
+          id="kx-riche"
+          valeur={texte}
+          onChange={(neu) => {
+            setTexte(neu);
+            onApercu(neu);
+          }}
+          langue={langueAdmin}
         />
-      </section>
-
-      <aside className="panneau" aria-live="polite">
-        {selection ? (
-          <PanneauTexte
-            key={`${texteCle(selection.cle)}|${selection.lang}`}
-            selection={selection}
-            ligne={lignes.current.get(cleLigne(selection.cle))}
-            langueAdmin={langueAdmin}
-            lectureSeule={lectureSeule(selection)}
-            onApercu={(texte) => {
-              for (const el of elementsDe(texteCle(selection.cle))) rendre(el, texte);
-            }}
-            onEnregistrer={enregistrer}
-            onFermer={fermer}
-            onSuivreLien={() => {
-              const lien = selection.lien;
-              fermer();
-              if (lien) aller(lien);
-            }}
-            onSale={setSale}
-          />
-        ) : (
-          <>
-            {bandeau && (
-              <p className="bandeau" role="status">
-                {bandeau}
-              </p>
-            )}
-
-            <h2 className="panneau__titre">{t('atelier.so_gehts')}</h2>
-            <ol className="schritte">
-              <li>
-                <strong>{t('atelier.schritt1_titel')}</strong> {t('atelier.schritt1')}
-              </li>
-              <li>
-                <strong>{t('atelier.schritt2_titel')}</strong> {t('atelier.schritt2')}
-              </li>
-              <li>
-                <strong>{t('atelier.schritt3_titel')}</strong> {t('atelier.schritt3')}
-              </li>
-            </ol>
-
-            <section className="panneau__bloc" aria-labelledby="titre-modifs">
-              <h2 className="panneau__titre" id="titre-modifs">
-                {t('atelier.ihre_aenderungen')}
-                {nombre > 0 && <span className="compteur-rond">{nombre}</span>}
-              </h2>
-              {modifs === null ? (
-                <p className="charge">{t('app.laden')}</p>
-              ) : nombre === 0 ? (
-                <p className="vide">{t('atelier.keine_aenderungen')}</p>
-              ) : (
-                <>
-                  <p className="panneau__aide">{t('atelier.noch_nicht_online', { n: nombre })}</p>
-                  <Publier langue={langueAdmin} nombre={nombre} local={estLocal} />
-                  <ListeModifications
-                    modifications={modifs}
-                    langueAdmin={langueAdmin}
-                    onMontrer={montrer}
-                    onAnnuler={annuler}
-                  />
-                </>
-              )}
-            </section>
-
-            <p className="panneau__fest">{t('atelier.nicht_alles')}</p>
-          </>
+        {reference && (
+          <details className="kx-ref">
+            <summary>{t('atelier.referenz_zeigen')}</summary>
+            <p>{apercu(reference, 600)}</p>
+          </details>
         )}
-      </aside>
-    </div>
+        <div className="kx-row">
+          <button type="button" className="kx-btn kx-ghost" onClick={() => onFermer(null)}>
+            {t('atelier.abbrechen')}
+          </button>
+          <button type="button" className="kx-btn kx-primary" onClick={() => onFermer(texte)}>
+            {t('atelier.uebernehmen')}
+          </button>
+        </div>
+      </div>
+    </Feuille>
+  );
+}
+
+// =============================================================================
+// Google: Titel und Beschreibung dieser Seite, mit Vorschau wie bei Google
+// =============================================================================
+const LIMITES = { titre: [50, 60], description: [150, 160] } as const;
+
+function FenetreGoogle({
+  chemin,
+  lang,
+  langueAdmin,
+  lignes,
+  valeur,
+  document: d,
+  onAppliquer,
+  onFermer,
+}: {
+  chemin: string;
+  lang: Lang;
+  langueAdmin: LangueAdmin;
+  lignes: Map<string, Ligne>;
+  valeur: (c: Cle, lang: Lang) => string;
+  document: Document | null;
+  onAppliquer: (c: Cle, texte: string) => void;
+  onFermer: (applique: boolean) => void;
+}) {
+  const t = (c: CleT, v?: Record<string, string | number>) => traduire(langueAdmin, c, v);
+  const [id, setId] = useState(() => idSeo(chemin, lang));
+  const cTitre: Cle = { table: 'seo_meta', id: id ?? '', chemin: ['titre'] };
+  const cDesc: Cle = { table: 'seo_meta', id: id ?? '', chemin: ['description'] };
+  const [pret, setPret] = useState(!id || lignes.has(`seo_meta|${id}`));
+  const [titre, setTitre] = useState('');
+  const [description, setDescription] = useState('');
+
+  useEffect(() => {
+    if (!id) return;
+    void (async () => {
+      if (!lignes.has(`seo_meta|${id}`)) {
+        const { data } = await supabase.from('seo_meta').select('*').eq('id', id).maybeSingle();
+        // Ohne Datensatz gibt es nichts zu bearbeiten: wie eine Unterseite.
+        if (!data) return setId(null);
+        lignes.set(`seo_meta|${id}`, data);
+      }
+      setTitre(valeur(cTitre, lang) || d?.title || '');
+      setDescription(
+        valeur(cDesc, lang) || d?.querySelector('meta[name="description"]')?.getAttribute('content') || '',
+      );
+      setPret(true);
+    })();
+    // Einmal beim Oeffnen.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const zaehler = (n: number, [min, max]: readonly [number, number], cle: CleT) =>
+    `${t(cle, { n })} – ${n < min ? t('seo.zu_kurz') : n > max ? t('seo.zu_lang') : t('seo.gut')}`;
+
+  function appliquer() {
+    if (titre.trim() !== valeur(cTitre, lang)) onAppliquer(cTitre, titre.trim());
+    if (description.trim() !== valeur(cDesc, lang)) onAppliquer(cDesc, description.trim());
+    // In der Vorschau gleich sichtbar machen.
+    if (d) {
+      d.title = titre.trim();
+      d.querySelector('meta[name="description"]')?.setAttribute('content', description.trim());
+    }
+    onFermer(true);
+  }
+
+  return (
+    <Feuille
+      titre={t('google.titel', { l: lang.toUpperCase() })}
+      large
+      onFermer={() => onFermer(false)}
+      fermer={t('atelier.schliessen')}
+    >
+      {!id ? (
+        <p className="kx-p">{t('google.automatisch')}</p>
+      ) : !pret ? (
+        <p className="kx-hint">{t('app.laden')}</p>
+      ) : (
+        <div className="kx-form">
+          <p className="kx-hint">{t('google.hinweis')}</p>
+          <div className="kx-serp" aria-hidden="true">
+            <div className="kx-serp-url">{`www.lw-legis.lu${chemin}`}</div>
+            <div className="kx-serp-t">{titre}</div>
+            <div className="kx-serp-d">{description}</div>
+          </div>
+          <label>
+            <span>
+              {t('google.titel_feld')}{' '}
+              <small>{zaehler(titre.length, LIMITES.titre, 'seo.titel_zaehler')}</small>
+            </span>
+            <input value={titre} onChange={(e) => setTitre(e.target.value)} />
+          </label>
+          <label>
+            <span>
+              {t('google.beschreibung_feld')}{' '}
+              <small>{zaehler(description.length, LIMITES.description, 'seo.beschreibung_zaehler')}</small>
+            </span>
+            <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+          </label>
+          <button type="button" className="kx-btn kx-primary kx-block" onClick={appliquer}>
+            {t('atelier.uebernehmen')}
+          </button>
+        </div>
+      )}
+    </Feuille>
   );
 }

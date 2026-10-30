@@ -1,169 +1,29 @@
 ---
 /**
- * src/vues/PageLegale.astro — Impressum, Datenschutz, Geschaeftsbedingungen.
- *
- * Ein Bauplan fuer alle drei. Die Bloecke kommen aus den Inhalten; wo ein
- * Block eine offene Angabe traegt, erscheint dort die sichtbare Luecke.
- *
- * Bloecke mit `source: 'settings'` ziehen ihre Angaben aus den Stammdaten,
- * damit Impressum und Fusszeile nicht auseinanderlaufen koennen.
+ * src/vues/PageLegale.astro — Mentions légales, protection des données,
+ * cookies, conditions générales. Wortlaut der alten Seite (nur
+ * Franzoesisch, bis auf die Geschaeftsbedingungen).
  */
 import type { Lang } from '../lib/langs';
-import { txt } from '../lib/langs';
-import { t } from '../lib/i18n';
-import { contenu, estRefOuverte } from '../lib/content';
-import Lacune from '../components/Lacune.astro';
+import { txt, txtHtml } from '../lib/langs';
+import { contenu } from '../lib/content';
+import type { Route } from '../lib/pages';
 import { ed } from '../lib/edition';
+import Tete from '../components/Tete.astro';
 
 interface Props {
   lang: Lang;
-  /** 'mentions' | 'donnees' | 'conditions' */
-  quelle: string;
+  route: Route;
+  quelle: 'mentions' | 'donnees' | 'cookies' | 'conditions';
 }
-const { lang, quelle } = Astro.props;
-
+const { lang, route, quelle } = Astro.props;
 const page = contenu.legal[quelle];
-const s = contenu.settings;
-
-/** Die Stammdatenzeilen eines Blocks mit `source: 'settings'`. */
-function lignesSettings(champs: string[]) {
-  const out: { etiquette: string | null; valeur: string | null; ouvert: string | null }[] = [];
-  for (const c of champs) {
-    switch (c) {
-      case 'nom':
-        out.push({ etiquette: null, valeur: s.nom, ouvert: null });
-        break;
-      case 'raison_sociale':
-        out.push({ etiquette: null, valeur: null, ouvert: 'rechtsform' });
-        break;
-      case 'adresse':
-        out.push({ etiquette: null, valeur: s.adresse.une_ligne, ouvert: null });
-        break;
-      case 'telephone':
-        out.push({
-          etiquette: t(lang, 'contact.telephone'),
-          valeur: s.telephone.central,
-          ouvert: null,
-        });
-        break;
-      case 'courriel':
-        out.push({ etiquette: t(lang, 'contact.courriel'), valeur: s.courriel, ouvert: null });
-        break;
-      case 'rcs':
-        out.push({ etiquette: 'RCS', valeur: null, ouvert: 'rcs' });
-        break;
-      case 'tva':
-        out.push({ etiquette: 'TVA', valeur: null, ouvert: 'tva' });
-        break;
-    }
-  }
-  return out;
-}
 ---
 
-<article class="section">
+<Tete lang={lang} fil={route.fil} titre={route.nom} edTitre={ed('legal_pages', quelle, 'titre')} />
+
+<section class="section">
   <div class="enveloppe">
-    <div class="colonne">
-      <h1 class="titre-2" {...ed('legal_pages', page.id, 'titre')}>{txt(page.titre, lang)}</h1>
-      {page.chapeau && txt(page.chapeau, lang) && (
-        <p class="chapeau" {...ed('legal_pages', page.id, 'chapeau')}>{txt(page.chapeau, lang)}</p>
-      )}
-
-      {
-        page.blocs ? (
-          page.blocs.map((b: any, i: number) => (
-            <section class="bloc">
-              <h2 class="titre-3" {...ed('legal_pages', page.id, `blocs.${i}.titre`)}>{txt(b.titre, lang)}</h2>
-
-              {b.source === 'settings' && (
-                <dl class="donnees">
-                  {lignesSettings(b.champs).map((l) => (
-                    <>
-                      {l.etiquette && <dt>{l.etiquette}</dt>}
-                      <dd class:list={[{ 'donnees--large': !l.etiquette }]}>
-                        {l.ouvert ? <Lacune id={l.ouvert} lang={lang} /> : l.valeur}
-                      </dd>
-                    </>
-                  ))}
-                </dl>
-              )}
-
-              {b.texte && txt(b.texte, lang) && (
-                <div
-                  class="corps corps--flux"
-                  set:html={txt(b.texte, lang)}
-                  {...ed('legal_pages', page.id, `blocs.${i}.texte`, true)}
-                />
-              )}
-
-              {b.ouvert && (
-                <p class="corps">
-                  <Lacune id={b.ouvert} lang={lang} />
-                </p>
-              )}
-            </section>
-          ))
-        ) : (
-          <div class="corps corps--flux">
-            {page.corps && txt(page.corps, lang) ? (
-              <div set:html={txt(page.corps, lang)} {...ed('legal_pages', page.id, 'corps', true)} />
-            ) : (
-              <p>
-                <Lacune id={page.ouvert} lang={lang} />
-              </p>
-            )}
-          </div>
-        )
-      }
-    </div>
+    <div class="prose" set:html={txtHtml(page.corps, lang)} {...ed('legal_pages', quelle, 'corps', true)} />
   </div>
-</article>
-
-<style>
-  .bloc {
-    margin-top: 2.5rem;
-  }
-  .bloc:first-of-type {
-    margin-top: 1.75rem;
-  }
-  .bloc .titre-3 {
-    margin-bottom: 0.75rem;
-  }
-  .donnees {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.2rem 1.5rem;
-    margin: 0;
-    font-family: var(--font-commande);
-    font-size: var(--text-commande);
-    line-height: 1.6;
-  }
-  .donnees dt {
-    color: var(--color-pierre);
-  }
-  .donnees dd {
-    margin: 0 0 0.35rem;
-  }
-  @media (min-width: 40rem) {
-    .donnees {
-      grid-template-columns: minmax(6rem, 9rem) 1fr;
-    }
-    .donnees dd.donnees--large {
-      grid-column: 1 / -1;
-    }
-  }
-  .corps :global(ul) {
-    padding-left: 1.2rem;
-    margin-top: 0.75rem;
-  }
-  .corps :global(li + li) {
-    margin-top: 0.35rem;
-  }
-  .corps :global(code) {
-    font-family: var(--font-commande);
-    font-size: 0.9em;
-    background-color: color-mix(in srgb, var(--color-laiton) 12%, transparent);
-    padding: 0.1em 0.35em;
-    border-radius: var(--radius-commande);
-  }
-</style>
+</section>

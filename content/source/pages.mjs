@@ -1,336 +1,190 @@
 /**
  * content/source/pages.mjs — Seitentexte.
  *
- * Kein Blindtext. Geschrieben aus Sicht des Besuchers, in einfacher
- * Sprache, mit aktiven Verben. Beschrieben wird, was etwas ist und tut,
- * statt es zu verkaufen. Wer gerade ein Haus in Luxemburg kaufen will, ist
- * nervoes und sucht Klarheit, keine Exzellenzbekundung.
+ * Wortgetreu von der alten Seite (cabinet-avocats-lorang.com) uebernommen,
+ * Franzoesisch und Englisch. Nichts umgeschrieben, gekuerzt oder uebersetzt;
+ * nur eindeutige Tippfehler sind korrigiert. `en: null` heisst: die alte
+ * Seite hat dafuer keine englische Fassung.
  *
- * Franzoesisch ist die Referenzfassung. Luxemburgisch bleibt durchgaengig
- * `null` — es wird nicht erfunden.
+ * Weggelassen sind Platzhalter der alten Seite (Lorem ipsum, Zeitleiste,
+ * Kennzahlen, Muster-Testimonials, Kreditrechner) sowie Navigation,
+ * Buttons und Footer-Credits.
  */
-import { ouvert } from './ouvertes.mjs';
-
-/** Die Sektionen der Startseite. Reihenfolge und Sichtbarkeit sind im
- *  Adminbereich aenderbar, deshalb stehen `ordre` und `visible` hier. */
-export const SECTIONS_ACCUEIL = [
-  { id: 'hero', ordre: 1, visible: true, verrouille: true },
-  { id: 'services', ordre: 2, visible: true, verrouille: false },
-  { id: 'avocat', ordre: 3, visible: true, verrouille: false },
-  { id: 'bureau', ordre: 4, visible: true, verrouille: false },
-  { id: 'publications', ordre: 5, visible: true, verrouille: false },
-  { id: 'honoraires', ordre: 6, visible: true, verrouille: false },
-  { id: 'faq', ordre: 7, visible: true, verrouille: false },
-  { id: 'contact', ordre: 8, visible: true, verrouille: true },
-];
-
 export const PAGES = {
   // =========================================================================
   accueil: {
-    id: 'accueil',
-    sections: {
-      services: {
-        titre: { fr: 'Ce que nous faisons', de: 'Was wir tun', en: 'What we do', lb: null },
-        chapeau: {
-          fr: 'Quatre domaines, où presque chaque question franchit une frontière.',
-          de: 'Vier Felder, in denen fast jede Frage über eine Grenze läuft.',
-          en: 'Four fields, in which almost every question crosses a border.',
-          lb: null,
-        },
-      },
-
-      avocat: {
-        titre: { fr: 'Qui répond', de: 'Wer antwortet', en: 'Who answers', lb: null },
-        texte: {
-          fr: 'Alain Lorang est inscrit au barreau de Luxembourg depuis 1982. Il est expert judiciaire assermenté près la Cour d’Appel et a été secrétaire du Conseil de l’Ordre des Avocats. L’Étude reste volontairement petite : celui qui appelle parle à l’avocat qui suit le dossier.',
-          de: 'Alain Lorang ist seit 1982 am Barreau de Luxembourg zugelassen. Er ist vereidigter Sachverständiger bei der Cour d’Appel und war Sekretär des Conseil de l’Ordre des Avocats. Die Kanzlei bleibt bewusst klein: Wer anruft, spricht mit dem Anwalt, der den Fall führt.',
-          en: 'Alain Lorang has been admitted to the Luxembourg bar since 1982. He is a sworn judicial expert at the Court of Appeal and served as secretary of the Conseil de l’Ordre des Avocats. The firm stays deliberately small: whoever calls speaks to the lawyer who runs the case.',
-          lb: null,
-        },
-        marge: {
-          terme: { fr: 'Au barreau depuis', de: 'Am Barreau seit', en: 'At the bar since', lb: null },
-          texte: { fr: '1982', de: '1982', en: '1982', lb: null },
-        },
-        lien: {
-          fr: 'En savoir plus sur l’Étude',
-          de: 'Mehr über die Kanzlei',
-          en: 'More about the firm',
-          lb: null,
-        },
-        appel: {
-          fr: 'Appelez-le directement',
-          de: 'Rufen Sie ihn direkt an',
-          en: 'Call him directly',
-          lb: null,
-        },
-      },
-
-      bureau: {
-        titre: {
-          fr: 'Où nous recevons',
-          de: 'Wo wir empfangen',
-          en: 'Where we receive you',
-          lb: null,
-        },
-        chapeau: {
-          fr: 'Avenue du X Septembre, à Belair. Un étage, des boiseries claires, et une salle où l’on peut étaler des plans sur la table.',
-          de: 'Avenue du X Septembre, in Belair. Eine Etage, helles Holz, und ein Raum, in dem man Pläne auf dem Tisch ausbreiten kann.',
-          en: 'Avenue du X Septembre, in Belair. One floor, light woodwork, and a room where you can spread plans out on the table.',
-          lb: null,
-        },
-      },
-
-      publications: {
-        titre: {
-          fr: 'Fonds documentaire',
-          de: 'Dokumente',
-          en: 'Library',
-          lb: null,
-        },
-        chapeau: {
-          fr: 'Vingt-neuf textes : dix dossiers juridiques et dix-neuf supports de conférence, écrits sur deux décennies. Chacun se lit ici, en entier, sans téléchargement.',
-          de: 'Neunundzwanzig Texte: zehn Fachdossiers und neunzehn Konferenzunterlagen, über zwei Jahrzehnte geschrieben. Jeder lässt sich hier lesen, vollständig, ohne Download.',
-          en: 'Twenty-nine texts: ten legal briefings and nineteen conference papers, written over two decades. Each one can be read here in full, without downloading anything.',
-          lb: null,
-        },
-        lien: {
-          fr: 'Ouvrir le fonds documentaire',
-          de: 'Zu den Dokumenten',
-          en: 'Open the library',
-          lb: null,
-        },
-      },
-
-      honoraires: {
-        titre: {
-          fr: 'Comment nous facturons',
-          de: 'Wie wir abrechnen',
-          en: 'How we charge',
-          lb: null,
-        },
-        chapeau: {
-          fr: 'Vous savez avant le premier rendez-vous ce que la suite coûte. Rien ne commence sans convention écrite.',
-          de: 'Sie wissen vor dem ersten Termin, was das Weitere kostet. Nichts beginnt ohne schriftliche Vereinbarung.',
-          en: 'You know before the first appointment what the next steps cost. Nothing begins without a written agreement.',
-          lb: null,
-        },
-        lien: {
-          fr: 'Voir les honoraires en détail',
-          de: 'Honorare im Einzelnen',
-          en: 'See fees in detail',
-          lb: null,
-        },
-      },
-
-      contact: {
-        titre: { fr: 'Contact', de: 'Kontakt', en: 'Contact', lb: null },
-        chapeau: {
-          fr: 'Décrivez votre situation en quelques lignes. Nous répondons nous-mêmes, pas par un standard.',
-          de: 'Beschreiben Sie Ihre Lage in ein paar Zeilen. Wir antworten selbst, nicht über eine Zentrale.',
-          en: 'Describe your situation in a few lines. We answer ourselves, not through a switchboard.',
-          lb: null,
-        },
-      },
+    titre: { fr: "Cabinet d'avocats au Luxembourg", en: 'Law firm in Luxembourg' },
+    intro: {
+      fr: "L'étude d’Avocats LW LEGIS est spécialisée en droit des sociétés au Luxembourg et en fiscalité internationale, elle conseille ses clients dans les domaines de la constitution et de la gestion de structures sociétaires adaptées à leurs besoins au Grand-Duché du Luxembourg.",
+      en: 'The Law Firm LW LEGIS specialises in Real Estate and Patrimonial law, Luxembourg Company Law and International Taxation. We advise our entrepreneur clients in the areas of constitution, management and domiciliation of corporate structures adapted to their needs in the Grand Duchy of Luxembourg.',
     },
-  },
-
-  // =========================================================================
-  etude: {
-    id: 'etude',
-    titre: { fr: 'L’Étude', de: 'Die Kanzlei', en: 'The firm', lb: null },
-    chapeau: {
-      fr: 'LW LEGIS est l’extrémité luxembourgeoise d’une ligne qui commence ailleurs. Presque chaque dossier arrive d’un autre pays et doit y retourner.',
-      de: 'LW LEGIS ist das luxemburgische Ende einer Linie, die woanders anfängt. Fast jedes Mandat kommt aus einem anderen Land und muss dorthin zurück.',
-      en: 'LW LEGIS is the Luxembourg end of a line that begins somewhere else. Almost every matter arrives from another country and has to go back there.',
-      lb: null,
+    cabinet_titre: {
+      fr: "L'étude d’Avocats LW LEGIS, cabinet d’avocats luxembourgeois",
+      en: 'The Law Firm LW LEGIS',
     },
-    intuitu: {
-      titre: {
-        fr: 'Une structure à taille humaine',
-        de: 'Eine Kanzlei in überschaubarer Größe',
-        en: 'A firm of manageable size',
-        lb: null,
-      },
-      texte: {
-        fr: 'L’Étude n’est pas une law factory et ne veut pas le devenir. La relation avec le client est nouée <span class="locution">intuitu personae</span> — en considération de la personne : le client choisit un avocat, pas une enseigne, et cet avocat reste le sien du premier appel jusqu’à la fin du dossier. Concrètement, cela veut dire que le dossier ne change pas de main entre le rendez-vous et l’audience, et que la personne qui décroche connaît l’affaire.',
-        de: 'Die Kanzlei ist keine „law factory“ und will keine werden. Die Beziehung zum Mandanten wird <span class="locution">intuitu personae</span> geschlossen — mit Rücksicht auf die Person: Der Mandant wählt einen Anwalt, kein Firmenschild, und dieser Anwalt bleibt seiner, vom ersten Anruf bis zum Ende der Sache. Praktisch heißt das, dass die Akte zwischen Besprechung und Verhandlung nicht die Hand wechselt und dass derjenige, der abhebt, den Fall kennt.',
-        en: 'The firm is not a law factory and does not want to become one. The relationship with the client is formed <span class="locution">intuitu personae</span> — with regard to the person: the client chooses a lawyer, not a brand, and that lawyer stays theirs from the first call to the end of the matter. In practice this means the file does not change hands between the meeting and the hearing, and that whoever picks up the telephone knows the case.',
-        lb: null,
-      },
-      marge: {
-        terme: { fr: 'intuitu personae', de: 'intuitu personae', en: 'intuitu personae', lb: null },
-        texte: {
-          fr: 'Latin : en considération de la personne.',
-          de: 'Lateinisch: mit Rücksicht auf die Person.',
-          en: 'Latin: in consideration of the person.',
-          lb: null,
-        },
-      },
+    cabinet_texte: {
+      fr: `<p>Le cabinet d’avocats luxembourgeois LW LEGIS a été créé par et autour de Maître Alain LORANG, Avocat inscrit au barreau de Luxembourg depuis 1982.</p>
+<p>Titulaire d’une spécialisation en droit des affaires de l’Université de Paris II Panthéon-Assas et diplômé de Sciences Po Paris (ECO-FIN), il anime une équipe de collaborateurs eux-mêmes spécialisés qui assurent un traitement professionnel aux dossiers confiés.</p>
+<p>Me. Alain Lorang est également expert judiciaire assermenté auprès de la Cour d’Appel de Luxembourg.</p>
+<p>L'étude LW LEGIS est spécialisée en droit immobilier et patrimonial, en droit des sociétés luxembourgeois et en fiscalité internationale.</p>
+<p>Elle conseille ses clients entrepreneurs dans les domaines de la constitution, la gestion et la domiciliation de structures sociétaires adaptées à leurs besoins au Grand-Duché du Luxembourg.</p>
+<p>Le cabinet ne se veut pas une « usine de droit » mais une structure à taille humaine mettant délibérément l’accent sur la relation intuitae personae avec le client.</p>`,
+      en: `<p>The Law Firm LW LEGIS in Luxembourg was created by Alain LORANG, a lawyer registered at the Luxembourg bar since 1982.</p>
+<p>He is a graduate of the University of Paris II Panthéon Assas with a specialization in business law and a graduate of Sciences Po Paris (ECO-FIN), he leads a team of colleagues who are themselves specialized and ensure the professional handling of entrusted cases.</p>
+<p>Alain Lorang is also a sworn legal expert at the Luxembourg Court of Appeal.</p>
+<p>The Law Firm LW LEGIS specializes in Real Estate and Property Law, Luxembourg Company Law and International Taxation.</p>
+<p>It advises its entrepreneur clients in the areas of the constitution, management and domiciliation of corporate structures tailored to their needs in the Grand Duchy of Luxembourg.</p>
+<p>The firm does not see itself as a "legal machine" but a human-sized structure that intentionally places an emphasis on the "Intuitae Personae" relationship with the client.</p>`,
     },
-    reseaux: {
-      titre: { fr: 'Réseaux', de: 'Netzwerke', en: 'Networks', lb: null },
-      chapeau: {
-        fr: 'Le secret professionnel interdit de nommer des clients. Ce qui peut être montré, ce sont les mandats de représentation et les réseaux — une reconnaissance par des tiers, vérifiable.',
-        de: 'Das Berufsgeheimnis verbietet es, Mandanten zu nennen. Zeigen lassen sich die Vertretungsmandate und die Netzwerke — belegte Anerkennung durch Dritte.',
-        en: 'Professional secrecy forbids naming clients. What can be shown are the representation mandates and the networks — third-party recognition that can be checked.',
-        lb: null,
-      },
+    atouts_titre: {
+      fr: "Les atouts de l’étude LW LEGIS, cabinet d'avocats au Luxembourg",
+      en: 'ADVANTAGES of the Law Firm LW LEGIS, a law firm in Luxembourg',
     },
-    equipe: {
-      titre: { fr: 'L’équipe', de: 'Das Team', en: 'The team', lb: null },
-      texte: { fr: null, de: null, en: null, lb: null },
-      ouvert: 'equipe',
-    },
-  },
-
-  // =========================================================================
-  honoraires: {
-    id: 'honoraires',
-    titre: { fr: 'Honoraires', de: 'Honorare', en: 'Fees', lb: null },
-    chapeau: {
-      fr: 'Ce qu’un dossier coûte se discute avant qu’il commence, pas à la fin. Voici les chiffres et le déroulement.',
-      de: 'Was eine Sache kostet, wird besprochen, bevor sie beginnt, nicht am Ende. Hier stehen die Zahlen und der Ablauf.',
-      en: 'What a matter costs is discussed before it starts, not at the end. Here are the figures and the sequence.',
-      lb: null,
-    },
-    postes: [
-      { id: 'premier_entretien', ouvert: 'honoraire_entretien' },
-      { id: 'taux_horaire', ouvert: 'honoraire_horaire' },
-      { id: 'forfaits', ouvert: 'honoraire_forfaits' },
-      { id: 'rythme', ouvert: 'honoraire_rythme' },
+    atouts: [
+      { titre: { fr: 'Réactivité', en: 'Responsiveness' } },
+      { titre: { fr: 'Compétence technique ancienne et éprouvée', en: 'Long-standing and proven technical competence' } },
+      { titre: { fr: 'Activité de family office', en: 'Family firm business' } },
+      { titre: { fr: 'Réseau international', en: 'International network' } },
     ],
-    /** Die einzige Nummerierung der Seite — hier ist es wirklich eine Reihenfolge. */
-    deroulement: {
-      titre: {
-        fr: 'Le déroulement d’une demande',
-        de: 'Der Ablauf einer Anfrage',
-        en: 'How an enquiry proceeds',
-        lb: null,
+    pourquoi_titre: {
+      fr: 'Pourquoi avoir recours à un avocat au Luxembourg ?',
+      en: 'Why do I need a lawyer in Luxembourg ?',
+    },
+    pourquoi_texte: {
+      fr: `<p>Un <strong>avocat</strong> est un professionnel du droit qui peut vous aider à comprendre vos droits et obligations juridiques.</p>
+<p>Les avocats peuvent vous aider à rédiger des contrats, à négocier des accords, à représenter vos intérêts devant les tribunaux, à obtenir des indemnités en cas de préjudice, à résoudre des conflits et à obtenir des conseils juridiques en général.</p>
+<p>Les avocats peuvent également vous aider à naviguer dans le système juridique et à comprendre les procédures judiciaires. Si vous avez des questions juridiques ou si vous avez besoin d'aide pour résoudre un problème juridique, il est recommandé de consulter un avocat qualifié pour obtenir des <strong>conseils juridiques</strong>.</p>
+<p>Dans un <strong>procès</strong>, un avocat représente les intérêts de son client devant un tribunal. L'avocat peut aider son client à préparer sa défense.</p>
+<p>Il va ainsi recueillir des preuves, à négocier des accords de règlement, à interroger des témoins et à plaider sa cause devant les juridictions. L'avocat peut également aider son client à comprendre les <strong>procédures judiciaires</strong>, à répondre aux arguments de l'adversaire et à faire valoir <strong>ses droits devant le tribunal</strong>.</p>
+<p>En outre, un avocat peut aider son client à <strong>évaluer les risques et les avantages d'un procès</strong>, à comprendre les conséquences possibles d'une décision judiciaire défavorable et à décider s'il est dans l'intérêt de son client de poursuivre ou de régler l'affaire à l'amiable.</p>
+<p>Dans l'ensemble, un avocat est un allié précieux pour toute personne impliquée dans un procès, car il peut offrir une <strong>expertise juridique</strong> et une représentation compétente pour aider son client à obtenir le meilleur résultat possible.</p>`,
+      en: `<p>A <strong>lawyer</strong> is an expert in legal matters who helps you understand your legal rights and obligations</p>
+<p>A lawyer helps you with drawing up contracts, negotiating agreements, representing your interests in court, obtaining compensation for damages, resolving disputes and obtaining general legal advice.</p>
+<p>Lawyers also help with navigating through the legal system and understanding court procedures. If you have legal questions or need help solving any legal issues, it is advisable to consult a qualified lawyer for such.</p>
+<p>In a <strong>lawsuit</strong>, a lawyer represents his/her client's interests in court. The lawyer helps clients prepare their defense.</p>
+<p>He will gather evidence, negotiate settlement agreements, interview witnesses and plead his case before the court. Lawyers may also help their clients understand court procedures, respond to their adversaries' arguments and assert their rights in court.</p>
+<p>In addition, a lawyer helps clients with assessing a lawsuit’s risks and benefits, understanding the possible consequences of an unfavorable court decision, and deciding whether it is in the client's best interest to proceed or settle the case out of court.</p>
+<p>All in all, a lawyer is a valuable ally for anyone involved in a legal procedure, whether it’s a lawsuit, as they offer legal expertise to help clients achieve the best possible outcome.</p>`,
+    },
+    specialiste_titre: {
+      fr: "Cabinet d'avocats au Luxembourg, spécialiste du droit luxembourgeois et international",
+      en: 'Luxembourg law firm, specializing in local and international law',
+    },
+    specialiste_texte: {
+      fr: `<p>Le cabinet d’avocats LW LEGIS est autorisé à procéder à la domiciliation de sociétés au Luxembourg dans l’hypothèse où celles-ci ne disposent pas de locaux propres.</p>
+<p>Le cabinet LW LEGIS est actif dans de nombreuses matières contentieuses du droit luxembourgeois, notamment le droit civil, le droit commercial, le droit de la responsabilité et des assurances, ainsi que dans le recouvrement de créances sur des débiteurs, personnes physiques ou morales ayant leur siège au Luxembourg ou à l’étranger.</p>
+<p>Le cabinet L&amp;W a aussi la capacité d’accompagner ses clients dans leurs besoins en matière de propriété intellectuelle et industrielle.</p>
+<p>Dans cette optique, nous conseillons nos clients et effectuons pour leur compte des dépôts de marques au niveau du Benelux et au niveau Européen.</p>
+<p>Ouvert à une clientèle internationale, le cabinet L&amp;W est le représentant officiel au Luxembourg du groupe Intrum Justitia ainsi que de la filiale spécialisée au service des entreprises IJCOF spécialiste européen du contentieux commercial en matière de recouvrement de créances.</p>
+<p>Le cabinet est affilié au réseau international d’avocats ADVOUNION ainsi que représentant pour le Luxembourg de la LIC (League International for Creditors).</p>`,
+      en: `<p>LW LEGIS is authorized to domicile companies in Luxembourg if they do not have their own on-sites.</p>
+<p>LW LEGIS is active in a wide range of local law, including civil law, commercial law, liability and insurance law, as well as debt collection from debtors, whether individuals or companies based in Luxembourg or abroad.</p>
+<p>At LW Legis, we assist our clients with their intellectual and industrial property.</p>
+<p>We advise our clients in registering trademarks within the Benelux countries and throughout Europe.</p>
+<p>Open to an international clientele, the law firm LW Legis is the official representative in Luxembourg of the Intrum Justitia group, as well as of its subsidiary IJCOF, a European specialist in commercial litigation and debt collection.</p>
+<p>The firm is a member of the ADVOUNION international network of lawyers, and the Luxembourg representative of LIC (League International for Creditors).</p>`,
+    },
+    conferences_texte: {
+      fr: "Le cabinet LW LEGIS propose de manière récurrente tout au long de l'année des conférences sur des thèmes divers. La présentation est assurée par Maître Alain LORANG.",
+      en: 'The Law Firm LW LEGIS regularly offers conferences on various topics throughout the year. They are presented by Alain LORANG.',
+    },
+    pied_texte: {
+      fr: 'Nos avocats sont aguerris dans de multiples activités du dépôts de brevets et marques au monde de la finance, le droit immobilier, le recouvrement sous toutes ses formes, assurance, indemnisation, domiciliation ...',
+      en: 'Our lawyers are experienced in multiple activities from the filing of Patents and Trademarks to the World of Finance, Real Estate Law, Recovery in all its forms, Insurance, Compensation, Domiciliation ...',
+    },
+  },
+
+  // =========================================================================
+  avocats: {
+    titre: { fr: "Les avocats de l'étude LW LEGIS", en: 'The lawyers from the law Firm LW LEGIS' },
+    intro: {
+      fr: `<p>Le cabinet est composé d’avocats expérimentés sous la responsabilité de <strong>Maître Alain LORANG</strong>.</p>
+<p>Flexibilité, compétences transversales, conseils experts, connaissance parfaite du Luxembourg, de ses spécificités et de ses atouts, un suivi efficace de chaque dossier.</p>
+<p>Notre expérience dans le droit luxembourgeois, l'expérience et les compétences de notre cabinet nous permettent d'intervenir dans de nombreux domaines pour défendre vos droits, avec les critères d'exigences les plus élevés, une passion de conseiller au quotidien, des services conformes aux standards les plus exigeants.</p>`,
+      en: `<p>The firm is composed of experienced lawyers in the persons of the founding partner <strong>Alain LORANG</strong>.</p>
+<p>Flexibility, transversal skills, expert advice, perfect knowledge of Luxembourg, its specificities and its assets, effective follow-up of each case.</p>
+<p>Our experience in Luxembourg law and the experience and skills of our firm allow us to intervene in many areas to defend your rights, with the highest standards, a passion for day-to-day advisory work and services meeting the most demanding standards.</p>`,
+    },
+    accroche: {
+      fr: "Le cabinet d’avocats LW LEGIS, c'est avant tout une qualité de travail reconnue",
+      en: 'The lawyers from the law Firm LW LEGIS are above all recognized for the quality of their work.',
+    },
+  },
+
+  // =========================================================================
+  activites: {
+    titre: { fr: "Nos activités en tant qu'avocats au Luxembourg", en: 'Our activities as lawyers in Luxembourg' },
+    intro: {
+      fr: "Le cabinet dispose d'une large palette de compétences en droit luxembourgeois, français et européen dans la gestion des dépôts, brevets, marques, le domaine bancaire, le monde de la finance, la domiciliation des entreprises, le droit à l'assurance et à l'indemnisation, le recouvrement de créances ...",
+      en: 'The firm has a wide range of expertise in Luxembourg, French and European law in the Management of Filings, Patents, Trademarks, the Banking Sector, the World of Finance, the Domiciliation of Companies, the right to Insurance and Compensation, Debt Recovery ...',
+    },
+  },
+
+  // =========================================================================
+  dossiers: {
+    titre: { fr: "Les dossiers thématiques de l'étude d’avocats LW LEGIS", en: 'Thematic files from the Law Firm LW LEGIS' },
+    intro: {
+      fr: "Immobilier, économie, fiscalité, finance, recouvrement, créance, conformité avec la loi, procédure anti-blanchiment ... un cabinet d'expertise en droit luxembourgeois.",
+      en: 'Real estate, economy, taxation, finance, recovery, debt, compliance with the law, anti-money laundering procedure... an expertise firm in Luxembourg law.',
+    },
+  },
+
+  // =========================================================================
+  // Die Konferenzseite hat keinen Einleitungstext und keine englische
+  // Fassung; die Einleitung ist der Konferenz-Satz der Startseite.
+  conferences: {
+    titre: { fr: "Les conférences de l'avocat Lorang au Luxembourg", en: null },
+    intro: {
+      fr: "Le cabinet LW LEGIS propose de manière récurrente tout au long de l'année des conférences sur des thèmes divers. La présentation est assurée par Maître Alain LORANG.",
+      en: 'The Law Firm LW LEGIS regularly offers conferences on various topics throughout the year. They are presented by Alain LORANG.',
+    },
+  },
+
+  // =========================================================================
+  partenaires: {
+    titre: { fr: "Les partenaires de notre cabinet d'avocats au Luxembourg", en: 'Partners of our law firm in Luxembourg' },
+    intro: {
+      fr: "L/W a noué des relations de travail avec d'autres cabinets afin de procurer un meilleur service à sa clientèle.",
+      en: 'LW Legis has established working relationships with other law firms to provide better service to our clients.',
+    },
+    partenaires: [
+      {
+        id: 'viajuris',
+        nom: { fr: "Cabinet d'avocats VIAJURIS", en: 'VIAJURIS law firm' },
+        lieux: {
+          fr: 'Saint-Etienne, Lyon, Le Puy-en-Velay, Paris et Luxembourg',
+          en: 'Saint-Etienne, Lyon, Le Puy-en-Velay, Paris and Luxembourg',
+        },
+        texte: {
+          fr: `<p>« Créé en 1992, le <strong>cabinet d'avocats VIAJURIS</strong> est aujourd’hui solidement implanté en région Rhône-Alpes Auvergne mais aussi à Paris. Avec une quarantaine de personnes organisées par pôles de compétences, notre cabinet couvre les besoins essentiels du chef d’entreprise, qu’il s’agisse de droit des sociétés, droit fiscal, droit social, droit des contrats et des nouvelles technologies ou contentieux des affaires.</p>
+<p>Intervenant en synergie, nos équipes ont pour ambition d’élaborer des solutions concrètes, pragmatiques et innovantes, créatrices de valeur chez nos clients.</p>
+<p>Ces derniers, entrepreneurs, dirigeants et investisseurs, majoritairement implantés dans la région Rhône-Alpes Auvergne s’étendent aussi dans d’autres régions françaises et à l’étranger. Ils sont présents dans de nombreux secteurs d'activité : services, industriel et commercial, distribution, digital, immobilier…</p>
+<p>Dans tous les cas, nos clients attendent que nous soyons impliqués à leurs côtés dans les étapes stratégiques de leur développement comme dans leurs difficultés.</p>
+<p>C’est notre vocation, c’est notre engagement ».</p>`,
+          en: `<p>« Founded in 1992, <strong>the VIAJURIS law firm</strong> is now firmly established in the Rhône-Alpes Auvergne region, as well as in Paris. With a staff of around forty, organized by area of expertise, our firm covers the essential needs of the entrepreneur, whether in corporate law, tax law, employment law, contract law, new technologies or business litigation.</p>
+<p>Working in synergy, our teams aim to develop practical, pragmatic and innovative solutions, that create value for our customers.</p>
+<p>Our customers, entrepreneurs, managers and investors, are mainly based in the Rhône-Alpes Auvergne region, but also extend to other parts of France and abroad. They are active in a wide range of sectors: services, industrial and commercial, distribution, digital, real estate...</p>
+<p>In all cases, our customers expect us to be involved alongside them in the strategic stages of their development, as well as in their difficulties.</p>
+<p>This is our vocation and our commitment ».</p>`,
+        },
+        site: null,
+        // Bildplatz in content/source/bilder.mjs. Die Website der Kanzlei
+        // war beim Bau nicht erreichbar; das Foto wird nachgereicht.
+        photo: 'viajuris',
       },
-      etapes: [
-        {
-          fr: 'Vous décrivez votre situation, par le formulaire ou par téléphone. C’est gratuit et cela n’engage à rien.',
-          de: 'Sie schildern Ihre Lage, über das Formular oder am Telefon. Das ist kostenlos und verpflichtet zu nichts.',
-          en: 'You describe your situation, by the form or by telephone. This is free and commits you to nothing.',
-          lb: null,
-        },
-        {
-          fr: 'Nous vérifions qu’aucun conflit d’intérêts ne s’oppose au dossier et si nous sommes les bons pour le traiter. Si nous ne le sommes pas, nous le disons.',
-          de: 'Wir prüfen, ob ein Interessenkonflikt entgegensteht und ob wir die Richtigen für die Sache sind. Sind wir es nicht, sagen wir das.',
-          en: 'We check that no conflict of interest stands in the way and whether we are the right people for the matter. If we are not, we say so.',
-          lb: null,
-        },
-        {
-          fr: 'Vous recevez une convention d’honoraires écrite : ce qui est fait, à quel prix, et ce qui n’est pas compris.',
-          de: 'Sie erhalten eine schriftliche Honorarvereinbarung: was getan wird, zu welchem Preis, und was nicht enthalten ist.',
-          en: 'You receive a written fee agreement: what will be done, at what price, and what is not included.',
-          lb: null,
-        },
-        {
-          fr: 'Le mandat ne commence qu’avec votre signature. Avant elle, rien n’est facturé.',
-          de: 'Das Mandat beginnt erst mit Ihrer Unterschrift. Davor wird nichts berechnet.',
-          en: 'The engagement begins only with your signature. Before that, nothing is billed.',
-          lb: null,
-        },
-      ],
-    },
-    note_transparence: {
-      fr: 'Si une estimation doit être revue en cours de dossier, vous en êtes informé avant que le travail correspondant soit engagé — pas sur la facture.',
-      de: 'Muss eine Schätzung im Lauf der Sache nach oben korrigiert werden, erfahren Sie das, bevor die entsprechende Arbeit beginnt — nicht erst auf der Rechnung.',
-      en: 'If an estimate has to be revised during a matter, you hear about it before the work in question begins — not on the invoice.',
-      lb: null,
-    },
+    ],
   },
 
   // =========================================================================
   contact: {
-    id: 'contact',
-    titre: { fr: 'Contact', de: 'Kontakt', en: 'Contact', lb: null },
-    chapeau: {
-      fr: 'L’Étude se trouve à Belair, à Luxembourg-Ville, avenue du X Septembre.',
-      de: 'Die Kanzlei liegt in Belair, in Luxemburg-Stadt, an der avenue du X Septembre.',
-      en: 'The firm is in Belair, in Luxembourg City, on the avenue du X Septembre.',
-      lb: null,
+    titre: { fr: "Pour contacter l'étude d’avocats LW LEGIS", en: 'To contact the Law Firm LW LEGIS' },
+    consentement: {
+      fr: "En soumettant ce formulaire, j'accepte que les informations saisies soient exploitées dans le cadre de la demande de devis / d'informations et de la relation commerciale qui peut en découler *",
+      en: 'By submitting this form, I accept that the information entered will be used as part of the request for quote / information and the commercial relationship that may result from it *',
     },
-    acces: {
-      fr: null,
-      de: null,
-      en: null,
-      lb: null,
-    },
-    stationnement: { fr: null, de: null, en: null, lb: null },
-    /** Anfahrt und Parken kennt nur die Kanzlei genau. */
-    ouvert_acces: 'horaires',
-  },
-
-  // =========================================================================
-  situations: {
-    id: 'situations',
-    titre: { fr: 'Votre situation', de: 'Ihre Situation', en: 'Your situation', lb: null },
-    chapeau: {
-      fr: 'Ce qui décide d’un dossier luxembourgeois, ce n’est pas seulement ce que vous voulez faire, mais aussi d’où vous venez : la convention fiscale applicable, le droit successoral compétent et les formalités changent avec le pays de résidence. Choisissez les deux et lisez la réponse à cette combinaison précise.',
-      de: 'Über eine luxemburgische Sache entscheidet nicht nur, was Sie vorhaben, sondern auch, woher Sie kommen: Das anwendbare Doppelbesteuerungsabkommen, das zuständige Erbrecht und die Formalitäten ändern sich mit dem Wohnsitzland. Wählen Sie beides und lesen Sie die Antwort auf genau diese Kombination.',
-      en: 'What decides a Luxembourg matter is not only what you want to do, but also where you come from: the applicable tax treaty, the competent succession law and the formalities all change with the country of residence. Choose both and read the answer to that precise combination.',
-      lb: null,
-    },
-    note_etat: {
-      fr: 'Les combinaisons sont rédigées une par une par l’avocat. Celles qui ne le sont pas encore renvoient au domaine d’activité correspondant, qui répond déjà à l’essentiel.',
-      de: 'Die Konstellationen werden vom Anwalt einzeln ausgearbeitet. Was noch nicht ausgearbeitet ist, führt auf das zugehörige Tätigkeitsgebiet, das das Wesentliche bereits beantwortet.',
-      en: 'The combinations are written up one by one by the lawyer. Those not yet written point to the corresponding practice area, which already answers the essentials.',
-      lb: null,
-    },
-  },
-
-  // =========================================================================
-  services: {
-    id: 'services',
-    titre: {
-      fr: 'Domaines d’activité',
-      de: 'Tätigkeitsgebiete',
-      en: 'Practice areas',
-      lb: null,
-    },
-    chapeau: {
-      fr: 'Quatre domaines, où presque chaque question franchit une frontière.',
-      de: 'Vier Felder, in denen fast jede Frage über eine Grenze läuft.',
-      en: 'Four fields, in which almost every question crosses a border.',
-      lb: null,
-    },
-  },
-
-  // =========================================================================
-  publications: {
-    id: 'publications',
-    titre: { fr: 'Fonds documentaire', de: 'Dokumente', en: 'Library', lb: null },
-    chapeau: {
-      fr: 'Dix dossiers juridiques et dix-neuf supports de conférence, tenus par Me Alain Lorang sur deux décennies. Chaque texte se lit ici en entier ; le PDF est disponible à côté quand il existe.',
-      de: 'Zehn Fachdossiers und neunzehn Konferenzunterlagen, von Me Alain Lorang über zwei Jahrzehnte gehalten. Jeder Text lässt sich hier vollständig lesen; das PDF steht daneben, wo es vorliegt.',
-      en: 'Ten legal briefings and nineteen conference papers, given by Me Alain Lorang over two decades. Every text can be read here in full; the PDF sits alongside it where one exists.',
-      lb: null,
-    },
-  },
-
-  // =========================================================================
-  recu: {
-    id: 'recu',
-    titre: {
-      fr: 'Votre demande est arrivée',
-      de: 'Ihre Anfrage ist angekommen',
-      en: 'Your enquiry has arrived',
-      lb: null,
-    },
-    texte: {
-      fr: 'Votre message a été transmis directement à l’Étude, à Luxembourg-Belair. Il est lu par un avocat, non par un secrétariat automatique.',
-      de: 'Ihre Nachricht ist unmittelbar bei der Kanzlei in Luxemburg-Belair eingegangen. Sie wird von einem Anwalt gelesen, nicht von einem automatischen Sekretariat.',
-      en: 'Your message has gone straight to the firm in Luxembourg-Belair. It is read by a lawyer, not by an automated office.',
-      lb: null,
-    },
-    delai: ouvert('delai_reponse'),
-    ensuite: {
-      fr: 'Si votre affaire est urgente, téléphonez plutôt que d’attendre : le numéro figure en haut de chaque page.',
-      de: 'Ist Ihre Sache eilig, rufen Sie lieber an, statt zu warten: Die Nummer steht oben auf jeder Seite.',
-      en: 'If your matter is urgent, telephone rather than wait: the number is at the top of every page.',
-      lb: null,
+    note_droits: {
+      fr: "* Pour connaître et exercer vos droits, notamment de retrait de votre consentement à l'utilisation des données collectées par ce formulaire, veuillez consulter notre politique de confidentialité",
+      en: '* To know and exercise your rights, in particular to withdraw your consent to the use of the data collected by this form, please consult our confidentiality policy',
     },
   },
 };

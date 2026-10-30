@@ -1,8 +1,8 @@
 # Website der Étude d'Avocats LW LEGIS
 
-Viersprachige Website mit eigenem Redaktionsbereich. Me Lorang ändert jeden
-Text, jedes Bild und jedes Dokument selbst, im Browser, ohne dass jemand Code
-anfasst.
+Website der Kanzlei auf Französisch und Englisch, mit eigenem
+Redaktionsbereich. Me Lorang ändert jeden Text, jedes Bild und jedes Dokument
+selbst, im Browser, ohne dass jemand Code anfasst.
 
 Dieses Dokument hat zwei Teile. **Teil A** ist für Me Lorang und das
 Sekretariat und erklärt in ganzen Sätzen, wie man mit der Seite arbeitet.
@@ -12,10 +12,9 @@ Sekretariat und erklärt in ganzen Sätzen, wie man mit der Seite arbeitet.
 > Befehlen, wie Sie die Datenbank auf Ihrem Rechner starten und sich im
 > Redaktionsbereich anmelden.
 
-> **Bevor die Seite online geht:** [OFFENE-PUNKTE.md](OFFENE-PUNKTE.md) lesen
-> und abarbeiten. Dort stehen 26 Angaben, die die Kanzlei liefern oder
-> bestätigen muss — davon 16, ohne die die Seite nicht online gehen darf.
-> Alle sind auf der Seite sichtbar markiert, damit sie niemandem entgehen.
+> **Bevor die Seite online geht:** [OFFENE-PUNKTE.md](OFFENE-PUNKTE.md) lesen.
+> Dort steht, was beim Übertragen der alten Texte aufgefallen ist und nur die
+> Kanzlei entscheiden kann — vor allem die Rechtstexte.
 
 ---
 
@@ -23,28 +22,45 @@ Sekretariat und erklärt in ganzen Sätzen, wie man mit der Seite arbeitet.
 
 ## Was die Seite kann
 
-Die Seite hat eine Besonderheit, die keine andere luxemburgische
-Anwaltswebsite hat: Sie **fragt als Erstes, wo der Besucher steht**. Oben
-steht ein Satz mit zwei Lücken —
+Die Seite enthält die Inhalte der bisherigen Website
+cabinet-avocats-lorang.com, Wort für Wort, auf Französisch und Englisch, in
+neuer Gestaltung:
 
-> Vous êtes **en France** et vous souhaitez, au Luxembourg, **acheter un bien
-> immobilier**.
+* **Accueil** — die Kanzlei, Me Lorang, die Tätigkeiten, die Stärken, die
+  Netzwerke (Intrum Justitia, IJCOF, ADVOUNION, LIC), Dossiers und
+  Konferenzen.
+* **Les avocats**, **Activités** (13 Tätigkeiten, je mit eigener Seite),
+  **Dossiers thématiques** (12 Fachdossiers als lesbare Seiten),
+  **Conférences** (die Unterlagen von Me Lorang als PDF), **Partenaires**,
+  **Contact** und die Rechtstexte.
 
-— und der Besucher füllt ihn aus. Sechs Herkunftsländer mal sieben Vorhaben
-ergeben 42 Kombinationen. Jede ausgearbeitete Kombination ist eine eigene
-Seite mit eigener Adresse, die Google einzeln findet. Das ist die
-Situationsmatrix, und sie ist das Stück Arbeit, das die Seite von den anderen
-trennt.
+Weggelassen wurden die Platzhalter der alten Seite: „Lorem ipsum“, die
+Zeitleiste, die Kennzahlen, die Muster-Kundenstimmen und der Kreditrechner.
 
-Daneben gibt es das **Fonds documentaire**: die zehn Fachdossiers und
-neunzehn Konferenzunterlagen, nicht mehr als PDF-Liste, sondern als lesbare
-Texte mit eigener Adresse, mit Datum und Rechtsstand, nach Thema filterbar.
+Neu dazugekommen sind Dinge, die nichts behaupten, aber praktisch sind:
+
+* **Index des matières** — alle Tätigkeiten, Dossiers und Konferenzen von A
+  bis Z, wie das Sachregister eines Kommentars.
+* **Themenfilter** bei Dossiers und Konferenzen, mit Dateigröße am PDF.
+* **Auf jeder Tätigkeitsseite** ein Kasten „Contacter l'Étude à ce sujet“,
+  der das Formular mit dieser Tätigkeit vorbelegt.
+* **Kontakt**: Wegbeschreibung (OpenStreetMap) und „Ajouter aux contacts“
+  als Kontaktkarte fürs Adressbuch.
+* **Dossiers drucken** — mit eigener Druckfassung, Lesezeit steht dabei.
+* **Alle alten Adressen** (…php) leiten auf die neue Seite weiter. Lesezeichen
+  und Google-Treffer bleiben gültig.
 
 ## Anmelden
 
-1. `https://IHRE-ADRESSE/admin` aufrufen.
-2. E-Mail-Adresse und Passwort eingeben.
+1. Auf der Website ganz unten im Footer, neben „© … Tous droits réservés.“,
+   auf **„Login“** klicken. (Oder direkt `https://IHRE-ADRESSE/admin`.)
+2. Vor der Seite erscheint das Anmeldefenster: E-Mail-Adresse und Passwort
+   eingeben.
 3. Den sechsstelligen Code aus der Authenticator-App eingeben.
+
+Danach sind Sie auf **derselben Seite**, auf der Sie „Login“ geklickt
+haben, und können sie sofort bearbeiten. Abmelden: im Footer auf
+„Abmelden“ (dort, wo vorher „Login“ stand) oder unter „Mehr“.
 
 Der zweite Faktor ist **Pflicht**. Beim ersten Anmelden zeigt die Seite einen
 QR-Code: Den mit einer Authenticator-App scannen (Google Authenticator,
@@ -63,43 +79,50 @@ Es gibt zwei Rollen:
   aber nicht Impressum, Datenschutz, Geschäftsbedingungen, Stammdaten oder
   Konten.
 
-Oben rechts lässt sich die Sprache des Redaktionsbereichs zwischen Deutsch
+Unter „Mehr“ lässt sich die Sprache des Redaktionsbereichs zwischen Deutsch
 und Französisch umschalten.
 
 ## Einen Text ändern
 
-Nach dem Anmelden sehen Sie links **die Website selbst**, so wie Besucher sie
-sehen — nur mit Ihren gespeicherten Änderungen. Rechts steht, was zu tun ist.
+Bedient wird der Redaktionsbereich wie bei den Websites von Krombach und
+DRP Group: Sie sehen die Website selbst und ändern sie direkt dort. Unten
+steht eine dunkle Leiste:
 
-1. **Text anklicken.** Fahren Sie mit der Maus über die Website: Was sich
-   ändern lässt, wird umrandet. Klicken Sie darauf.
-2. **Ändern und speichern.** Rechts erscheint ein Eingabefeld mit dem Text.
-   Während Sie schreiben, ändert sich die Website links sofort mit. Dann auf
-   **„Speichern“**. „Abbrechen“ nimmt alles zurück.
-3. **Veröffentlichen.** Rechts unter „Ihre Änderungen“ auf
-   **„Jetzt veröffentlichen“**. Erst dann sehen Besucher die Änderung.
+**Speichern · Rückgängig · Seiten · Google · Veröffentlichen · Mehr**
 
-Oben über der Website stehen **„Sie sind hier“** (dort lässt sich auch jede
-andere Seite wählen) und die **Sprache**. Bearbeitet wird immer die Sprache,
-die Sie gerade sehen: Wer den französischen Text ändern will, stellt oben auf
-„Français“.
+1. **Text anklicken und lostippen.** Fährt man mit der Maus über einen Text,
+   der sich ändern lässt, wird er gestrichelt umrandet. Enter beendet die
+   Eingabe.
+2. **Längere Texte** (mit Absätzen, Listen, Fußnoten) öffnen beim Anklicken
+   ein Fenster mit dem Texteditor. „Übernehmen“ setzt den Text in die Seite.
+3. **„Speichern“.** Die Schaltfläche leuchtet grün, sobald es etwas zu
+   speichern gibt. Vertippt? **„Rückgängig“** nimmt die letzte Eingabe
+   zurück, solange noch nicht gespeichert ist.
+4. **„Veröffentlichen“.** Erst dann sehen Besucher die Änderung. Die Zahl
+   auf der Schaltfläche sagt, wie viele Änderungen noch nicht online sind.
+   Im Fenster steht jede davon mit dem alten und dem neuen Text; „Ansehen“
+   springt an die Stelle, „Zurücknehmen“ stellt den veröffentlichten Text
+   wieder her.
 
-**Gelb hinterlegt** ist alles, was geändert, aber noch nicht veröffentlicht
-ist. Rechts unter „Ihre Änderungen“ steht jede dieser Änderungen mit dem
-alten und dem neuen Text. „Ansehen“ springt an die Stelle, „Zurücknehmen“
-stellt den veröffentlichten Text wieder her.
+**Gelb hinterlegt** ist alles, was anders ist als online.
 
-Steht ein Text zugleich in einem Link — etwa der Name eines
-Tätigkeitsgebiets —, öffnet der Klick das Eingabefeld. Darunter gibt es
-„Diese Seite öffnen“, um dem Link zu folgen. Links zu anderen Websites und das
-Kontaktformular sind in der Vorschau abgeschaltet.
+Bearbeitet wird immer die Sprache, die Sie gerade sehen. Eine andere Seite
+oder Sprache wählen Sie unter **„Seiten“**; Links auf der Website
+funktionieren ebenfalls. Links zu anderen Websites und das Kontaktformular
+sind beim Bearbeiten abgeschaltet. Getippte, noch nicht gespeicherte Texte
+gehen beim Seitenwechsel nicht verloren.
+
+**„Google“** zeigt Titel und Beschreibung der Seite so, wie Google sie
+anzeigt, mit Zeichenzähler. Das gibt es für die Startseite und die
+Hauptseiten; Unterseiten bekommen beides automatisch aus ihrem Inhalt.
 
 Nicht jeder Text lässt sich anklicken: Menü, Schaltflächen und der große Satz
-ganz oben gehören zur Gestaltung. Ob ein Eintrag veröffentlicht ist, die
-Angaben für Google, neue Einträge und die Reihenfolge der Startseite finden
-Sie oben unter **„Weitere Inhalte“**. Dort steht bei jeder Sprache außer
-Französisch links die **französische Referenzfassung**; „Referenz übernehmen“
-kopiert sie herüber, damit Sie übersetzen statt abzutippen.
+ganz oben gehören zur Gestaltung. Unter **„Mehr“** finden Sie die
+Nachrichten aus dem Formular, die Bilder und die **Weiteren Inhalte**: ob
+ein Eintrag veröffentlicht ist, neue Einträge und die Reihenfolge der
+Startseite. Dort steht bei jeder Sprache außer Französisch links die
+**französische Referenzfassung**; „Referenz übernehmen“ kopiert sie herüber,
+damit Sie übersetzen statt abzutippen.
 
 Der Texteditor kann Absatz, Zwischenüberschrift, Unterüberschrift, Liste,
 fett, kursiv, Link, Zitat und Fußnote. Mehr nicht — und das ist Absicht: Es
@@ -112,19 +135,19 @@ Formatierung befreit. Das ist gewollt.
 
 ## Ein Bild austauschen
 
-1. Oben auf „Bilder“.
+1. Unten auf „Mehr“, dann „Bilder“.
 2. Bild in das gestrichelte Feld ziehen, oder auf „Bild hochladen“.
 3. Die Seite erzeugt im Hintergrund die modernen Bildformate (AVIF und WebP)
    in vier Breiten. Das dauert ein paar Sekunden.
 4. Auf das Bild klicken, um es zu bearbeiten.
-5. **Bildbeschreibung in allen vier Sprachen eintragen.** Das ist Pflicht:
+5. **Bildbeschreibung in beiden Sprachen eintragen.** Das ist Pflicht:
    Blinde Besucher hören diesen Text, und das Gesetz verlangt ihn. Solange
    eine Sprache fehlt, lässt sich das Bild nicht veröffentlichen — der Haken
    ist dann nicht anklickbar.
 6. Beim **Bildausschnitt** auf die Stelle klicken, die immer sichtbar bleiben
    soll — meist ein Gesicht. Wer lieber tippt, trägt die Werte in die beiden
    Zahlenfelder darunter ein.
-7. Haken bei „Veröffentlicht“, dann unter „Website bearbeiten“ auf
+7. Haken bei „Veröffentlicht“, dann unten auf „Veröffentlichen“ und
    „Jetzt veröffentlichen“.
 
 ## Wappen und Fotos
@@ -158,7 +181,7 @@ Aufnahmen, alle übernommen von der bisherigen Website
 Zwei Wege.
 
 **Der übliche:** im Redaktionsbereich unter „Bilder“ hochladen,
-Ausschnitt setzen, Bildbeschreibung in allen vier Sprachen eintragen,
+Ausschnitt setzen, Bildbeschreibung in beiden Sprachen eintragen,
 veröffentlichen. AVIF und WebP entstehen dabei automatisch.
 
 **Der direkte, für die vier festen Plätze:** die neue Datei nach
@@ -174,65 +197,27 @@ und nicht kaputt.
 
 ### Die Bildbeschreibungen
 
-Jedes inhaltstragende Bild braucht einen Alt-Text in allen vier Sprachen;
+Jedes inhaltstragende Bild braucht einen Alt-Text in beiden Sprachen;
 ohne ihn lässt sich ein Bild nicht veröffentlichen, das erzwingt die
 Datenbank. Der Text beschreibt, **was auf dem Bild zu sehen ist** — nicht,
 was man sich dabei denken soll. Ein Alt-Text, der etwas nennt, das im Bild
 gar nicht vorkommt, führt blinde Besucher in die Irre und ist schlechter
 als gar keiner.
 
-## Ein Dokument einstellen
+## Ein Dossier oder eine Konferenz einstellen
 
-1. Oben auf „Weitere Inhalte“, dann „Dokumente“.
+1. Unten auf „Mehr“, dann „Weitere Inhalte“ und „Dokumente“.
 2. Art wählen: Fachdossier oder Konferenzunterlage.
-3. Titel und Adresse eintragen, in jeder Sprache.
-4. Kurzfassung schreiben — zwei, drei Sätze. Sie steht in der Übersicht und
-   bei Google.
-5. Den **Volltext** einfügen. Das ist der eigentliche Wert: Der Text steht
-   dann als lesbare Seite im Netz, und Google findet ihn. Ein PDF allein
-   findet Google schlechter, und ein Besucher liest es ungern.
-6. **Rechtsstand eintragen.** Zu welchem Datum gibt der Text das Recht
-   wieder? Ohne dieses Datum lässt sich das Dokument **nicht**
-   veröffentlichen — die Seite verhindert es. Das ist kein Schikane: Ein
-   undatiertes Steuerpapier von 2009 schadet der Kanzlei mehr, als es ihr
-   nützt.
-7. Themen ankreuzen. Darüber findet das Dokument von selbst den Weg zu den
-   passenden Tätigkeitsgebieten und Konstellationen.
-8. Wenn ein PDF vorliegt: hochladen. Es steht dann als Download daneben, mit
-   Dateigröße im Link, vom eigenen Server.
-9. Status auf „Veröffentlicht“, dann unter „Website bearbeiten“ auf
+3. **Dossier:** Titel, Adresse, Kurzfassung und Text eintragen, in beiden
+   Sprachen. Fehlt die englische Fassung, erscheint das Dossier nur auf der
+   französischen Seite.
+4. **Konferenz:** Titel und eine Zeile Beschreibung; dazu das PDF, oder —
+   ohne PDF — die Kennung des Dossiers, auf das sie verweist, oder die Adresse
+   der Veranstaltungsseite. Ein Datum, wenn es auf der Unterlage steht.
+5. Themen ankreuzen. Danach filtern Besucher, und auf jedem Dossier stehen
+   die Konferenzen zum selben Thema.
+6. Status auf „Veröffentlicht“, dann unten auf „Veröffentlichen“ und
    „Jetzt veröffentlichen“.
-
-## Eine neue Konstellation der Situationsmatrix anlegen
-
-Das ist die Arbeit, die der Seite ihren Wert gibt — und sie kann nur von
-einem Anwalt kommen.
-
-1. Oben auf „Weitere Inhalte“, dann „Situationsmatrix“. Dort stehen alle 42
-   Kombinationen.
-2. Eine anklicken, etwa „Sie sind in Frankreich und möchten in Luxemburg eine
-   Immobilie kaufen“.
-3. Vier Abschnitte ausfüllen:
-   * **Worum es geht** — zwei bis drei Sätze, aus Sicht des Mandanten.
-   * **Was in Luxemburg dafür gilt** — konkrete Regeln, Fristen, Behörden,
-     Steuern. Das ist der Abschnitt, für den die Leute kommen.
-   * **Was wir übernehmen** — die Schritte der Kanzlei.
-   * **Was wir von Ihnen brauchen** — welche Unterlagen der Mandant besorgen
-     muss.
-4. Oben steht, was einer Veröffentlichung noch entgegensteht, und wie viele
-   Wörter schon geschrieben sind.
-5. Status auf „Veröffentlicht“, dann unter „Website bearbeiten“ auf
-   „Jetzt veröffentlichen“.
-
-**Eine Konstellation erscheint erst, wenn alle vier Abschnitte stehen und
-zusammen ungefähr 400 Wörter ergeben.** Das ist keine Willkür: Eine dünne
-Seite schadet dem Ranking der ganzen Website, nicht nur sich selbst. Solange
-eine Kombination unfertig ist, führt sie im Auswahlmenü auf das zugehörige
-Tätigkeitsgebiet — nie auf eine leere Seite und nie auf einen Fehler.
-
-Am besten fängt man mit den Kombinationen an, nach denen wirklich gesucht
-wird: Frankreich mal Immobilie, Frankreich mal Erbfall, Belgien mal
-Gesellschaft, Deutschland mal Immobilie.
 
 ## Was „Veröffentlichen“ auslöst
 
@@ -253,14 +238,16 @@ online — es gibt keinen Moment, in dem die Seite leer ist. Der
 Redaktionsbereich zeigt „Wird veröffentlicht, seit 40 Sekunden“ und danach
 „Veröffentlicht um 14:32“.
 
-Eine eigene Vorschau muss nicht mehr gebaut werden: Unter „Website
-bearbeiten“ steht jede gespeicherte Änderung sofort in der Website, gelb
+Eine eigene Vorschau muss nicht mehr gebaut werden: Nach dem Login
+steht jede gespeicherte Änderung sofort in der Website, gelb
 hinterlegt, bevor sie freigegeben wird.
 
 ## Eine Änderung rückgängig machen
 
-Solange eine Änderung noch nicht veröffentlicht ist: unter „Website
-bearbeiten“, „Ihre Änderungen“, beim betreffenden Eintrag auf
+Noch nicht gespeichert: unten auf **„Rückgängig“**.
+
+Gespeichert, aber noch nicht veröffentlicht: unten auf „Veröffentlichen“,
+unter „Ihre Änderungen“ beim betreffenden Eintrag auf
 **„Zurücknehmen“**. Dann steht dort wieder der veröffentlichte Text.
 
 Für ältere Stände: Jedes Speichern sichert die vorherige Fassung. Unten in jedem Eintrag gibt es
@@ -396,9 +383,14 @@ Es gibt keine zweite Liste, die abweichen könnte.
 
 ## Die Vorschau im Redaktionsbereich
 
-„Website bearbeiten“ zeigt die gebaute Seite in einem `<iframe>` (dieselbe
-Adresse, derselbe Server) und legt beim Laden die gespeicherten Texte aus
-Supabase darüber. Welcher Text zu welchem Datensatz gehört, steht im HTML:
+Der Redaktionsbereich zeigt die gebaute Seite in einem `<iframe>` über die
+ganze Fläche (dieselbe Adresse, derselbe Server) und legt beim Laden die
+gespeicherten und die noch nicht gespeicherten Texte darüber. Einzeilige
+Texte werden dort `contenteditable`, `data-lw-html` öffnet den Texteditor in
+einem Fenster. Getippt wird zuerst nur im Browser; „Speichern“ schreibt alles
+auf einmal, je Datensatz frisch gelesen (`src/admin/atelier/Atelier.tsx`).
+Der „Login“-Link im Footer (`Pied.astro`) führt nach `/admin/?seite=<pfad>`,
+damit es auf derselben Seite weitergeht. Welcher Text zu welchem Datensatz gehört, steht im HTML:
 
 ```html
 <h2 data-lw="settings|pages|valeur.accueil.sections.services.titre">…</h2>
@@ -420,42 +412,17 @@ Schnappschuss — darin stehen auch Entwürfe.
 
 ## Die Veröffentlichungsschranken
 
-An drei Stellen wird dasselbe geprüft — in der Datenbank, im Build und im
-Redaktionsbereich. Dreifach, damit es sich nicht umgehen lässt:
-
 | Inhalt | Bedingung |
 |---|---|
-| Konstellation | vier Abschnitte belegt **und** rund 400 Wörter |
-| Dokument | Rechtsstand gesetzt **und** Titel, Kurzfassung, Volltext |
-| Bild | Alt-Text in allen vier Sprachen |
+| Dossier | Titel, Adresse und Text in der Sprache der Seite |
+| Konferenz | Titel; dazu PDF, Dossier oder Veranstaltungsseite |
+| Tätigkeit | Bezeichnung, Adresse, Kurztext und Text |
 | Sprachfassung | Oberfläche vollständig übersetzt |
 
-Was durchfällt, wird nicht gebaut, steht nicht in der Sitemap und wird
-nirgends verlinkt. `npm run content:check` listet auf, was fehlt und warum.
-
-Die Datenbankseite ist geprüft: `supabase/migrations/` wurde gegen ein echtes
-Postgres gefahren, und jede Schranke wurde einzeln ausgelöst — Dokument ohne
-Rechtsstand, Bild ohne Alt-Text, Konstellation mit zu wenig Text, Redakteur
-an den Rechtstexten. Alles wurde abgewiesen.
-
-## Luxemburgisch
-
-`src/i18n/lb.json` hat den vollständigen Schlüsselsatz, jeder Wert ist
-`[LB FEHLT]`. Solange das so ist, wird **`/lb/` nicht gebaut** — weder in der
-Sitemap noch in den hreflang-Angaben. Der Sprachumschalter nennt die Sprache
-trotzdem und sagt, dass sie in Vorbereitung ist.
-
-Das ist bewusst so: Eine halb übersetzte Fassung schadet der Indexierung mehr,
-als sie nützt, und eine maschinelle Übersetzung auf einer Anwaltsseite ist
-keine Option.
-
-Um Luxemburgisch zu ergänzen, braucht es drei Dinge:
-
-1. `src/i18n/lb.json` ausfüllen (132 Schlüssel),
-2. in `src/lib/routes.ts` die `lb`-Segmente eintragen,
-3. im Redaktionsbereich die luxemburgischen Inhalte einpflegen.
-
-Danach baut sich `/lb/` von selbst.
+Was durchfällt, wird in dieser Sprache nicht gebaut, steht nicht in der
+Sitemap und wird nirgends verlinkt. `npm run content:check` listet auf, was
+in welcher Sprache entsteht. Die Datenbank prüft dasselbe noch einmal
+(`supabase/migrations/0005_alte_seite.sql`).
 
 ## Supabase einrichten
 

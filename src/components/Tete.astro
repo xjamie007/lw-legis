@@ -1,0 +1,63 @@
+---
+/**
+ * src/components/Tete.astro — Kopf jeder Unterseite: Brotkrumen, Titel,
+ * Einleitung. Hellgrau, damit die Seite unter dem weissen Kopfbereich
+ * einen klaren Anfang hat.
+ */
+import type { Lang } from '../lib/langs';
+import type { Etape } from '../lib/pages';
+import type { Edition } from '../lib/edition';
+import { t } from '../lib/i18n';
+
+interface Props {
+  lang: Lang;
+  fil: Etape[];
+  titre: string;
+  chapeau?: string;
+  /** Ist der Einleitungstext HTML? */
+  chapeauHtml?: boolean;
+  edTitre?: Edition;
+  edChapeau?: Edition;
+  /** Lange Einleitung auf dem Handy ausblenden (die Seite selbst sagt genug). */
+  chapeauDesktop?: boolean;
+}
+const { lang, fil, titre, chapeau, chapeauHtml = false, edTitre, edChapeau, chapeauDesktop = false } = Astro.props;
+const klasse = chapeauDesktop ? 'chapeau chapeau--desktop' : 'chapeau';
+---
+
+<div class="tete">
+  <div class="enveloppe">
+    {
+      fil.length > 1 && (
+        <nav class="fil sans-impression" aria-label={t(lang, 'nav.fil')}>
+          <ol>
+            {fil.map((e, i) =>
+              i === fil.length - 1 ? (
+                <li aria-current="page">{e.nom}</li>
+              ) : (
+                <li>
+                  <a href={e.url}>{e.nom}</a>
+                </li>
+              ),
+            )}
+          </ol>
+        </nav>
+      )
+    }
+    <h1 {...edTitre}>{titre}</h1>
+    {chapeau && chapeauHtml && <div class:list={[klasse, 'tete__html']} set:html={chapeau} {...edChapeau} />}
+    {chapeau && !chapeauHtml && <p class={klasse} {...edChapeau}>{chapeau}</p>}
+    <slot />
+  </div>
+</div>
+
+<style>
+  .tete__html :global(p + p) {
+    margin-top: 0.75em;
+  }
+  @media (max-width: 47.99rem) {
+    .chapeau--desktop {
+      display: none;
+    }
+  }
+</style>

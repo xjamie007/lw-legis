@@ -1,0 +1,199 @@
+---
+/**
+ * src/vues/Dossiers.astro — Dossiers thématiques: Uebersicht und Text.
+ *
+ * Die Uebersicht laesst sich nach Thema filtern. Ohne JavaScript stehen
+ * einfach alle Dossiers da; die Filterknoepfe erscheinen erst mit Skript.
+ * Der Text hat Lesezeit, Drucken und die Konferenzen zum selben Thema.
+ */
+import type { Lang } from '../lib/langs';
+import { txt, txtOuFrancais, txtHtml } from '../lib/langs';
+import { t, formaterTaille } from '../lib/i18n';
+import { conferences, contenu, dossiers, mots, themeParId, themesDe, type Publication } from '../lib/content';
+import { adresse, type Route } from '../lib/pages';
+import { ed, edPage } from '../lib/edition';
+import { prefixer, prefixerHtml } from '../lib/base';
+import { sommaire } from '../lib/sommaire';
+import Sommaire from '../components/Sommaire.astro';
+import Tete from '../components/Tete.astro';
+import Icone from '../components/Icone.astro';
+
+interface Props {
+  lang: Lang;
+  route: Route;
+  dossier?: Publication;
+}
+const { lang, route, dossier } = Astro.props;
+const tous = dossiers(lang);
+const themes = themesDe(tous, lang);
+
+const minutes = dossier ? Math.max(1, Math.round(mots(txt(dossier.corps, lang)) / 220)) : 0;
+const texte = dossier ? sommaire(txt(dossier.corps, lang)) : null;
+const liees = dossier
+  ? conferences()
+      .filter((c) => c.pdf && c.themes.some((th) => dossier.themes.includes(th)))
+      .slice(0, 5)
+  : [];
+---
+
+{
+  !dossier && (
+    <>
+      <Tete
+        lang={lang}
+        fil={route.fil}
+        titre={route.nom}
+        chapeau={txt(contenu.pages.dossiers.intro, lang)}
+        edTitre={edPage('dossiers.titre')}
+        edChapeau={edPage('dossiers.intro')}
+      />
+      <section class="section">
+        <div class="enveloppe">
+          {themes.length > 1 && (
+            <div class="filtres" data-filtres hidden role="group" aria-label={t(lang, 'conferences.filtrer')}>
+              <button type="button" aria-pressed="true" data-theme="">
+                {t(lang, 'conferences.tous')}
+              </button>
+              {themes.map((th) => (
+                <button type="button" aria-pressed="false" data-theme={th.id}>
+                  {txt(th.etiquette, lang)}
+                </button>
+              ))}
+            </div>
+          )}
+          <ul class="registre liste-filtree" data-liste>
+            {tous.map((d) => (
+              <li class="registre__ligne" data-themes={d.themes.join(' ')}>
+                <a class="registre__lien" href={adresse(`dossier:${d.id}`, lang)}>
+                  <span class="registre__titre" {...ed('publications', d.id, 'titre')}>
+                    {txt(d.titre, lang)}
+                  </span>
+                  <span class="registre__texte">{txt(d.resume, lang)}</span>
+                  <span class="etiquettes">
+                    {d.themes.map((th) => themeParId(th)).filter(Boolean).map((th) => <span>{txt(th!.etiquette, lang)}</span>)}
+                  </span>
+                  <Icone nom="fleche" class="registre__fleche" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </>
+  )
+}
+
+{
+  dossier && (
+    <>
+      <Tete
+        lang={lang}
+        fil={route.fil}
+        titre={route.nom}
+        chapeau={txt(dossier.resume, lang)}
+        edTitre={ed('publications', dossier.id, 'titre')}
+        edChapeau={ed('publications', dossier.id, 'resume')}
+      >
+        <div class="dossier__meta">
+          {texte!.pdfs.map((pdf) => (
+            <a class="bouton dossier__pdf" href={prefixer(pdf.href)} download>
+              <Icone nom="pdf" />
+              <span>
+                {t(lang, 'dossier.pdf')}
+                <small>PDF{pdf.octets ? ` · ${formaterTaille(pdf.octets, lang)}` : ''}</small>
+              </span>
+            </a>
+          ))}
+          <span class="etiquettes">
+            {dossier.themes.map((th) => themeParId(th)).filter(Boolean).map((th) => <span>{txt(th!.etiquette, lang)}</span>)}
+            <span>
+              {minutes} {t(lang, 'dossier.lecture')}
+            </span>
+          </span>
+        </div>
+      </Tete>
+      <section class="section">
+        <div class="enveloppe avec-aside">
+          <div>
+            <Sommaire lang={lang} titres={texte!.titres} />
+            <article class="prose" set:html={prefixerHtml(texte!.html)} {...ed('publications', dossier.id, 'corps', true)} />
+          </div>
+          <aside class="sans-impression">
+            {liees.length > 0 && (
+              <nav class="liste-aside liste-aside--premiere" aria-labelledby="conf-liees">
+                <h2 id="conf-liees">{t(lang, 'dossier.conferences_liees')}</h2>
+                {liees.map((c) => {
+                  const titre = txtOuFrancais(c.titre, lang);
+                  return (
+                    <a href={prefixer(c.pdf!.chemin)} download lang={titre.lang !== lang ? titre.lang : undefined}>
+                      {titre.valeur}
+                      <small>PDF · {formaterTaille(c.pdf!.octets, lang)}</small>
+                    </a>
+                  );
+                })}
+              </nav>
+            )}
+            <nav class="liste-aside" aria-labelledby="autres-dossiers">
+              <h2 id="autres-dossiers">{t(lang, 'dossier.tous')}</h2>
+              {tous.map((d) => (
+                <a href={adresse(`dossier:${d.id}`, lang)} aria-current={d.id === dossier.id ? 'page' : undefined}>
+                  {txt(d.titre, lang)}
+                </a>
+              ))}
+            </nav>
+          </aside>
+        </div>
+      </section>
+    </>
+  )
+}
+
+<script>
+  import '../scripts/filtres.ts';
+</script>
+
+<style>
+  .filtres {
+    margin-bottom: 2.5rem;
+  }
+  .dossier__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 2rem;
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-trait);
+  }
+  .dossier__pdf {
+    gap: 0.85rem;
+    padding-block: 0.7rem;
+  }
+  .dossier__pdf :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--color-or-clair);
+  }
+  .dossier__pdf span {
+    display: grid;
+    text-align: left;
+  }
+  .dossier__pdf small {
+    font-weight: 400;
+    font-size: 0.8125rem;
+    opacity: 0.8;
+  }
+  .liste-aside--premiere {
+    margin-top: 0;
+  }
+  .liste-aside small {
+    display: block;
+    margin-top: 0.2rem;
+    color: var(--color-gris);
+    font-size: 0.8125rem;
+  }
+  .registre .etiquettes {
+    grid-column: 1;
+    margin-top: 0.5rem;
+  }
+</style>

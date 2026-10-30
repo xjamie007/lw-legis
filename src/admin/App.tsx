@@ -1,17 +1,12 @@
 /**
  * src/admin/App.tsx — Der Redaktionsbereich.
  *
- * Eine Anwendung mit eigener Adressleiste (ueber den Ankerteil der URL),
- * damit Zurueck und Lesezeichen funktionieren, ohne dass der Server
- * mitspielen muss.
- *
- * Oben stehen vier Bereiche, mehr nicht:
- *   Website bearbeiten  — die echte Seite als Vorschau, Text anklicken,
- *                         aendern, veroeffentlichen (Standard)
- *   Nachrichten         — Anfragen aus dem Kontaktformular
- *   Bilder              — die Ablage
- *   Weitere Inhalte     — die Listen fuer alles, was sich nicht anklicken
- *                         laesst: neue Eintraege, Google-Angaben, Status
+ * Bedienung wie in den Demos fuer Krombach und DRP: Im Footer der Website
+ * steht „Login“. Der Klick oeffnet diese Seite mit derselben Seite der
+ * Website im Hintergrund und dem Anmeldefenster davor. Nach der Anmeldung
+ * wird direkt auf der Seite bearbeitet, unten steht die Leiste
+ * Speichern · Rückgängig · Seiten · Google · Veröffentlichen · Mehr.
+ * Alles Weitere (Nachrichten, Bilder, Weitere Inhalte) liegt unter „Mehr“.
  *
  * Kein Kilobyte hiervon liegt auf einer oeffentlichen Seite: Astro
  * buendelt je Seite, und /admin ist die einzige Seite, die React laedt.
@@ -26,25 +21,11 @@ import {
   type Profil,
 } from './supabase';
 import { traduire, type LangueAdmin } from './i18n';
-import { COLLECTIONS, ORDRE_NAV } from './schema';
 import type { Lang } from '../lib/langs';
 import Connexion from './composants/Connexion';
-import Liste from './composants/Liste';
-import Editeur from './composants/Editeur';
-import Medias from './composants/Medias';
-import Anfragen from './composants/Anfragen';
+import Feuille from './composants/Feuille';
 import Atelier from './atelier/Atelier';
-
-interface Route {
-  vue: string;
-  id?: string;
-}
-
-function lireRoute(): Route {
-  const brut = window.location.hash.replace(/^#\/?/, '');
-  const [vue, id] = brut.split('/');
-  return { vue: vue || 'website', id: id || undefined };
-}
+import { prefixer } from '../lib/base';
 
 interface Props {
   /** Zeitpunkt, aus dem die Website zuletzt gebaut wurde. */
@@ -53,17 +34,24 @@ interface Props {
   langues: Lang[];
 }
 
+/** Die Seite, von der aus „Login“ geklickt wurde — sonst die Startseite. */
+function pageDeDepart(langues: Lang[]): string {
+  const seite = new URLSearchParams(window.location.search).get('seite');
+  // Nur Pfade dieser Website, keine fremde Adresse.
+  if (seite?.startsWith('/') && !seite.startsWith('//') && !seite.includes('/admin/')) {
+    return seite;
+  }
+  return prefixer(`/${langues[0] ?? 'fr'}/`);
+}
+
 export default function App({ stand, langues }: Props) {
   const [profil, setProfil] = useState<Profil | null | 'charge'>('charge');
   /** Erreichte Sicherungsstufe. Ohne 'aal2' gibt es keinen Zugang. */
   const [niveau, setNiveau] = useState<'aal1' | 'aal2' | null | 'charge'>('charge');
-  const [route, setRoute] = useState<Route>(lireRoute);
   const [langueAdmin, setLangueAdmin] = useState<LangueAdmin>('de');
+  const [depart] = useState(() => pageDeDepart(langues));
 
-  const [nouvelles, setNouvelles] = useState(0);
-
-  const t = (c: Parameters<typeof traduire>[1], v?: Record<string, string | number>) =>
-    traduire(langueAdmin, c, v);
+  const t = (c: Parameters<typeof traduire>[1]) => traduire(langueAdmin, c);
 
   const relire = useCallback(async () => {
     const [p, n] = await Promise.all([chargerProfil(), niveauSecurite()]);
@@ -82,27 +70,6 @@ export default function App({ stand, langues }: Props) {
     return () => data.subscription.unsubscribe();
   }, [relire]);
 
-  // Wie viele Nachrichten warten? Steht als Zahl am Reiter.
-  const connecte = Boolean(profil && profil !== 'charge');
-  useEffect(() => {
-    if (!connecte) return;
-    void supabase
-      .from('inquiries')
-      .select('id', { count: 'exact', head: true })
-      .eq('traite', false)
-      .then(({ count }) => setNouvelles(count ?? 0));
-  }, [connecte, route.vue]);
-
-  useEffect(() => {
-    const surHash = () => setRoute(lireRoute());
-    window.addEventListener('hashchange', surHash);
-    return () => window.removeEventListener('hashchange', surHash);
-  }, []);
-
-  const aller = (vue: string, id?: string) => {
-    window.location.hash = id ? `/${vue}/${id}` : `/${vue}`;
-  };
-
   async function changerLangue(l: LangueAdmin) {
     setLangueAdmin(l);
     if (profil && profil !== 'charge') {
@@ -110,22 +77,37 @@ export default function App({ stand, langues }: Props) {
     }
   }
 
-  // --- Sonderfaelle --------------------------------------------------------
+  async function abmelden(chemin: string) {
+    await supabase.auth.signOut();
+    // Zurueck auf dieselbe Seite der Website, wie bei Krombach und DRP.
+    window.location.assign(chemin);
+  }
+
+  /** Die Website im Hintergrund, solange das Anmeldefenster davor steht. */
+  const fond = <iframe className="kx-fond" src={depart} title="LW LEGIS" tabIndex={-1} aria-hidden="true" />;
+
   if (!configuré) {
     return (
-      <main className="connexion">
-        <div className="connexion__carte">
-          <p className="connexion__marque">LW LEGIS</p>
-          <p className="connexion__erreur" role="alert">
+      <>
+        {fond}
+        <Feuille titre="LW LEGIS" onFermer={() => window.location.assign(depart)} fermer={t('atelier.schliessen')}>
+          <p className="kx-err" role="alert">
             {t('app.nicht_eingerichtet')}
           </p>
-        </div>
-      </main>
+        </Feuille>
+      </>
     );
   }
 
   if (profil === 'charge' || niveau === 'charge') {
-    return <p className="charge">{t('app.laden')}</p>;
+    return (
+      <>
+        {fond}
+        <p className="kx-toast" role="status">
+          {t('app.laden')}
+        </p>
+      </>
+    );
   }
 
   /**
@@ -138,154 +120,27 @@ export default function App({ stand, langues }: Props) {
    * `facteurObligatoire`).
    */
   if (!profil || (facteurObligatoire && niveau !== 'aal2')) {
-    return <Connexion langue={langueAdmin} onConnecte={() => void relire()} />;
+    return (
+      <>
+        {fond}
+        <Connexion
+          langue={langueAdmin}
+          onConnecte={() => void relire()}
+          onFermer={() => window.location.assign(depart)}
+        />
+      </>
+    );
   }
 
-  const estOwner = profil.role === 'owner';
-
-  // Rechtstexte und Konten sieht nur der Inhaber.
-  const sammlungen = ORDRE_NAV.filter((cle) => {
-    const c = COLLECTIONS[cle];
-    return c && (!c.reserveOwner || estOwner);
-  });
-
-  const collectionActive = COLLECTIONS[route.vue];
-  const bereich =
-    route.vue === 'website' || route.vue === 'anfragen' || route.vue === 'medias'
-      ? route.vue
-      : 'mehr';
-
-  const reiter: { vue: string; cle: Parameters<typeof traduire>[1]; icone: string }[] = [
-    { vue: 'website', cle: 'nav.website', icone: '✎' },
-    { vue: 'anfragen', cle: 'nav.nachrichten', icone: '✉' },
-    { vue: 'medias', cle: 'nav.medias', icone: '▣' },
-    { vue: 'mehr', cle: 'nav.mehr', icone: '☰' },
-  ];
-
   return (
-    <div className={bereich === 'website' ? 'admin admin--atelier' : 'admin'}>
-      <a className="saut-admin" href="#zone">
-        {t('app.titre')}
-      </a>
-
-      <header className="admin__entete">
-        <p className="admin__marque">LW LEGIS</p>
-
-        <nav className="reiter" aria-label={t('nav.inhalte')}>
-          {reiter.map((r) => (
-            <button
-              key={r.vue}
-              type="button"
-              className={bereich === r.vue ? 'reiter__knopf reiter__knopf--aktiv' : 'reiter__knopf'}
-              aria-current={bereich === r.vue ? 'page' : undefined}
-              onClick={() => aller(r.vue)}
-            >
-              <span className="reiter__icone" aria-hidden="true">
-                {r.icone}
-              </span>
-              {t(r.cle)}
-              {r.vue === 'anfragen' && nouvelles > 0 && (
-                <span className="compteur-rond" aria-label={t('nav.neu', { n: nouvelles })}>
-                  {nouvelles}
-                </span>
-              )}
-            </button>
-          ))}
-        </nav>
-
-        <div className="admin__cote">
-          <span className="admin__qui">{profil.nom || '—'}</span>
-          <label className="admin__langue">
-            <span className="visuellement-cache">{t('app.sprache')}</span>
-            <select
-              value={langueAdmin}
-              onChange={(e) => void changerLangue(e.target.value as LangueAdmin)}
-            >
-              <option value="de">Deutsch</option>
-              <option value="fr">Français</option>
-            </select>
-          </label>
-          <button
-            type="button"
-            className="bouton-fin"
-            onClick={async () => {
-              await supabase.auth.signOut();
-              setProfil(null);
-            }}
-          >
-            {t('app.abmelden')}
-          </button>
-        </div>
-      </header>
-
-      <main className="admin__zone" id="zone" tabIndex={-1}>
-        {bereich === 'website' && (
-          <Atelier langueAdmin={langueAdmin} estOwner={estOwner} stand={stand} langues={langues} />
-        )}
-
-        {bereich === 'anfragen' && (
-          <div className="admin__page">
-            <h1 className="admin__titre">{t('nav.nachrichten')}</h1>
-            <Anfragen langueAdmin={langueAdmin} />
-          </div>
-        )}
-
-        {bereich === 'medias' && (
-          <div className="admin__page">
-            <h1 className="admin__titre">{t('nav.medias')}</h1>
-            <Medias langueAdmin={langueAdmin} />
-          </div>
-        )}
-
-        {bereich === 'mehr' && !collectionActive && (
-          <div className="admin__page">
-            <h1 className="admin__titre">{t('nav.mehr')}</h1>
-            <p className="admin__intro">{t('mehr.intro')}</p>
-            <ul className="kacheln">
-              {sammlungen.map((cle) => (
-                <li key={cle}>
-                  <button type="button" className="kachel" onClick={() => aller(cle)}>
-                    <span className="kachel__titel">
-                      {t(COLLECTIONS[cle].cleNav as Parameters<typeof traduire>[1])}
-                    </span>
-                    <span className="kachel__text">
-                      {t(`mehr.${cle}` as Parameters<typeof traduire>[1])}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {collectionActive && !route.id && (
-          <div className="admin__page">
-            <button type="button" className="bouton-fin" onClick={() => aller('mehr')}>
-              ← {t('nav.mehr')}
-            </button>
-            <h1 className="admin__titre">
-              {t(collectionActive.cleNav as Parameters<typeof traduire>[1])}
-            </h1>
-            <Liste
-              collection={collectionActive}
-              langueAdmin={langueAdmin}
-              onOuvrir={(id) => aller(route.vue, id)}
-            />
-          </div>
-        )}
-
-        {collectionActive && route.id && (
-          <div className="admin__page">
-            <Editeur
-              collection={collectionActive}
-              id={route.id}
-              langueAdmin={langueAdmin}
-              estOwner={estOwner}
-              onRetour={() => aller(route.vue)}
-            />
-          </div>
-        )}
-      </main>
-    </div>
+    <Atelier
+      langueAdmin={langueAdmin}
+      profil={profil}
+      stand={stand}
+      langues={langues}
+      depart={depart}
+      onLangueAdmin={(l) => void changerLangue(l)}
+      onAbmelden={(chemin) => void abmelden(chemin)}
+    />
   );
 }
