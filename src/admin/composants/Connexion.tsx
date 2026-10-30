@@ -8,7 +8,7 @@
  * Einladung durch den Inhaber.
  */
 import { useEffect, useState } from 'react';
-import { facteurObligatoire, supabase } from '../supabase';
+import { demo, facteurObligatoire, supabase } from '../supabase';
 import { traduire, type LangueAdmin } from '../i18n';
 import Feuille from './Feuille';
 
@@ -163,9 +163,9 @@ export default function Connexion({ langue, onConnecte, onFermer }: Props) {
       {etape === 'identifiants' && (
         <form className="kx-form" onSubmit={envoyerIdentifiants}>
           <label>
-            {t('anmeldung.email')}
+            {t(demo ? 'anmeldung.benutzer' : 'anmeldung.email')}
             <input
-              type="email"
+              type={demo ? 'text' : 'email'}
               autoComplete="username"
               autoCapitalize="none"
               required

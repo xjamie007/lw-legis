@@ -25,8 +25,9 @@ type Tables = Record<string, Ligne[]>;
 const CLE = 'lw-legis-demo-v1';
 const CLE_SESSION = 'lw-legis-demo-session';
 
-/** Demo-Zugang. Gespeichert ist nur die Pruefsumme des Passworts. */
-export const DEMO_UTILISATEUR = 'demo@lw-legis.lu';
+/** Demo-Zugang: Benutzername statt E-Mail, Gross-/Kleinschreibung egal.
+ *  Gespeichert ist nur die Pruefsumme des Passworts. */
+export const DEMO_UTILISATEUR = 'lw-legis';
 const DEMO_HASH = '9d3c9be5913be415dcb9d095683ad72fa2717362c79ccee9597f184b6860bed3';
 
 const colonneCle = (table: string) => (table === 'settings' ? 'cle' : 'id');
