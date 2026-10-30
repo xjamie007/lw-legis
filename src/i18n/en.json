@@ -33,7 +33,6 @@
   "activite.contacter_texte": "Describe your situation and the firm will get back to you.",
   "activite.dossiers_lies": "Thematic files",
   "dossier.lecture": "min read",
-  "dossier.imprimer": "Print",
   "dossier.tous": "All files",
   "dossier.conferences_liees": "Conferences on this topic",
   "conferences.filtrer": "Filter by topic",
@@ -90,5 +89,12 @@
   "accueil.preuve_1": "Lawyer at the Luxembourg Bar since 1982",
   "accueil.preuve_2": "Sworn legal expert at the Luxembourg Court of Appeal",
   "accueil.preuve_3": "Paris II Panthéon-Assas · Sciences Po Paris",
-  "accueil.rdv_titre": "Make an appointment with a lawyer in Luxembourg"
+  "accueil.rdv_titre": "Make an appointment with a lawyer in Luxembourg",
+  "accueil.avocat_titre": "The lawyer",
+  "accueil.en_savoir_plus": "Learn more",
+  "accueil.reduire": "Show less",
+  "sommaire.titre": "On this page",
+  "dossier.pdf": "Download the document",
+  "activites.domaines": "Areas",
+  "partenaires.photo": "Photo of the partner firm"
 }

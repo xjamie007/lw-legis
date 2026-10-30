@@ -12,7 +12,9 @@ import { t, formaterTaille } from '../lib/i18n';
 import { conferences, contenu, dossiers, mots, themeParId, themesDe, type Publication } from '../lib/content';
 import { adresse, type Route } from '../lib/pages';
 import { ed, edPage } from '../lib/edition';
-import { prefixer } from '../lib/base';
+import { prefixer, prefixerHtml } from '../lib/base';
+import { sommaire } from '../lib/sommaire';
+import Sommaire from '../components/Sommaire.astro';
 import Tete from '../components/Tete.astro';
 import Icone from '../components/Icone.astro';
 
@@ -26,6 +28,7 @@ const tous = dossiers(lang);
 const themes = themesDe(tous, lang);
 
 const minutes = dossier ? Math.max(1, Math.round(mots(txt(dossier.corps, lang)) / 220)) : 0;
+const texte = dossier ? sommaire(txt(dossier.corps, lang)) : null;
 const liees = dossier
   ? conferences()
       .filter((c) => c.pdf && c.themes.some((th) => dossier.themes.includes(th)))
@@ -92,21 +95,29 @@ const liees = dossier
         edChapeau={ed('publications', dossier.id, 'resume')}
       >
         <div class="dossier__meta">
+          {texte!.pdfs.map((pdf) => (
+            <a class="bouton dossier__pdf" href={prefixer(pdf.href)} download>
+              <Icone nom="pdf" />
+              <span>
+                {t(lang, 'dossier.pdf')}
+                <small>PDF{pdf.octets ? ` · ${formaterTaille(pdf.octets, lang)}` : ''}</small>
+              </span>
+            </a>
+          ))}
           <span class="etiquettes">
             {dossier.themes.map((th) => themeParId(th)).filter(Boolean).map((th) => <span>{txt(th!.etiquette, lang)}</span>)}
             <span>
               {minutes} {t(lang, 'dossier.lecture')}
             </span>
           </span>
-          <button type="button" class="dossier__imprimer sans-impression" data-imprimer hidden>
-            <Icone nom="imprimer" />
-            {t(lang, 'dossier.imprimer')}
-          </button>
         </div>
       </Tete>
       <section class="section">
         <div class="enveloppe avec-aside">
-          <article class="prose" set:html={txtHtml(dossier.corps, lang)} {...ed('publications', dossier.id, 'corps', true)} />
+          <div>
+            <Sommaire lang={lang} titres={texte!.titres} />
+            <article class="prose" set:html={prefixerHtml(texte!.html)} {...ed('publications', dossier.id, 'corps', true)} />
+          </div>
           <aside class="sans-impression">
             {liees.length > 0 && (
               <nav class="liste-aside liste-aside--premiere" aria-labelledby="conf-liees">
@@ -149,31 +160,28 @@ const liees = dossier
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
     gap: 1rem 2rem;
     margin-top: 2rem;
     padding-top: 1.25rem;
     border-top: 1px solid var(--color-trait);
   }
-  .dossier__imprimer {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.4rem 0;
-    background: none;
-    border: 0;
-    color: var(--color-marine);
-    font-weight: 600;
-    font-size: 0.9063rem;
-    cursor: pointer;
+  .dossier__pdf {
+    gap: 0.85rem;
+    padding-block: 0.7rem;
   }
-  .dossier__imprimer :global(svg) {
-    width: 1.15rem;
-    height: 1.15rem;
+  .dossier__pdf :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--color-or-clair);
   }
-  .dossier__imprimer:hover {
-    text-decoration: underline;
-    text-underline-offset: 3px;
+  .dossier__pdf span {
+    display: grid;
+    text-align: left;
+  }
+  .dossier__pdf small {
+    font-weight: 400;
+    font-size: 0.8125rem;
+    opacity: 0.8;
   }
   .liste-aside--premiere {
     margin-top: 0;

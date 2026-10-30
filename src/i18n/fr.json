@@ -33,7 +33,6 @@
   "activite.contacter_texte": "Décrivez votre situation, l'Étude vous répond.",
   "activite.dossiers_lies": "Dossiers thématiques",
   "dossier.lecture": "min de lecture",
-  "dossier.imprimer": "Imprimer",
   "dossier.tous": "Tous les dossiers",
   "dossier.conferences_liees": "Conférences sur ce thème",
   "conferences.filtrer": "Filtrer par thème",
@@ -90,5 +89,12 @@
   "accueil.preuve_1": "Avocat au Barreau de Luxembourg depuis 1982",
   "accueil.preuve_2": "Expert judiciaire assermenté auprès de la Cour d'Appel de Luxembourg",
   "accueil.preuve_3": "Paris II Panthéon-Assas · Sciences Po Paris",
-  "accueil.rdv_titre": "Prendre rendez-vous avec un avocat au Luxembourg"
+  "accueil.rdv_titre": "Prendre rendez-vous avec un avocat au Luxembourg",
+  "accueil.avocat_titre": "L'avocat",
+  "accueil.en_savoir_plus": "En savoir plus",
+  "accueil.reduire": "Réduire",
+  "sommaire.titre": "Sur cette page",
+  "dossier.pdf": "Télécharger le document",
+  "activites.domaines": "Domaines",
+  "partenaires.photo": "Photo du cabinet partenaire"
 }

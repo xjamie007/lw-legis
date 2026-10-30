@@ -1,6 +1,5 @@
 /**
- * src/scripts/filtres.ts — Themenfilter (Dossiers, Konferenzen) und der
- * Druckknopf der Dossiers.
+ * src/scripts/filtres.ts — Themenfilter der Dossiers und Konferenzen.
  *
  * Ohne Skript ist die volle Liste sichtbar und die Knoepfe bleiben
  * verborgen: Filter, die nicht filtern, sind schlimmer als keine.
@@ -24,10 +23,4 @@ for (const groupe of document.querySelectorAll<HTMLElement>('[data-filtres]')) {
     }
     if (vide) vide.hidden = visibles > 0;
   });
-}
-
-const imprimer = document.querySelector<HTMLButtonElement>('[data-imprimer]');
-if (imprimer) {
-  imprimer.hidden = false;
-  imprimer.addEventListener('click', () => window.print());
 }

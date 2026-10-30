@@ -1,0 +1,83 @@
+---
+/**
+ * src/components/Embleme.astro — Das Zeichen der Kanzlei als Linienzeichnung.
+ *
+ * Nachgezeichnet nach dem Wappen: ein aufgeschlagenes Buch mit „L“ und
+ * „W“, ein Schwert senkrecht hindurch. Als Vektor ist es in jeder Groesse
+ * scharf — das Wappen selbst liegt nur als Rasterbild vor.
+ *
+ * Beim ersten Erscheinen zeichnet es sich: erst das Schwert, dann das
+ * Buch, zuletzt die Buchstaben. Ohne Bewegung (prefers-reduced-motion)
+ * steht es sofort da. Rein schmueckend, deshalb aria-hidden.
+ */
+interface Props {
+  class?: string;
+}
+const { class: klass } = Astro.props;
+---
+
+<svg class:list={['embleme', klass]} viewBox="0 0 200 250" fill="none" aria-hidden="true" focusable="false">
+  <g class="embleme__traits" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+    {/* Schwert: Knauf, Griff, Parierstange, Klinge mit Spitze */}
+    <circle class="t t1" cx="100" cy="10" r="5" stroke-width="1.6" pathLength="1"></circle>
+    <path class="t t1" d="M100 15 V36" stroke-width="2.4" pathLength="1"></path>
+    <path class="t t2" d="M76 40 Q100 33 124 40" stroke-width="1.8" pathLength="1"></path>
+    <path class="t t3" d="M96 44 V214 L100 238 L104 214 V44 Z" stroke-width="1.4" pathLength="1"></path>
+    {/* Buch: zwei Seiten, darunter der Einband */}
+    <path class="t t4" d="M100 128 C82 116 58 115 34 122 V202 C58 195 82 196 100 208" stroke-width="1.6" pathLength="1"></path>
+    <path class="t t4" d="M100 128 C118 116 142 115 166 122 V202 C142 195 118 196 100 208" stroke-width="1.6" pathLength="1"></path>
+    <path class="t t5" d="M26 130 V212 C54 205 80 206 100 216 C120 206 146 205 174 212 V130" stroke-width="1.6" pathLength="1"></path>
+  </g>
+  <g class="embleme__lettres" fill="currentColor">
+    <text x="66" y="176" text-anchor="middle">L</text>
+    <text x="134" y="176" text-anchor="middle">W</text>
+  </g>
+</svg>
+
+<style>
+  .embleme {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .embleme__lettres {
+    font-family: var(--font-titre);
+    font-size: 30px;
+    font-weight: 400;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .t {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: trace 1.4s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+    }
+    .t2 {
+      animation-delay: 0.25s;
+    }
+    .t3 {
+      animation-delay: 0.4s;
+      animation-duration: 1.8s;
+    }
+    .t4 {
+      animation-delay: 0.9s;
+    }
+    .t5 {
+      animation-delay: 1.2s;
+    }
+    .embleme__lettres {
+      opacity: 0;
+      animation: lettres 0.8s ease-out 2s forwards;
+    }
+  }
+  @keyframes trace {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes lettres {
+    to {
+      opacity: 1;
+    }
+  }
+</style>

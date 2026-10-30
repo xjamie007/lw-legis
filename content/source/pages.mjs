@@ -168,6 +168,9 @@ export const PAGES = {
 <p>This is our vocation and our commitment ».</p>`,
         },
         site: null,
+        // Bildplatz in content/source/bilder.mjs. Die Website der Kanzlei
+        // war beim Bau nicht erreichbar; das Foto wird nachgereicht.
+        photo: 'viajuris',
       },
     ],
   },

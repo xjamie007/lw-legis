@@ -121,14 +121,14 @@ The category standard for a law firm, executed at full craft: white pages, deep 
 
 The page alternates three grounds in a fixed vocabulary. Navy carries the moments of address (hero, the "atouts" band, the closing appointment band); deep navy carries the frame (utility bar, footer); white carries reading, with sections separated by a single hairline; a cool mist ground marks the start of every inner page and the home activities band. Content is organised as ruled lists, never as tiles. Gold appears as a line, an arrow, a focus ring and the arms; as text it appears only on navy.
 
-Density is generous but not airy: sections breathe on a fluid 4 to 7.5rem rhythm, measure is held at 68ch, and the two-column split is the default composition from 62rem up. Motion is nearly absent: one hero entrance, a few hover transforms, nothing that fades content in.
+Density is generous but not airy: sections breathe on a fluid 4 to 7.5rem rhythm, measure is held at 68ch, and the two-column split is the default composition from 62rem up. The home page is short by design: what the firm does comes first, long texts of the old site sit behind "Lire la suite" (native `<details>`). Motion is one authored moment (the emblem drawing itself in the hero) plus a quiet scroll reveal of sections below the fold.
 
 **Key Characteristics:**
 - White ground, navy bands, gold only as line or as text on navy.
 - Spectral at light weight for headings, Hanken Grotesk for text and interface.
 - Ruled lists instead of cards; hairlines instead of shadows.
 - Square corners everywhere.
-- Real photographs only, cropped edge to edge.
+- Real photographs only, cropped edge to edge. The home hero carries no photograph: its image is the firm's emblem (book with "L W" and sword, after the arms) redrawn as a gold line drawing (`src/components/Embleme.astro`).
 
 ## Colors
 
@@ -183,7 +183,7 @@ A cool, dark navy family with one warm metal accent, held to WCAG 2.2 AA by a ch
 
 A centred container of 76rem plus a fluid gutter (1.25 to 3rem). Sections pad on a fluid 4 to 7.5rem block rhythm; the "atouts" band is tighter (3.5 to 5rem). Reading measure is 68ch.
 
-The composition is two columns from 62rem: hero text against an edge-to-edge office photograph (0.85fr, full height, min(80vh, 44rem)); section title against lead; text against a portrait or network list; content against a sticky 21rem side column on detail pages. Below 62rem everything stacks in source order. The register list goes two-column at 56rem. The hero and the side column align their inner edge to the container even when the band runs full bleed.
+The composition is two columns from 62rem: hero text (1.4fr) against the drawn emblem (max 19rem), with the five activity areas as a ruled row underneath, still on navy; section title against lead; text against a portrait or network list; content against a sticky 21rem side column on detail pages. Below 62rem everything stacks in source order. The register list goes two-column at 56rem. The hero and the side column align their inner edge to the container even when the band runs full bleed.
 
 The header is sticky: a 2.5rem deep-navy utility bar (address from 48rem, email from 64rem, FR | EN) over a 5.25rem white bar with the arms and navigation. Below 64rem the navigation collapses to a menu button.
 
@@ -241,7 +241,10 @@ Every inner page opens on a mist band with a hairline below: breadcrumb (slash-s
 - **Do** put solid navy buttons on white and gold-outline buttons on navy.
 - **Do** keep every corner square.
 - **Do** run `npm run check:contrast` when a colour pair is added.
-- **Do** keep motion to transforms; the hero entrance moves 0.75rem up with no fade, and reduced motion is respected.
+- **Do** keep motion to transforms and one authored moment: the emblem draws itself (stroke-dashoffset, about 2.8s in total), the hero headline moves 0.75rem up with no fade, sections below the fold rise 1.5rem and fade in once (`src/scripts/revele.ts`, `data-revele` / `data-revele-i`). Content above the fold is never hidden, nothing is hidden without JavaScript, and reduced motion and print show everything at once.
+- **Do** group the activities in the five areas of `src/lib/groupes.ts` wherever they are listed for orientation (home hero, home activities, activities page).
+- **Do** put a long text's PDF at the top of its page (in the page header) and give texts with three or more h2 a "Sur cette page" contents list (`src/components/Sommaire.astro`).
+- **Do** use the line icons of `Icone.astro` (one 1.5 stroke on a 24 grid); the "atouts" award mark is the one icon drawn larger, in pale gold on navy.
 
 ### Don't:
 - **Don't** set gold text on white or mist.

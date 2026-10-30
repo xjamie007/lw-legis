@@ -18,8 +18,11 @@ interface Props {
   chapeauHtml?: boolean;
   edTitre?: Edition;
   edChapeau?: Edition;
+  /** Lange Einleitung auf dem Handy ausblenden (die Seite selbst sagt genug). */
+  chapeauDesktop?: boolean;
 }
-const { lang, fil, titre, chapeau, chapeauHtml = false, edTitre, edChapeau } = Astro.props;
+const { lang, fil, titre, chapeau, chapeauHtml = false, edTitre, edChapeau, chapeauDesktop = false } = Astro.props;
+const klasse = chapeauDesktop ? 'chapeau chapeau--desktop' : 'chapeau';
 ---
 
 <div class="tete">
@@ -42,8 +45,8 @@ const { lang, fil, titre, chapeau, chapeauHtml = false, edTitre, edChapeau } = A
       )
     }
     <h1 {...edTitre}>{titre}</h1>
-    {chapeau && chapeauHtml && <div class="chapeau tete__html" set:html={chapeau} {...edChapeau} />}
-    {chapeau && !chapeauHtml && <p class="chapeau" {...edChapeau}>{chapeau}</p>}
+    {chapeau && chapeauHtml && <div class:list={[klasse, 'tete__html']} set:html={chapeau} {...edChapeau} />}
+    {chapeau && !chapeauHtml && <p class={klasse} {...edChapeau}>{chapeau}</p>}
     <slot />
   </div>
 </div>
@@ -51,5 +54,10 @@ const { lang, fil, titre, chapeau, chapeauHtml = false, edTitre, edChapeau } = A
 <style>
   .tete__html :global(p + p) {
     margin-top: 0.75em;
+  }
+  @media (max-width: 47.99rem) {
+    .chapeau--desktop {
+      display: none;
+    }
   }
 </style>

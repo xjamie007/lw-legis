@@ -324,6 +324,19 @@
     text-decoration: underline;
     text-underline-offset: 3px;
   }
+  /* Auf dem Handy nur der Weg eine Ebene zurueck: „← Activités“. */
+  @media (max-width: 47.99rem) {
+    .fil li {
+      display: none;
+    }
+    .fil li:nth-last-child(2) {
+      display: inline-flex;
+    }
+    .fil li:nth-last-child(2)::before {
+      content: '←';
+      color: var(--color-or);
+    }
+  }
 
   /* --- Fliesstext ---------------------------------------------------------- */
   .prose {
@@ -638,6 +651,29 @@
 /* ---------------------------------------------------------------------------
    5. BEWEGUNG UND DRUCK
    --------------------------------------------------------------------------- */
+/* Einblenden beim Scrollen (src/scripts/revele.ts). Versteckt ist nur, was
+   das Skript selbst als `revele--pret` markiert hat. */
+.revele--pret {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.revele--pret [data-revele-i] {
+  opacity: 0;
+  transform: translateY(1rem);
+  transition:
+    opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--i, 0) * 70ms + 150ms);
+}
+.revele--vu,
+.revele--vu [data-revele-i] {
+  opacity: 1;
+  transform: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -648,6 +684,11 @@
 }
 
 @media print {
+  .revele--pret,
+  .revele--pret [data-revele-i] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
   .sans-impression,
   header,
   footer,

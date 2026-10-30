@@ -2,6 +2,9 @@
 /**
  * src/vues/Partenaires.astro — Partenaires: die Kanzleien, mit denen
  * LW LEGIS zusammenarbeitet, mit dem Text der alten Seite.
+ *
+ * Traegt ein Partner `photo` (ein Bildplatz aus content/source/bilder.mjs)
+ * und liegt die Datei vor, steht sein Bild ueber dem Namen.
  */
 import type { Lang } from '../lib/langs';
 import { txt, txtHtml } from '../lib/langs';
@@ -11,6 +14,7 @@ import type { Route } from '../lib/pages';
 import { edPage } from '../lib/edition';
 import Tete from '../components/Tete.astro';
 import Icone from '../components/Icone.astro';
+import Bild from '../components/Bild.astro';
 
 interface Props {
   lang: Lang;
@@ -33,8 +37,13 @@ const p = contenu.pages.partenaires;
   <div class="enveloppe">
     {
       p.partenaires.map((x: any, i: number) => (
-        <article class="partenaire">
+        <article class="partenaire" data-revele>
           <header>
+            {x.photo && contenu.bilder[x.photo]?.datei && (
+              <div class="partenaire__photo">
+                <Bild platz={x.photo} lang={lang} sizes="(min-width: 62rem) 26rem, 90vw" />
+              </div>
+            )}
             <h2 {...edPage(`partenaires.partenaires.${i}.nom`)}>{txt(x.nom, lang)}</h2>
             <p class="partenaire__lieux" {...edPage(`partenaires.partenaires.${i}.lieux`)}>
               {txt(x.lieux, lang)}
@@ -62,6 +71,16 @@ const p = contenu.pages.partenaires;
     margin-top: 4rem;
     padding-top: 4rem;
     border-top: 1px solid var(--color-trait);
+  }
+  .partenaire__photo {
+    margin-bottom: 1.75rem;
+  }
+  .partenaire__photo :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
   }
   .partenaire h2 {
     font-size: var(--text-h2);

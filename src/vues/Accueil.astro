@@ -2,21 +2,25 @@
 /**
  * src/vues/Accueil.astro — Startseite.
  *
- * Reihenfolge: Hero (wer, was, Termin), die Kanzlei mit Me Lorang, die
- * Taetigkeiten als Register, die Staerken, Netzwerke und Vertretungen,
- * Dossiers und Konferenzen, „Pourquoi un avocat“, Kontakt.
- * Alle Texte stammen von der alten Seite (content/source/pages.mjs).
+ * Kurz und auf einen Blick: Wer (Name, Barreau seit 1982), was (die fuenf
+ * Bereiche gleich im Einstieg, darunter alle Taetigkeiten als Liste), die
+ * Staerken, der Anwalt. Die langen Texte der alten Seite sind vollstaendig
+ * da, aber zugeklappt: Wer mehr lesen will, klickt „Lire la suite“.
+ *
+ * Kein Foto im Einstieg: Stattdessen das Zeichen aus dem Wappen als
+ * Linienzeichnung, die sich beim Laden aufbaut (Embleme.astro).
  */
 import type { Lang } from '../lib/langs';
-import { txt, txtOuFrancais, txtHtml } from '../lib/langs';
-import { t } from '../lib/i18n';
-import { activites, conferences, contenu, dossiers, equipe } from '../lib/content';
+import { txt, txtHtml, txtOuFrancais } from '../lib/langs';
+import { t, formaterTaille } from '../lib/i18n';
+import { conferences, contenu, dossiers, equipe } from '../lib/content';
+import { groupesAvecActivites } from '../lib/groupes';
 import { adresse } from '../lib/pages';
 import { ed, edPage } from '../lib/edition';
-import { formaterTaille } from '../lib/i18n';
 import { prefixer } from '../lib/base';
 import Bild from '../components/Bild.astro';
 import Icone from '../components/Icone.astro';
+import Embleme from '../components/Embleme.astro';
 
 interface Props {
   lang: Lang;
@@ -26,9 +30,9 @@ const p = contenu.pages.accueil;
 const s = contenu.settings;
 
 const lorang = equipe(lang).find((m) => m.id === 'alain-lorang');
-const liste = activites(lang);
-const derniersDossiers = dossiers(lang).slice(0, 4);
-const dernieresConferences = conferences().filter((c) => c.pdf).slice(0, 4);
+const groupes = groupesAvecActivites(lang);
+const derniersDossiers = dossiers(lang).slice(0, 3);
+const dernieresConferences = conferences().filter((c) => c.pdf).slice(0, 3);
 
 const urlContact = adresse('contact', lang);
 const urlAvocats = adresse('avocats', lang);
@@ -37,82 +41,96 @@ const urlDossiers = adresse('dossiers', lang);
 const urlConferences = adresse('conferences', lang);
 ---
 
+{/* --- Einstieg ------------------------------------------------------------ */}
 <section class="hero">
-  <div class="hero__texte">
-    <h1 {...edPage('accueil.titre')}>{txt(p.titre, lang)}</h1>
-    <p class="hero__intro" {...edPage('accueil.intro')}>{txt(p.intro, lang)}</p>
-    <div class="hero__actions">
+  <div class="enveloppe hero__grille">
+    <div class="hero__texte">
+      <h1 {...edPage('accueil.titre')}>{txt(p.titre, lang)}</h1>
+      <p class="hero__depuis">{t(lang, 'accueil.preuve_1')}</p>
+      <p class="hero__intro" {...edPage('accueil.intro')}>{txt(p.intro, lang)}</p>
+      <div class="hero__actions">
+        {
+          urlContact && (
+            <a class="bouton bouton--or" href={urlContact}>
+              {t(lang, 'accueil.rendez_vous')}
+              <Icone nom="fleche" />
+            </a>
+          )
+        }
+        <a class="hero__tel" href={`tel:${s.telephone.lien}`}>
+          <span>{t(lang, 'accueil.ou_appeler')}</span>
+          {s.telephone.affiche}
+        </a>
+      </div>
+    </div>
+    <div class="hero__embleme">
+      <Embleme />
+    </div>
+  </div>
+
+  {/* Was die Kanzlei macht — gleich im ersten Bild */}
+  <nav class="enveloppe domaines" aria-label={t(lang, 'activites.domaines')}>
+    <ul>
       {
-        urlContact && (
-          <a class="bouton bouton--or" href={urlContact}>
-            {t(lang, 'accueil.rendez_vous')}
+        groupes.map((g) => (
+          <li>
+            <a href={`${urlActivites}#${g.id}`}>
+              <span class="domaines__nom">{txt(g.nom, lang)}</span>
+              <span class="domaines__nombre">{g.liste.length}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</section>
+
+{/* --- Taetigkeiten ---------------------------------------------------------- */}
+<section class="section activites" data-revele>
+  <div class="enveloppe">
+    <div class="entete-section">
+      <h2 class="titre-section titre-section--grand">{t(lang, 'accueil.activites_titre')}</h2>
+      {
+        urlActivites && (
+          <a class="lien-fleche" href={urlActivites}>
+            {t(lang, 'accueil.activites_toutes')}
             <Icone nom="fleche" />
           </a>
         )
       }
-      <a class="hero__tel" href={`tel:${s.telephone.lien}`}>
-        <span>{t(lang, 'accueil.ou_appeler')}</span>
-        {s.telephone.affiche}
-      </a>
     </div>
-  </div>
-  <div class="hero__image">
-    <Bild platz="bureau_1" lang={lang} sizes="(min-width: 62rem) 45vw, 100vw" eifrig />
-  </div>
-  <ul class="hero__preuves">
-    <li>{t(lang, 'accueil.preuve_1')}</li>
-    <li>{t(lang, 'accueil.preuve_2')}</li>
-    <li>{t(lang, 'accueil.preuve_3')}</li>
-  </ul>
-</section>
-
-<section class="section">
-  <div class="enveloppe etude">
-    <div class="etude__texte">
-      <h2 class="titre-section" {...edPage('accueil.cabinet_titre')}>{txt(p.cabinet_titre, lang)}</h2>
-      <div class="prose" set:html={txtHtml(p.cabinet_texte, lang)} {...edPage('accueil.cabinet_texte', true)} />
-    </div>
-    {
-      lorang && (
-        <figure class="etude__portrait">
-          <Bild platz="portrait" lang={lang} sizes="(min-width: 62rem) 24rem, 80vw" />
-          <figcaption>
-            <span class="etude__nom">
-              {lorang.titre_civil} {lorang.nom}
-            </span>
-            <span {...ed('team', lorang.id, 'fonction')}>{txt(lorang.fonction, lang)}</span>
-            {
-              urlAvocats && (
-                <a class="lien-fleche" href={urlAvocats}>
-                  {t(lang, 'nav.avocats')}
-                  <Icone nom="fleche" />
-                </a>
-              )
-            }
-          </figcaption>
-        </figure>
-      )
-    }
-  </div>
-</section>
-
-<section class="section section--brume">
-  <div class="enveloppe">
-    <div class="entete-section">
-      <h2 class="titre-section titre-section--grand">{t(lang, 'accueil.activites_titre')}</h2>
-      <p class="chapeau" {...edPage('activites.intro')}>{txt(contenu.pages.activites.intro, lang)}</p>
-    </div>
-    <ul class="registre registre--deux">
+    <div class="activites__grille">
       {
-        liste.map((a) => (
-          <li class="registre__ligne">
-            <a class="registre__lien" href={adresse(`activite:${a.id}`, lang)}>
-              <span class="registre__titre" {...ed('services', a.id, 'terme')}>
-                {txt(a.terme, lang)}
-              </span>
-              <span class="registre__texte">{txt(a.definition, lang)}</span>
-              <Icone nom="fleche" class="registre__fleche" />
-            </a>
+        groupes.map((g, i) => (
+          <div class="groupe" data-revele-i style={`--i: ${i}`}>
+            <h3>{txt(g.nom, lang)}</h3>
+            <ul>
+              {g.liste.map((a) => (
+                <li>
+                  <a href={adresse(`activite:${a.id}`, lang)}>
+                    <span {...ed('services', a.id, 'terme')}>{txt(a.terme, lang)}</span>
+                    <Icone nom="fleche" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+{/* --- Staerken (wie auf der alten Seite: Abzeichen und vier Worte) -------- */}
+<section class="section--marine atouts" data-revele>
+  <div class="enveloppe">
+    <h2 class="atouts__titre" {...edPage('accueil.atouts_titre')}>{txt(p.atouts_titre, lang)}</h2>
+    <ul class="atouts__liste">
+      {
+        p.atouts.map((a: any, i: number) => (
+          <li data-revele-i style={`--i: ${i}`}>
+            <Icone nom="distinction" class="atouts__icone" />
+            <span {...edPage(`accueil.atouts.${i}.titre`)}>{txt(a.titre, lang)}</span>
           </li>
         ))
       }
@@ -120,60 +138,87 @@ const urlConferences = adresse('conferences', lang);
   </div>
 </section>
 
-<section class="section--marine atouts">
-  <div class="enveloppe atouts__grille">
-    <h2 class="titre-section" {...edPage('accueil.atouts_titre')}>{txt(p.atouts_titre, lang)}</h2>
-    <ol class="atouts__liste">
+{/* --- Der Anwalt -------------------------------------------------------- */}
+{
+  lorang && (
+    <section class="section avocat" data-revele>
+      <div class="enveloppe avocat__grille">
+        <div class="avocat__portrait">
+          <Bild platz="portrait" lang={lang} sizes="(min-width: 62rem) 22rem, 60vw" />
+        </div>
+        <div class="avocat__texte">
+          <h2 class="titre-section">
+            {lorang.titre_civil} {lorang.nom}
+          </h2>
+          <p class="avocat__fonction" {...ed('team', lorang.id, 'fonction')}>
+            {txt(lorang.fonction, lang)}
+          </p>
+          <ul class="avocat__preuves">
+            <li>{t(lang, 'accueil.preuve_1')}</li>
+            <li>{t(lang, 'accueil.preuve_2')}</li>
+            <li>{t(lang, 'accueil.preuve_3')}</li>
+          </ul>
+          <details class="plus">
+            <summary>
+              <Icone nom="plus" />
+              <span class="plus__ouvrir">{t(lang, 'accueil.lire_suite')}</span>
+              <span class="plus__fermer">{t(lang, 'accueil.reduire')}</span>
+            </summary>
+            <h3 {...edPage('accueil.cabinet_titre')}>{txt(p.cabinet_titre, lang)}</h3>
+            <div class="prose" set:html={txtHtml(p.cabinet_texte, lang)} {...edPage('accueil.cabinet_texte', true)} />
+          </details>
+          {
+            urlAvocats && (
+              <a class="lien-fleche" href={urlAvocats}>
+                {t(lang, 'nav.avocats')}
+                <Icone nom="fleche" />
+              </a>
+            )
+          }
+        </div>
+      </div>
+    </section>
+  )
+}
+
+{/* --- Netzwerke ---------------------------------------------------------- */}
+<section class="section section--brume reseaux" data-revele>
+  <div class="enveloppe">
+    <h2 class="titre-section">{t(lang, 'accueil.reseaux_titre')}</h2>
+    <ul class="reseaux__liste">
       {
-        p.atouts.map((a: any, i: number) => (
-          <li>
-            <span class="atouts__titre" {...edPage(`accueil.atouts.${i}.titre`)}>
-              {txt(a.titre, lang)}
-            </span>
+        s.reseaux.map((r: any, i: number) => (
+          <li data-revele-i style={`--i: ${i}`}>
+            <span class="reseaux__nom">{r.nom}</span>
+            <span class="reseaux__role">{txt(r.role, lang)}</span>
           </li>
         ))
       }
-    </ol>
-  </div>
-</section>
-
-<section class="section">
-  <div class="enveloppe specialiste">
-    <div>
-      <h2 class="titre-section" {...edPage('accueil.specialiste_titre')}>{txt(p.specialiste_titre, lang)}</h2>
+    </ul>
+    <details class="plus">
+      <summary>
+        <Icone nom="plus" />
+        <span class="plus__ouvrir">{t(lang, 'accueil.en_savoir_plus')}</span>
+        <span class="plus__fermer">{t(lang, 'accueil.reduire')}</span>
+      </summary>
+      <h3 {...edPage('accueil.specialiste_titre')}>{txt(p.specialiste_titre, lang)}</h3>
       <div class="prose" set:html={txtHtml(p.specialiste_texte, lang)} {...edPage('accueil.specialiste_texte', true)} />
-    </div>
-    <aside class="reseaux" aria-labelledby="titre-reseaux">
-      <h3 id="titre-reseaux">{t(lang, 'accueil.reseaux_titre')}</h3>
-      <dl>
-        {
-          s.reseaux.map((r: any) => (
-            <div>
-              <dt>{r.nom}</dt>
-              <dd>{txt(r.role, lang)}</dd>
-            </div>
-          ))
-        }
-      </dl>
-      <div class="reseaux__photo">
-        <Bild platz="bureau_2" lang={lang} sizes="(min-width: 62rem) 22rem, 80vw" />
-      </div>
-    </aside>
+    </details>
   </div>
 </section>
 
-<section class="section section--filet">
-  <div class="enveloppe publications">
+{/* --- Dossiers und Konferenzen: je drei Titel ---------------------------- */}
+<section class="section publications" data-revele>
+  <div class="enveloppe publications__grille">
     <div>
       <h2 class="titre-section">{t(lang, 'nav.dossiers')}</h2>
-      <ul class="registre">
+      <ul class="courte">
         {
           derniersDossiers.map((d) => (
-            <li class="registre__ligne">
-              <a class="registre__lien" href={adresse(`dossier:${d.id}`, lang)}>
-                <span class="registre__titre">{txt(d.titre, lang)}</span>
-                <span class="registre__texte">{txt(d.resume, lang)}</span>
-                <Icone nom="fleche" class="registre__fleche" />
+            <li>
+              <a href={adresse(`dossier:${d.id}`, lang)}>
+                {txt(d.titre, lang)}
+                <Icone nom="fleche" />
               </a>
             </li>
           ))
@@ -181,7 +226,7 @@ const urlConferences = adresse('conferences', lang);
       </ul>
       {
         urlDossiers && (
-          <a class="lien-fleche publications__tous" href={urlDossiers}>
+          <a class="lien-fleche" href={urlDossiers}>
             {t(lang, 'accueil.dossiers_tous')}
             <Icone nom="fleche" />
           </a>
@@ -190,22 +235,18 @@ const urlConferences = adresse('conferences', lang);
     </div>
     <div>
       <h2 class="titre-section">{t(lang, 'nav.conferences')}</h2>
-      <p class="chapeau" {...edPage('accueil.conferences_texte')}>{txt(p.conferences_texte, lang)}</p>
-      <ul class="registre publications__conf">
+      <ul class="courte">
         {
           dernieresConferences.map((c) => {
             const titre = txtOuFrancais(c.titre, lang);
             return (
-              <li class="registre__ligne">
-                <a class="registre__lien" href={prefixer(c.pdf!.chemin)} download>
-                  <span class="registre__titre" lang={titre.lang !== lang ? titre.lang : undefined}>
-                    {titre.valeur}
+              <li>
+                <a href={prefixer(c.pdf!.chemin)} download>
+                  <span lang={titre.lang !== lang ? titre.lang : undefined}>{titre.valeur}</span>
+                  <span class="courte__pdf">
+                    <Icone nom="pdf" />
+                    {formaterTaille(c.pdf!.octets, lang)}
                   </span>
-                  <span class="etiquettes">
-                    <span>PDF · {formaterTaille(c.pdf!.octets, lang)}</span>
-                    {titre.lang !== lang && <span>{t(lang, 'conferences.en_francais')}</span>}
-                  </span>
-                  <Icone nom="telecharger" class="registre__fleche" />
                 </a>
               </li>
             );
@@ -214,7 +255,7 @@ const urlConferences = adresse('conferences', lang);
       </ul>
       {
         urlConferences && (
-          <a class="lien-fleche publications__tous" href={urlConferences}>
+          <a class="lien-fleche" href={urlConferences}>
             {t(lang, 'accueil.conferences_toutes')}
             <Icone nom="fleche" />
           </a>
@@ -224,23 +265,27 @@ const urlConferences = adresse('conferences', lang);
   </div>
 </section>
 
-<section class="section section--filet pourquoi-section">
-  <div class="enveloppe pourquoi">
-    <h2 class="pourquoi__titre" {...edPage('accueil.pourquoi_titre')}>{txt(p.pourquoi_titre, lang)}</h2>
-    <div class="prose pourquoi__texte" set:html={txtHtml(p.pourquoi_texte, lang)} {...edPage('accueil.pourquoi_texte', true)} />
+{/* --- Pourquoi un avocat: zugeklappt ------------------------------------- */}
+<section class="pourquoi" data-revele>
+  <div class="enveloppe">
+    <details class="pourquoi__details">
+      <summary>
+        <span {...edPage('accueil.pourquoi_titre')}>{txt(p.pourquoi_titre, lang)}</span>
+        <Icone nom="plus" />
+      </summary>
+      <div class="prose pourquoi__texte" set:html={txtHtml(p.pourquoi_texte, lang)} {...edPage('accueil.pourquoi_texte', true)} />
+    </details>
   </div>
 </section>
 
-<section class="section section--marine rdv">
+{/* --- Termin --------------------------------------------------------------- */}
+<section class="section section--marine rdv" data-revele>
   <div class="enveloppe rdv__grille">
     <h2 class="titre-section" set:html={t(lang, 'accueil.rdv_titre').replace('rendez-vous', '<span class="insecable">rendez-vous</span>')} />
     <div class="rdv__coordonnees">
-      <address>
-        {s.adresse.rue}<br />
-        {`${s.adresse.code_postal} ${s.adresse.ville}`}
-      </address>
       <a class="rdv__tel" href={`tel:${s.telephone.lien}`}>{s.telephone.affiche}</a>
       <a href={`mailto:${s.courriel}`}>{s.courriel}</a>
+      <address>{s.adresse.une_ligne}</address>
       {
         urlContact && (
           <a class="bouton bouton--or" href={urlContact}>
@@ -254,17 +299,18 @@ const urlConferences = adresse('conferences', lang);
 </section>
 
 <style>
-  /* --- Hero ---------------------------------------------------------------
-     Marineblau ueber die ganze Breite: links Titel, Satz und Termin,
-     rechts das Foto des Salons, randlos bis an die Kante. */
+  /* --- Einstieg ------------------------------------------------------------
+     Marineblau, links Titel und Termin, rechts das gezeichnete Zeichen.
+     Darunter, noch im Blau, die fuenf Bereiche als Wegweiser. */
   .hero {
-    display: grid;
     background: var(--color-marine);
     color: var(--color-marine-texte);
+    overflow: hidden;
   }
-  .hero__texte {
-    padding: clamp(3.5rem, 2rem + 6vw, 7rem) var(--gouttiere) clamp(3rem, 2rem + 4vw, 5rem);
-    animation: hero-entree 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  .hero__grille {
+    display: grid;
+    gap: 1.75rem;
+    padding-block: clamp(3rem, 2rem + 5vw, 6rem) clamp(2rem, 1.5rem + 2vw, 3rem);
   }
   .hero h1 {
     font-size: var(--text-affiche);
@@ -273,10 +319,17 @@ const urlConferences = adresse('conferences', lang);
     letter-spacing: -0.02em;
     color: var(--color-blanc);
     max-width: 12ch;
+    animation: hero-entree 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .hero__depuis {
+    margin-top: 1.25rem;
+    color: var(--color-or-clair);
+    font-weight: 500;
   }
   .hero__intro {
-    margin-top: 2rem;
-    max-width: 48ch;
+    display: none;
+    margin-top: 1.5rem;
+    max-width: 50ch;
     font-size: var(--text-chapeau);
     line-height: 1.6;
   }
@@ -285,7 +338,7 @@ const urlConferences = adresse('conferences', lang);
     flex-wrap: wrap;
     align-items: center;
     gap: 1.25rem 2rem;
-    margin-top: 2.75rem;
+    margin-top: 2.25rem;
   }
   .hero__tel {
     display: inline-flex;
@@ -293,8 +346,8 @@ const urlConferences = adresse('conferences', lang);
     color: var(--color-blanc);
     font-family: var(--font-titre);
     font-size: 1.375rem;
-    text-decoration: none;
     line-height: 1.2;
+    text-decoration: none;
   }
   .hero__tel span {
     font-family: var(--font-texte);
@@ -304,243 +357,403 @@ const urlConferences = adresse('conferences', lang);
   .hero__tel:hover {
     color: var(--color-or-clair);
   }
-  .hero__image :global(picture),
-  .hero__image :global(img) {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .hero__image {
-    aspect-ratio: 4 / 3;
-  }
-  .hero__preuves {
-    display: grid;
-    gap: 0.75rem 2.5rem;
-    padding: 1.75rem var(--gouttiere);
-    border-top: 1px solid color-mix(in srgb, var(--color-marine-texte) 22%, transparent);
-    font-size: 0.875rem;
+  /* Auf dem Handy klein ueber dem Titel, auf dem Desktop gross daneben. */
+  .hero__embleme {
+    order: -1;
+    width: 4.5rem;
     color: var(--color-or-clair);
   }
-  @media (min-width: 62rem) {
-    .hero {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
-      grid-template-rows: 1fr auto;
-      min-height: min(80vh, 44rem);
-    }
-    .hero__texte {
-      align-self: center;
-      padding-left: max(var(--gouttiere), calc((100vw - var(--largeur)) / 2));
-      padding-right: clamp(2rem, 5vw, 5rem);
-    }
-    .hero__image {
-      grid-row: 1 / span 2;
-      grid-column: 2;
-      aspect-ratio: auto;
-    }
-    .hero__preuves {
-      grid-template-columns: repeat(3, auto);
-      justify-content: start;
-      padding-left: max(var(--gouttiere), calc((100vw - var(--largeur)) / 2));
+  @media (min-width: 48rem) {
+    .hero__intro {
+      display: block;
     }
   }
-  /* Nur Bewegung, keine Ausblendung: Der Text ist vom ersten Bild an
-     lesbar, auch wenn der Browser Animationen anhaelt. */
+  @media (min-width: 62rem) {
+    .hero__grille {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      align-items: center;
+      gap: 4rem;
+    }
+    .hero__embleme {
+      order: 0;
+      width: 100%;
+      max-width: 19rem;
+      justify-self: center;
+    }
+  }
   @keyframes hero-entree {
     from {
       transform: translateY(0.75rem);
     }
   }
 
-  /* --- Die Kanzlei ---------------------------------------------------------- */
-  .etude {
+  .domaines {
+    padding-bottom: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  }
+  .domaines ul {
     display: grid;
-    gap: 3.5rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-marine-texte) 28%, transparent);
   }
-  .etude .prose {
-    margin-top: 2rem;
+  .domaines a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.95rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-marine-texte) 28%, transparent);
+    color: var(--color-blanc);
+    text-decoration: none;
+    transition: color 200ms ease-out;
   }
-  .etude__portrait {
-    margin: 0;
-    max-width: 24rem;
+  .domaines a:hover {
+    color: var(--color-or-clair);
   }
-  .etude__portrait :global(img) {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-  }
-  .etude__portrait figcaption {
-    display: grid;
-    gap: 0.15rem;
-    margin-top: 1.25rem;
-    padding-top: 1.25rem;
-    border-top: 2px solid var(--color-or);
-    color: var(--color-gris);
-    font-size: 0.9375rem;
-  }
-  .etude__nom {
+  .domaines__nom {
     font-family: var(--font-titre);
-    font-size: 1.375rem;
-    color: var(--color-encre);
+    font-size: 1.1875rem;
   }
-  .etude__portrait .lien-fleche {
-    justify-self: start;
-    margin-top: 1rem;
+  .domaines__nombre {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-or-clair);
+    font-variant-numeric: tabular-nums;
   }
   @media (min-width: 62rem) {
-    .etude {
-      grid-template-columns: minmax(0, 1fr) 24rem;
-      gap: clamp(4rem, 8vw, 8rem);
-      align-items: start;
+    .domaines ul {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      border-top: 0;
     }
-    .etude__portrait {
-      margin-top: 4.5rem;
+    .domaines a {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.35rem;
+      height: 100%;
+      padding: 1.25rem 1.5rem 1.25rem 0;
+      border-bottom: 0;
+      border-top: 2px solid color-mix(in srgb, var(--color-marine-texte) 28%, transparent);
+      transition:
+        color 200ms ease-out,
+        border-color 200ms ease-out;
+    }
+    .domaines a:hover {
+      border-top-color: var(--color-or-clair);
+    }
+    .domaines li + li a {
+      padding-left: 1.5rem;
     }
   }
 
-  /* --- Taetigkeiten ---------------------------------------------------------- */
+  /* --- Taetigkeiten ---------------------------------------------------- */
   .entete-section {
-    display: grid;
-    gap: 1.25rem 4rem;
-    margin-bottom: 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-bottom: 2.5rem;
   }
   .titre-section--grand {
     font-size: var(--text-titre);
     font-weight: 300;
   }
-  @media (min-width: 62rem) {
-    .entete-section {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      align-items: start;
-    }
-    .entete-section .chapeau {
-      padding-top: 0.6rem;
-    }
-  }
-
-  /* --- Staerken -----------------------------------------------------------
-     Ein knappes Band: links der Titel, rechts die vier Staerken als
-     Zeilen mit Linie. */
-  .atouts {
-    padding-block: clamp(3.5rem, 2.5rem + 3vw, 5rem);
-  }
-  .atouts__grille {
+  .activites__grille {
     display: grid;
-    gap: 2rem 6rem;
+    gap: 2.5rem 3rem;
   }
-  .atouts__liste li {
-    padding-block: 1rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--color-marine-texte) 30%, transparent);
-  }
-  .atouts__liste li:first-child {
-    border-top: 1px solid color-mix(in srgb, var(--color-marine-texte) 30%, transparent);
-  }
-  .atouts__titre {
-    font-family: var(--font-titre);
-    font-size: 1.375rem;
-    line-height: 1.3;
-    color: var(--color-blanc);
-  }
-  @media (min-width: 62rem) {
-    .atouts__grille {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      align-items: center;
-    }
-  }
-
-  /* --- Netzwerke ----------------------------------------------------------- */
-  .specialiste {
-    display: grid;
-    gap: 3.5rem;
-  }
-  .specialiste .prose {
-    margin-top: 2rem;
-  }
-  .reseaux h3 {
+  .groupe h3 {
     font-family: var(--font-texte);
     font-size: 0.8125rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-gris);
-    padding-bottom: 1rem;
+    padding-bottom: 0.75rem;
     border-bottom: 2px solid var(--color-or);
   }
-  .reseaux dl > div {
-    padding-block: 1.25rem;
+  .groupe a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 0;
     border-bottom: 1px solid var(--color-trait);
+    font-family: var(--font-titre);
+    font-size: 1.1875rem;
+    line-height: 1.35;
+    color: var(--color-encre);
+    text-decoration: none;
   }
-  .reseaux dt {
+  .groupe a :global(svg) {
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    color: var(--color-or);
+    transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .groupe a:hover {
+    color: var(--color-marine);
+  }
+  .groupe a:hover :global(svg) {
+    transform: translateX(4px);
+  }
+  @media (min-width: 48rem) {
+    .activites__grille {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 72rem) {
+    .activites__grille {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  /* --- Staerken ------------------------------------------------------------- */
+  .atouts {
+    padding-block: clamp(3.5rem, 2.5rem + 3vw, 5.5rem);
+    text-align: center;
+  }
+  .atouts__titre {
+    font-size: var(--text-h2);
+    color: var(--color-blanc);
+    max-width: 30ch;
+    margin-inline: auto;
+  }
+  .atouts__liste {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem 1.5rem;
+    margin-top: 3rem;
+  }
+  .atouts__liste li {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 1rem;
+    font-family: var(--font-titre);
+    font-size: clamp(1.125rem, 1rem + 0.5vw, 1.4375rem);
+    line-height: 1.3;
+    color: var(--color-blanc);
+  }
+  .atouts__liste :global(.atouts__icone) {
+    width: clamp(3.5rem, 3rem + 2vw, 4.75rem);
+    height: auto;
+    color: var(--color-or-clair);
+    stroke-width: 1.1;
+  }
+  @media (min-width: 62rem) {
+    .atouts__liste {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  /* --- Der Anwalt ---------------------------------------------------------- */
+  .avocat__grille {
+    display: grid;
+    gap: 2.5rem;
+  }
+  .avocat__portrait {
+    max-width: 22rem;
+  }
+  .avocat__portrait :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+  .avocat__fonction {
+    margin-top: 0.5rem;
+    color: var(--color-gris);
+    font-weight: 500;
+  }
+  .avocat__preuves {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--color-or);
+  }
+  .avocat__preuves li {
+    font-family: var(--font-titre);
+    font-size: 1.1875rem;
+    line-height: 1.4;
+    color: var(--color-encre);
+  }
+  .avocat .lien-fleche {
+    margin-top: 2rem;
+  }
+  @media (min-width: 62rem) {
+    .avocat__grille {
+      grid-template-columns: 22rem minmax(0, 1fr);
+      gap: clamp(4rem, 8vw, 7rem);
+      align-items: center;
+    }
+  }
+
+  /* --- „Lire la suite“ -------------------------------------------------- */
+  .plus {
+    margin-top: 1.75rem;
+  }
+  .plus summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    list-style: none;
+    color: var(--color-marine);
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+  .plus summary::-webkit-details-marker {
+    display: none;
+  }
+  .plus summary :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--color-or);
+    transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .plus[open] summary :global(svg) {
+    transform: rotate(45deg);
+  }
+  .plus__fermer,
+  .plus[open] .plus__ouvrir {
+    display: none;
+  }
+  .plus[open] .plus__fermer {
+    display: inline;
+  }
+  .plus h3 {
+    margin-top: 1.75rem;
+    font-size: 1.375rem;
+  }
+  .plus .prose {
+    margin-top: 1rem;
+  }
+  .avocat .plus + .lien-fleche {
+    display: flex;
+    width: max-content;
+  }
+
+  /* --- Netzwerke ------------------------------------------------------------ */
+  .reseaux__liste {
+    display: grid;
+    gap: 1.5rem 2.5rem;
+    margin-top: 2.5rem;
+  }
+  .reseaux__liste li {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-trait);
+  }
+  .reseaux__nom {
     font-family: var(--font-titre);
     font-size: 1.5rem;
     color: var(--color-marine);
   }
-  .reseaux__photo {
-    margin-top: 1.5rem;
-  }
-  /* Quer beschnitten, damit das Foto mit dem Text daneben endet. */
-  .reseaux__photo :global(img) {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    object-position: 50% 55%;
-  }
-  .reseaux dd {
-    margin-top: 0.25rem;
-    font-size: 0.9375rem;
+  .reseaux__role {
+    font-size: 0.9063rem;
     color: var(--color-gris);
+    line-height: 1.5;
   }
-  @media (min-width: 62rem) {
-    .specialiste {
-      grid-template-columns: minmax(0, 1fr) 22rem;
-      gap: clamp(4rem, 8vw, 8rem);
+  @media (min-width: 48rem) {
+    .reseaux__liste {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    /* Unten buendig mit dem Text links: keine leere Flaeche daneben. */
-    .reseaux {
-      align-self: end;
+  }
+  @media (min-width: 72rem) {
+    .reseaux__liste {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
 
-  /* --- Dossiers und Konferenzen --------------------------------------------- */
-  .publications {
+  /* --- Dossiers und Konferenzen -------------------------------------------- */
+  .publications__grille {
     display: grid;
-    gap: 4.5rem;
+    gap: 3.5rem;
   }
-  .publications .registre {
-    margin-top: 2.5rem;
+  .courte {
+    margin-block: 1.75rem;
+    border-top: 1px solid var(--color-trait);
   }
-  .publications .chapeau {
-    margin-top: 1.25rem;
+  .courte a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--color-trait);
+    font-family: var(--font-titre);
+    font-size: 1.125rem;
+    line-height: 1.35;
+    color: var(--color-encre);
+    text-decoration: none;
   }
-  .publications__tous {
-    margin-top: 2rem;
+  .courte a:hover {
+    color: var(--color-marine);
   }
-  .publications__conf .registre__titre {
-    font-size: 1.1875rem;
+  .courte a > :global(svg) {
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    color: var(--color-or);
   }
-  .publications__conf .etiquettes {
-    grid-column: 1;
+  .courte__pdf {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex: none;
+    font-family: var(--font-texte);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-gris);
+  }
+  .courte__pdf :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--color-or);
   }
   @media (min-width: 62rem) {
-    .publications {
+    .publications__grille {
       grid-template-columns: 1fr 1fr;
       gap: clamp(3rem, 6vw, 6rem);
     }
   }
 
-  /* --- Pourquoi ------------------------------------------------------------- */
-  /* Ein allgemeiner Text: ruhiger gesetzt als die Abschnitte davor. */
-  .pourquoi__titre {
-    font-size: 1.5rem;
-    max-width: 40ch;
+  /* --- Pourquoi: eine zugeklappte Zeile ----------------------------------- */
+  .pourquoi {
+    border-top: 1px solid var(--color-trait);
+  }
+  .pourquoi__details summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 2rem;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-titre);
+    font-size: 1.375rem;
+    color: var(--color-encre);
+  }
+  .pourquoi__details summary::-webkit-details-marker {
+    display: none;
+  }
+  .pourquoi__details summary :global(svg) {
+    flex: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--color-or);
+    transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .pourquoi__details[open] summary :global(svg) {
+    transform: rotate(45deg);
   }
   .pourquoi__texte {
     max-width: none;
-    margin-top: 1.75rem;
+    padding-bottom: 3rem;
     font-size: 0.9688rem;
     color: var(--color-gris);
   }
@@ -554,24 +767,18 @@ const urlConferences = adresse('conferences', lang);
     }
   }
 
-  /* --- Termin --------------------------------------------------------------- */
+  /* --- Termin ------------------------------------------------------------- */
   .rdv__grille {
     display: grid;
-    gap: 2.5rem 6rem;
+    gap: 2rem 6rem;
   }
   .rdv :global(.insecable) {
     white-space: nowrap;
   }
   .rdv__coordonnees {
     display: grid;
-    gap: 0.5rem;
+    gap: 0.45rem;
     justify-items: start;
-    font-size: 1.0625rem;
-  }
-  .rdv__coordonnees address {
-    font-style: normal;
-    line-height: 1.6;
-    color: var(--color-blanc);
   }
   .rdv__coordonnees a {
     text-decoration: none;
@@ -581,14 +788,16 @@ const urlConferences = adresse('conferences', lang);
     text-decoration: underline;
     text-underline-offset: 3px;
   }
+  .rdv__coordonnees address {
+    font-style: normal;
+  }
   .rdv__tel {
-    margin-top: 0.75rem;
     font-family: var(--font-titre);
     font-size: 1.75rem;
     color: var(--color-or-clair);
   }
   .rdv .bouton {
-    margin-top: 1.5rem;
+    margin-top: 1.25rem;
   }
   @media (min-width: 62rem) {
     .rdv__grille {
