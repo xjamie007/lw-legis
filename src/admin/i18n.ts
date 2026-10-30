@@ -18,6 +18,7 @@ const DE = {
 
   'anmeldung.titre': 'Anmeldung',
   'anmeldung.email': 'E-Mail-Adresse',
+  'anmeldung.benutzer': 'Benutzername',
   'anmeldung.passwort': 'Passwort',
   'anmeldung.senden': 'Anmelden',
   'anmeldung.laeuft': 'Wird angemeldet …',
@@ -247,6 +248,7 @@ const FR: Record<keyof typeof DE, string> = {
 
   'anmeldung.titre': 'Connexion',
   'anmeldung.email': 'Adresse courriel',
+  'anmeldung.benutzer': 'Nom d’utilisateur',
   'anmeldung.passwort': 'Mot de passe',
   'anmeldung.senden': 'Se connecter',
   'anmeldung.laeuft': 'Connexion en cours …',
