@@ -48,7 +48,7 @@ export default function App({ stand, langues }: Props) {
   const [profil, setProfil] = useState<Profil | null | 'charge'>('charge');
   /** Erreichte Sicherungsstufe. Ohne 'aal2' gibt es keinen Zugang. */
   const [niveau, setNiveau] = useState<'aal1' | 'aal2' | null | 'charge'>('charge');
-  const [langueAdmin, setLangueAdmin] = useState<LangueAdmin>('de');
+  const [langueAdmin, setLangueAdmin] = useState<LangueAdmin>('fr');
   const [depart] = useState(() => pageDeDepart(langues));
 
   const t = (c: Parameters<typeof traduire>[1]) => traduire(langueAdmin, c);
